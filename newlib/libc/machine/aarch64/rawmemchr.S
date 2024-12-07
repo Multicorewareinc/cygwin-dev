@@ -34,13 +34,15 @@
 /* See rawmemchr-stub.c.  */
 #else
 
+#include "asmdefs.h"
+
 #define L(l) .L ## l
 
 	.macro def_fn f p2align=0
 	.text
 	.p2align \p2align
 	.global \f
-	.type \f, %function
+	SYMBOL_TYPE(\f, %function)
 \f:
 	.endm
 
@@ -63,6 +65,6 @@ L(do_strlen):
 	ret	x15
 	.cfi_endproc
 
-	.size   rawmemchr, . - rawmemchr
+	SYMBOL_SIZE(rawmemchr)
 #endif
 

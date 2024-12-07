@@ -55,3 +55,68 @@ extern inline int feupdateenv(const fenv_t *__envp);
 extern inline int feenableexcept(int __mask);
 extern inline int fedisableexcept(int __mask);
 extern inline int fegetexcept(void);
+
+/* These are writable so we can initialise them at startup.  */
+static fenv_t fe_nomask_env;
+
+/* These pointers provide the outside world with read-only access to them.  */
+const fenv_t *_fe_nomask_env = &fe_nomask_env;
+
+/*  Mask and shift amount for precision bits.  */
+#define FE_CW_PREC_MASK		(0x0300)
+#define FE_CW_PREC_SHIFT	(8)
+
+/*  Returns the currently selected precision, represented by one of the
+   values of the defined precision macros.  */
+int
+fegetprec (void)
+{
+  unsigned short cw;
+
+  /* Get control word.  */
+  // TODO
+  //__asm__ volatile ("fnstcw %0" : "=m" (cw) : );
+
+  return (cw & FE_CW_PREC_MASK) >> FE_CW_PREC_SHIFT;
+}
+
+/* http://www.open-std.org/jtc1/sc22//WG14/www/docs/n752.htm:
+
+   The fesetprec function establishes the precision represented by its
+   argument prec.  If the argument does not match a precision macro, the
+   precision is not changed.
+
+   The fesetprec function returns a nonzero value if and only if the
+   argument matches a precision macro (that is, if and only if the requested
+   precision can be established). */
+int
+fesetprec (int prec)
+{
+  unsigned short cw;
+
+  /* Will succeed for any valid value of the input parameter.  */
+  switch (prec)
+    {
+    case FE_FLTPREC:
+    case FE_DBLPREC:
+    case FE_LDBLPREC:
+      break;
+    default:
+      return 0;
+    }
+
+  /* Get control word.  */
+  // TODO
+  //__asm__ volatile ("fnstcw %0" : "=m" (cw) : );
+
+  /* Twiddle bits.  */
+  cw &= ~FE_CW_PREC_MASK;
+  cw |= (prec << FE_CW_PREC_SHIFT);
+
+  /* Set back into FPU state.  */
+  // TODO
+  //__asm__ volatile ("fldcw %0" :: "m" (cw));
+
+  /* Indicate success.  */
+  return 1;
+}

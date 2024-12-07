@@ -242,8 +242,11 @@ public: /* Do NOT remove this public: line, it's a marker for gentls_offsets. */
   {
     while (InterlockedExchange (&stacklock, 1))
       {
-#ifdef __x86_64__
+#if defined(__x86_64__)
 	__asm__ ("pause");
+#elif defined(__aarch64__)
+	// TODO: Validate this.
+	__asm__ ("yield");
 #else
 #error unimplemented for this target
 #endif
@@ -321,7 +324,11 @@ public:
        address of the _except block to restore the context correctly.
        See comment preceeding myfault_altstack_handler in exception.cc. */
     ret = (DWORD64) _ret;
+#if defined(__x86_64__)
     __asm__ volatile ("movq %%rsp,%0": "=o" (frame));
+#elif defined(__aarch64__)
+    // TODO
+#endif
   }
   ~san () __attribute__ ((always_inline))
   {

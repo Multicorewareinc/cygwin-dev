@@ -61,7 +61,14 @@ typedef	__uint64_t	fexcept_t;
 			 FE_UPWARD | FE_TOWARDZERO)
 #define	_ROUND_SHIFT	22
 
-
+/* Only Solaris and QNX implement fegetprec/fesetprec.  As Solaris, use the
+   values defined by http://www.open-std.org/jtc1/sc22//WG14/www/docs/n752.htm
+   QNX defines different values. */
+#if __MISC_VISIBLE
+#define FE_FLTPREC	(0)
+#define FE_DBLPREC	(2)
+#define FE_LDBLPREC	(3)
+#endif
 
 /* Default floating-point environment */
 extern const fenv_t	*_fe_dfl_env;
@@ -77,44 +84,18 @@ extern const fenv_t	*_fe_dfl_env;
 #define	__mrs_fpsr(__r)	__asm __volatile("mrs %0, fpsr" : "=r" (__r))
 #define	__msr_fpsr(__r)	__asm __volatile("msr fpsr, %0" : : "r" (__r))
 
+#if __GNU_VISIBLE
+/*  If possible, the GNU C Library defines a macro FE_NOMASK_ENV which
+   represents an environment where every exception raised causes a trap
+   to occur. You can test for this macro using #ifdef. It is only defined
+   if _GNU_SOURCE is defined.  */
+extern const fenv_t *_fe_nomask_env;
+#define FE_NOMASK_ENV (_fe_nomask_env)
 
-#if __BSD_VISIBLE
-
-/* We currently provide no external definitions of the functions below. */
-
-static inline int
-feenableexcept(int __mask)
-{
-	fenv_t __old_r, __new_r;
-
-	__mrs_fpcr(__old_r);
-	__new_r = __old_r | ((__mask & FE_ALL_EXCEPT) << _FPUSW_SHIFT);
-	__msr_fpcr(__new_r);
-	return ((__old_r >> _FPUSW_SHIFT) & FE_ALL_EXCEPT);
-}
-
-static inline int
-fedisableexcept(int __mask)
-{
-	fenv_t __old_r, __new_r;
-
-	__mrs_fpcr(__old_r);
-	__new_r = __old_r & ~((__mask & FE_ALL_EXCEPT) << _FPUSW_SHIFT);
-	__msr_fpcr(__new_r);
-	return ((__old_r >> _FPUSW_SHIFT) & FE_ALL_EXCEPT);
-}
-
-static inline int
-fegetexcept(void)
-{
-	fenv_t __r;
-
-	__mrs_fpcr(__r);
-	return ((__r & _ENABLE_MASK) >> _FPUSW_SHIFT);
-}
-
-#endif /* __BSD_VISIBLE */
-
-
+/* These are GNU extensions defined in glibc.  */
+int feenableexcept (int __excepts);
+int fedisableexcept (int __excepts);
+int fegetexcept (void);
+#endif /* __GNU_VISIBLE */
 
 #endif	/* !_FENV_H_ */

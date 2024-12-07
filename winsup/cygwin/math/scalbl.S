@@ -7,15 +7,15 @@
 
 	.file	"scalbl.S"
 	.text
-#ifdef __x86_64__
+#if defined(__x86_64__)
 	.align 8
-#else
+#elif defined(__i386__)
 	.align 4
 #endif
 .globl __MINGW_USYMBOL(scalbl)
 	.def	__MINGW_USYMBOL(scalbl);	.scl	2;	.type	32;	.endef
 __MINGW_USYMBOL(scalbl):
-#ifdef __x86_64__
+#if defined(__x86_64__)
 	subq  $24, %rsp
 	fldt	(%r8)
 	fldt	(%rdx)
@@ -26,10 +26,14 @@ __MINGW_USYMBOL(scalbl):
 	fstpt	(%rcx)
 	addq $24, %rsp
 	ret
-#else
+#elif defined(__i386__)
 	fildl	16(%esp)
 	fldt	4(%esp)
 	fscale
 	fstp	%st(1)
 	ret
+#elif defined(__aarch64__)
+	// TODO
+#else
+	.error "Not supported on your platform yet"
 #endif

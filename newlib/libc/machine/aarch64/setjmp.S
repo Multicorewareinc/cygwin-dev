@@ -26,6 +26,8 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "asmdefs.h"
+
 #define GPR_LAYOUT			\
 	REG_PAIR (x19, x20,  0);	\
 	REG_PAIR (x21, x22, 16);	\
@@ -43,7 +45,7 @@
 
 // int setjmp (jmp_buf)
 	.global	setjmp
-	.type	setjmp, %function
+	SYMBOL_TYPE(setjmp, %function)
 setjmp:
 	mov	x16, sp
 #define REG_PAIR(REG1, REG2, OFFS)	stp REG1, REG2, [x0, OFFS]
@@ -54,11 +56,11 @@ setjmp:
 #undef REG_ONE
 	mov	w0, #0
 	ret
-	.size	setjmp, .-setjmp
+	SYMBOL_SIZE(setjmp)
 
 // void longjmp (jmp_buf, int) __attribute__ ((noreturn))
 	.global	longjmp
-	.type	longjmp, %function
+	SYMBOL_TYPE(longjmp, %function)
 longjmp:
 #define REG_PAIR(REG1, REG2, OFFS)	ldp REG1, REG2, [x0, OFFS]
 #define REG_ONE(REG1, OFFS)		ldr REG1, [x0, OFFS]
@@ -71,4 +73,4 @@ longjmp:
 	cinc	w0, w1, eq
 	// use br not ret, as ret is guaranteed to mispredict
 	br	x30
-	.size	longjmp, .-longjmp
+	SYMBOL_SIZE(longjmp)

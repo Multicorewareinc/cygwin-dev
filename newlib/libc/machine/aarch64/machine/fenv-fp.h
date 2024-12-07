@@ -26,6 +26,36 @@
  * $FreeBSD$
  */
 
+__fenv_static __inline int
+fedisableexcept(int __mask)
+{
+	fenv_t __old_r, __new_r;
+
+	__mrs_fpcr(__old_r);
+	__new_r = __old_r & ~((__mask & FE_ALL_EXCEPT) << _FPUSW_SHIFT);
+	__msr_fpcr(__new_r);
+	return ((__old_r >> _FPUSW_SHIFT) & FE_ALL_EXCEPT);
+}
+
+__fenv_static __inline int
+feenableexcept(int __mask)
+{
+	fenv_t __old_r, __new_r;
+
+	__mrs_fpcr(__old_r);
+	__new_r = __old_r | ((__mask & FE_ALL_EXCEPT) << _FPUSW_SHIFT);
+	__msr_fpcr(__new_r);
+	return ((__old_r >> _FPUSW_SHIFT) & FE_ALL_EXCEPT);
+}
+
+__fenv_static __inline int
+fegetexcept(void)
+{
+	fenv_t __r;
+
+	__mrs_fpcr(__r);
+	return ((__r & _ENABLE_MASK) >> _FPUSW_SHIFT);
+}
 
 __fenv_static __inline int
 feclearexcept(int __excepts)

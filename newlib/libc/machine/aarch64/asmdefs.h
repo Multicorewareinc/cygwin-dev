@@ -59,9 +59,19 @@
 GNU_PROPERTY (FEATURE_1_AND, FEATURE_1_BTI|FEATURE_1_PAC)
 #endif
 
+#ifdef __ELF__
+#define HIDDEN(name) .hidden name
+#define SYMBOL_SIZE(name) .size name, .-name
+#define SYMBOL_TYPE(name, _type) .type name, _type
+#else
+#define HIDDEN(name)
+#define SYMBOL_SIZE(name)
+#define SYMBOL_TYPE(name, _type)
+#endif
+
 #define ENTRY_ALIGN(name, alignment)	\
   .global name;		\
-  .type name,%function;	\
+  SYMBOL_TYPE(name, %function);	\
   .align alignment;		\
   name:			\
   .cfi_startproc;	\
@@ -70,13 +80,13 @@ GNU_PROPERTY (FEATURE_1_AND, FEATURE_1_BTI|FEATURE_1_PAC)
 #define ENTRY(name)	ENTRY_ALIGN(name, 6)
 
 #define ENTRY_ALIAS(name)	\
-  .global name;		\
-  .type name,%function;	\
+  .global name;			\
+  SYMBOL_TYPE(name, %function);	\
   name:
 
 #define END(name)	\
   .cfi_endproc;		\
-  .size name, .-name;
+  SYMBOL_SIZE(name);
 
 #define L(l) .L ## l
 

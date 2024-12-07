@@ -26,16 +26,24 @@ _ELIDABLE_INLINE __uint16_t __ntohs(__uint16_t);
 _ELIDABLE_INLINE __uint32_t
 __ntohl(__uint32_t _x)
 {
+#if defined(__x86_64__)
 	__asm__("bswap %0" : "=r" (_x) : "0" (_x));
+#elif defined(__aarch64__)
+  // TODO
+#endif
 	return _x;
 }
 
 _ELIDABLE_INLINE __uint16_t
 __ntohs(__uint16_t _x)
 {
+#if defined(__x86_64__)
 	__asm__("xchgb %b0,%h0"		/* swap bytes		*/
 		: "=Q" (_x)
 		:  "0" (_x));
+#elif defined(__aarch64__)
+  // TODO
+#endif
 	return _x;
 }
 

@@ -75,7 +75,7 @@ pthread_wrapper (PVOID arg)
   /* Initialize new _cygtls. */
   _my_tls.init_thread (wrapper_arg.stackbase - __CYGTLS_PADSIZE__,
 		       (DWORD (*)(void*, void*)) wrapper_arg.func);
-#ifdef __x86_64__
+#if defined(__x86_64__)
   __asm__ ("\n\
 	   leaq  %[WRAPPER_ARG], %%rbx	# Load &wrapper_arg into rbx	\n\
 	   movq  (%%rbx), %%r12		# Load thread func into r12	\n\
@@ -99,6 +99,8 @@ pthread_wrapper (PVOID arg)
 	   call  *%%r12			# Call thread func		\n"
 	   : : [WRAPPER_ARG] "o" (wrapper_arg),
 	       [CYGTLS] "i" (__CYGTLS_PADSIZE__));
+#elif defined(__aarch64__)
+  // TODO
 #else
 #error unimplemented for this target
 #endif
@@ -206,7 +208,11 @@ class thread_allocator
 public:
   thread_allocator () : current (THREAD_STORAGE_HIGH)
   {
+#if defined(__aarch64__)
+    alloc_func = wincap.has_extended_mem_api () ? &thread_allocator::_alloc : &thread_allocator::_alloc_old;
+#else
     alloc_func = wincap.has_extended_mem_api () ? &_alloc : &_alloc_old;
+#endif
   }
   PVOID alloc (SIZE_T size)
   {

@@ -81,7 +81,7 @@ internal_modf (__FLT_TYPE value, __FLT_TYPE *iptr)
   __FLT_TYPE int_part = (__FLT_TYPE) 0.0;
   /* truncate */
   /* truncate */
-#ifdef __x86_64__
+#if defined(__x86_64__)
   asm volatile ("pushq %%rax\n\tsubq $8, %%rsp\n"
     "fnstcw 4(%%rsp)\n"
     "movzwl 4(%%rsp), %%eax\n"
@@ -91,7 +91,7 @@ internal_modf (__FLT_TYPE value, __FLT_TYPE *iptr)
     "frndint\n"
     "fldcw 4(%%rsp)\n"
     "addq $8, %%rsp\npopq %%rax" : "=t" (int_part) : "0" (value)); /* round */
-#else
+#elif defined(__i386__)
   asm volatile ("push %%eax\n\tsubl $8, %%esp\n"
     "fnstcw 4(%%esp)\n"
     "movzwl 4(%%esp), %%eax\n"
@@ -101,6 +101,8 @@ internal_modf (__FLT_TYPE value, __FLT_TYPE *iptr)
     "frndint\n"
     "fldcw 4(%%esp)\n"
     "addl $8, %%esp\n\tpop %%eax\n" : "=t" (int_part) : "0" (value)); /* round */
+#elif defined(__aarch64__)
+  // TODO
 #endif
   if (iptr)
     *iptr = int_part;
@@ -204,7 +206,12 @@ __FLT_ABI(pow) (__FLT_TYPE x, __FLT_TYPE y)
 	}
       if (y == __FLT_CST(0.5))
 	{
+#if defined(__x86_64__) || defined(__i386__)
 	  asm volatile ("fsqrt" : "=t" (rslt) : "0" (x));
+#elif defined(__aarch64__)
+	  // TODO
+	  rslt = 0.0;
+#endif
 	  return rslt;
 	}
     }

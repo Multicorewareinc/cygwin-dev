@@ -19,7 +19,7 @@ extern "C" {
   Define a struct __mcontext, which should be identical in layout to the Win32
   API type CONTEXT with the addition of oldmask and cr2 fields at the end.
 */
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__aarch64__)
 
 struct _uc_fpxreg {
   __uint16_t significand[4];

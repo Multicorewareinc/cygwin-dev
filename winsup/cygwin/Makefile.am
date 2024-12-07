@@ -64,6 +64,21 @@ TARGET_FILES= \
 	x86_64/wmempcpy.S
 endif
 
+if TARGET_AARCH64
+TARGET_FILES= \
+	aarch64/bcopy.S \
+	aarch64/fastcwd.cc \
+	aarch64/memchr.S \
+	aarch64/memcpy.c \
+	aarch64/memmove.c \
+	aarch64/mempcpy.S \
+	aarch64/memset.S \
+	aarch64/swab.S \
+	aarch64/wmemcpy.S \
+	aarch64/wmemmove.S \
+	aarch64/wmempcpy.S
+endif
+
 # These objects are included directly into the import library
 LIB_FILES= \
 	lib/_cygwin_crt0_common.cc \
@@ -606,6 +621,28 @@ LDSCRIPT=cygwin.sc
 $(LDSCRIPT): $(LDSCRIPT).in
 	$(AM_V_GEN)$(CC) -E - -P < $^ -o $@
 
+if TARGET_AARCH64
+# cygwin dll
+# Set PE and export table header timestamps to zero for reproducible builds.
+$(NEW_DLL_NAME): $(LDSCRIPT) libdll.a $(VERSION_OFILES) $(LIBSERVER)\
+		  $(newlib_build)/libm.a $(newlib_build)/libc.a
+	$(AM_V_CXXLD)$(CXX) $(CXXFLAGS) \
+	-Wl,--gc-sections -nostdlib -Wl,-T$(LDSCRIPT) \
+	-Wl,--dynamicbase -static \
+	$${SOURCE_DATE_EPOCH:+-Wl,--no-insert-timestamp} \
+	-Wl,--heap=0 -Wl,--out-implib,cygdll.a -shared -o $@ \
+	-e @DLL_ENTRY@ $(DEF_FILE) \
+	-Wl,-whole-archive libdll.a -Wl,-no-whole-archive \
+	$(VERSION_OFILES) \
+	$(LIBSERVER) \
+	$(newlib_build)/libm.a \
+	$(newlib_build)/libc.a \
+	-lgcc -luser32 -lkernel32 -lonecore -lpdh -lntdll -Wl,-Map,cygwin.map
+	@$(MKDIR_P) ${target_builddir}/winsup/testsuite/testinst/bin/
+	$(AM_V_at)$(INSTALL_PROGRAM) $(NEW_DLL_NAME) ${target_builddir}/winsup/testsuite/testinst/bin/$(DLL_NAME)
+endif
+
+if TARGET_X86_64
 # cygwin dll
 # Set PE and export table header timestamps to zero for reproducible builds.
 $(NEW_DLL_NAME): $(LDSCRIPT) libdll.a $(VERSION_OFILES) $(LIBSERVER)\
@@ -625,6 +662,7 @@ $(NEW_DLL_NAME): $(LDSCRIPT) libdll.a $(VERSION_OFILES) $(LIBSERVER)\
 	-lgcc -lkernel32 -lntdll -Wl,-Map,cygwin.map
 	@$(MKDIR_P) ${target_builddir}/winsup/testsuite/testinst/bin/
 	$(AM_V_at)$(INSTALL_PROGRAM) $(NEW_DLL_NAME) ${target_builddir}/winsup/testsuite/testinst/bin/$(DLL_NAME)
+endif
 
 # cygwin import library
 toolopts=--cpu=@target_cpu@ --ar=@AR@ --as=@AS@ --nm=@NM@ --objcopy=@OBJCOPY@

@@ -1020,6 +1020,7 @@ _dll_crt0 ()
      anyway, we now always move the main thread stack to the stack area
      reserved for pthread stacks.  This allows a reproducible stack space
      under our own control and avoids collision with the OS. */
+#if !defined(__aarch64__)
   if (!dynamically_loaded)
     {
       if (__in_forkee != FORKING)
@@ -1030,7 +1031,7 @@ _dll_crt0 ()
 	  PVOID stackaddr = create_new_main_thread_stack (allocationbase);
 	  if (stackaddr)
 	    {
-#ifdef __x86_64__
+#if defined(__x86_64__)
 	      /* Set stack pointer to new address.  Set frame pointer to
 	         stack pointer and subtract 32 bytes for shadow space. */
 	      __asm__ ("\n\
@@ -1050,6 +1051,7 @@ _dll_crt0 ()
       else
 	fork_info->alloc_stack ();
     }
+#endif
 
   fesetenv (FE_DFL_ENV);
   _main_tls = &_my_tls;

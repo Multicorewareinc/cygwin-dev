@@ -21,6 +21,7 @@ if (!defined($cpu) || !defined($output_def)) {
     die "$0: missing required option\n";
 }
 
+my $is_aarch64 = $cpu eq 'aarch64';
 my $is_x86_64 = $cpu eq 'x86_64';
 # FIXME? Do other (non-32 bit) arches on Windows still use symbol prefixes?
 my $sym_prefix = '';
@@ -89,7 +90,7 @@ sub fefunc {
     my $func = $sym_prefix . shift;
     my $fe = $sym_prefix . shift;
     my $sigfe_func;
-    if ($is_x86_64) {
+    if ($is_x86_64 || $is_aarch64) {
 	$sigfe_func = ($fe =~ /^(.*)_${func}$/)[0];
     }
     my $extra;
@@ -109,6 +110,24 @@ $fe:
 
 EOF
     }
+    # TODO
+    if ($is_aarch64) {
+	$res = <<EOF;
+	.extern $func
+	.global $fe
+	.seh_proc $fe
+$fe:
+	adrp x17, $func
+	str x17, [sp, #-16]!
+	.seh_pushreg x17
+	.seh_endprologue
+	adr x16, $sigfe_func
+	ldr x16, [x16]
+	br x16
+	.seh_endproc
+EOF
+    }
+
     if (!$main::first++) {
 	if ($is_x86_64) {
 	  $res = <<EOF . longjmp () . $res;
@@ -340,6 +359,55 @@ stabilize_sig_stack:
 	.seh_endproc
 EOF
 	}
+	# TODO
+	if ($is_aarch64) {
+	  $res = <<EOF . longjmp () . $res;
+	.include "tlsoffsets"
+	.text
+
+	.seh_proc _sigfe_maybe
+_sigfe_maybe:					# stack is aligned on entry!
+	.seh_endprologue
+0:	ret
+	.seh_endproc
+
+	.seh_proc _sigfe
+_sigfe:						# stack is aligned on entry!
+	.seh_endprologue
+	.seh_endproc
+
+	.global _sigbe
+	.seh_proc _sigbe
+_sigbe:						# return here after cygwin syscall
+						# stack is aligned on entry!
+	.seh_endprologue
+	.seh_endproc
+
+	.global	sigdelayed
+	.seh_proc sigdelayed
+sigdelayed:
+	.seh_endprologue
+
+	ret
+	.seh_endproc
+_sigdelayed_end:
+	.global _sigdelayed_end
+
+# _cygtls::pop
+	.global _ZN7_cygtls3popEv
+	.seh_proc _ZN7_cygtls3popEv
+_ZN7_cygtls3popEv:
+	.seh_endprologue
+	ret
+	.seh_endproc
+
+	.seh_proc stabilize_sig_stack
+stabilize_sig_stack:
+	.seh_endprologue
+	ret
+	.seh_endproc
+EOF
+	}
     }
     return $res;
 }
@@ -473,6 +541,37 @@ longjmp:
 	jne	0f
 	incl	%eax
 0:	ret
+	.seh_endproc
+EOF
+    }
+    if ($is_aarch64) {
+      	# TODO
+      	return <<EOF;
+
+	.globl	sigsetjmp
+	.seh_proc sigsetjmp
+sigsetjmp:
+	.seh_endprologue
+	.seh_endproc
+
+	.globl  setjmp
+	.seh_proc setjmp
+setjmp:
+	.seh_endprologue
+	ret
+	.seh_endproc
+
+	.globl	siglongjmp
+	.seh_proc siglongjmp
+siglongjmp:
+	.seh_endprologue
+	.seh_endproc
+
+	.globl  longjmp
+	.seh_proc longjmp
+longjmp:
+	.seh_endprologue
+	ret
 	.seh_endproc
 EOF
     }
