@@ -53,14 +53,14 @@ for (@in) {
 	}
     } else {
 	my ($func, $sigfe) = m%^\s*(\S+)(?:\s+((?:NO)?SIGFE(?:_MAYBE)?))?$%o;
-	if (defined($sigfe) && $sigfe =~ /^NO/o) {
+	# if (defined($sigfe) && $sigfe =~ /^NO/o) {
 	    $_ = $func;
-	} else {
-	    $sigfe ||= 'sigfe';
-	    $_ = '_' . lc($sigfe) . '_' . $func;
-	    $sigfe{$func} = $_;
-	    $_ = $func . ' = ' . $_;
-	}
+	# } else {
+	#     $sigfe ||= 'sigfe';
+	#     $_ = '_' . lc($sigfe) . '_' . $func;
+	#     $sigfe{$func} = $_;
+	#     $_ = $func . ' = ' . $_;
+	# }
     }
     s/(\S)\s+(\S)/$1 $2/go;
     s/(\S)\s+$/$1/o;

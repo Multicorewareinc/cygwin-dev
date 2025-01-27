@@ -1216,7 +1216,7 @@ putc_unlocked SIGFE
 putchar SIGFE
 putchar_unlocked SIGFE
 putenv SIGFE
-puts NOSIGFE
+puts SIGFE
 pututline SIGFE
 pututxline SIGFE
 putw SIGFE
