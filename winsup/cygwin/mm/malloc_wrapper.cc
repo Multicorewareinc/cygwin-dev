@@ -50,6 +50,19 @@ import_address (void *imp)
 {
   __try
     {
+#if defined(__aarch64__)
+      uint32_t opcode = *(uint32_t *) imp;
+      // if opcode is an adr instruction
+      if ((opcode & 0x9f000000) == 0x10000000)
+	{
+	  uint32_t immhi = (opcode >> 5) & 0x7ffff;
+	  uint32_t immlo = (opcode >> 29) & 0x3;
+	  int64_t sign_extend = (0l - (immhi >> 18)) << 21;
+	  int64_t imm = sign_extend | (immhi << 2) | immlo;
+	  uintptr_t jmpto = *(uintptr_t *) ((uint8_t *) imp + imm);
+	  return (void *) jmpto;
+	}
+#else
       if (*((uint16_t *) imp) == 0x25ff)
 	{
 	  const char *ptr = (const char *) imp;
@@ -57,6 +70,7 @@ import_address (void *imp)
 				   (ptr + 6 + *(int32_t *)(ptr + 2));
 	  return (void *) *jmpto;
 	}
+#endif
     }
   __except (NO_ERROR) {}
   __endtry
@@ -318,9 +332,9 @@ malloc_init ()
       extern void *_sigfe_malloc;
       /* Decide if we are using our own version of malloc by testing the import
 	 address from user_data.  */
-      use_internal = true; // user_data->malloc == malloc
-//		     || import_address ((void *) user_data->malloc)
-//			== &_sigfe_malloc;
+      use_internal = user_data->malloc == malloc
+		     || import_address ((void *) user_data->malloc)
+			== malloc;
       malloc_printf ("using %s malloc", use_internal ? "internal" : "external");
       internal_malloc_determined = true;
     }
