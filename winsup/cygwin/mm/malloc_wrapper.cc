@@ -334,7 +334,7 @@ malloc_init ()
 	 address from user_data.  */
       use_internal = user_data->malloc == malloc
 		     || import_address ((void *) user_data->malloc)
-			== malloc;
+			== &_sigfe_malloc;
       malloc_printf ("using %s malloc", use_internal ? "internal" : "external");
       internal_malloc_determined = true;
     }
