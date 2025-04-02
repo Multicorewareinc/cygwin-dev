@@ -925,9 +925,6 @@ dll_crt0_1 (void *)
     for (unsigned int i = 0; i < PREMAIN_LEN / 2; i++)
       user_data->premain[i] (__argc, __argv, user_data);
 
-  /* Set up standard fds in file descriptor table. */
-  cygheap->fdtab.stdio_init ();
-
   /* Set up program_invocation_name and program_invocation_short_name.
      __progname is an export alias for program_invocation_short_name. */
   program_invocation_name = __argv[0];
@@ -942,6 +939,9 @@ dll_crt0_1 (void *)
 	*cp = '\0';
     }
   SetThreadName (GetCurrentThreadId (), program_invocation_short_name);
+
+  /* Set up standard fds in file descriptor table. */
+  cygheap->fdtab.stdio_init ();
 
   (void) xdr_set_vprintf (&cygxdr_vwarnx);
   cygwin_finished_initializing = true;
