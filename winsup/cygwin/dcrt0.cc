@@ -1001,6 +1001,7 @@ dll_crt0_1 (void *)
       sig_dispatch_pending (false);
       _my_tls.call_signal_handler ();
       _my_tls.incyg--;	/* Not in Cygwin anymore */
+      strace.set_active (true);
       cygwin_exit (user_data->main (__argc, newargv, environ));
     }
   __asm__ ("				\n\

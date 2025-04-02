@@ -136,6 +136,7 @@ frok::child (volatile char * volatile here)
 {
   HANDLE& hParent = ch.parent;
 
+  strace.set_active(true);
   sync_with_parent ("after longjmp", true);
   debug_printf ("child is running.  pid %d, ppid %d, stack here %p",
 		myself->pid, myself->ppid, __builtin_frame_address (0));

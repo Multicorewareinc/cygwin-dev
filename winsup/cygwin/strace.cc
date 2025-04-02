@@ -312,6 +312,11 @@ strace_printf (unsigned category, const char *func, const char *fmt, ...)
     }
 }
 
+extern "C" void
+strace_set_active (unsigned active)
+{
+  strace.set_active (active);
+}
 static NO_COPY struct tab
 {
   int v;
