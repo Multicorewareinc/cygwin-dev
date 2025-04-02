@@ -964,6 +964,7 @@ dll_crt0_1 (void *)
   /* Disable case-insensitive globbing */
   ignore_case_with_glob = false;
 
+  extern char *__progname;
   cygbench (__progname);
 
   ld_preload ();
