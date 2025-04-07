@@ -3,6 +3,9 @@
  * This file is part of the mingw-w64 runtime package.
  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
  */
+#if defined(__aarch64__)
+#include <math.h>
+#endif
 
 void sincos (double __x, double *p_sin, double *p_cos);
 void sincosl (long double __x, long double *p_sin, long double *p_cos);
@@ -28,9 +31,9 @@ void sincos (double __x, double *p_sin, double *p_cos)
     "fsincos\n\t"
     "1:" : "=t" (c), "=u" (s) : "0" (__x));
 #elif defined(__aarch64__)
-  // TODO
-  c = 0.0;
-  s = 0.0;
+  // TODO: Complete AArch64 assembly implementation
+  c = cos (__x);
+  s = sin (__x);
 #endif
   *p_sin = (double) s;
   *p_cos = (double) c;
@@ -56,9 +59,9 @@ void sincosf (float __x, float *p_sin, float *p_cos)
     "fsincos\n\t"
     "1:" : "=t" (c), "=u" (s) : "0" (__x));
 #elif defined(__aarch64__)
-  // TODO
-  c = 0.0;
-  s = 0.0;
+  // TODO: Complete AArch64 assembly implementation
+  c = cosf (__x);
+  s = sinf (__x);
 #endif
   *p_sin = (float) s;
   *p_cos = (float) c;
@@ -84,9 +87,9 @@ void sincosl (long double __x, long double *p_sin, long double *p_cos)
     "fsincos\n\t"
     "1:" : "=t" (c), "=u" (s) : "0" (__x));
 #elif defined(__aarch64__)
-  // TODO
-  c = 0.0;
-  s = 0.0;
+  // TODO: Complete AArch64 assembly implementation
+  c = cosl (__x);
+  s = sinl (__x);
 #endif
   *p_sin = s;
   *p_cos = c;

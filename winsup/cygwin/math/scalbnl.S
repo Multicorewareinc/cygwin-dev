@@ -35,7 +35,12 @@ __MINGW_USYMBOL(scalbnl):
 	fstp	%st(1)
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+	scvtf d1, w1
+	fmov d2, #2.0
+	bl pow
+	fmul d0, d0, d1
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

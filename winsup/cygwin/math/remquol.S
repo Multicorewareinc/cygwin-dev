@@ -73,7 +73,13 @@ __MINGW_USYMBOL(remquol):
 
         ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+        stp     x0, x1, [sp, -16]!
+        stp     q0, q1, [sp, -32]!
+        bl      remquo
+        ldp     q0, q1, [sp], 32
+        ldp     x0, x1, [sp], 16
+        ret
 #else
 	.error "Not supported on your platform yet"
 #endif

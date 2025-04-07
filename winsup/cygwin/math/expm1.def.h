@@ -68,8 +68,8 @@ __FLT_ABI(expm1) (__FLT_TYPE x)
 #if defined(_x86_64__)
       __asm__ __volatile__ ("f2xm1" : "=t" (x) : "0" (x));
 #elif defined(__aarch64__)
-      // TODO 
-      x = 0.0;
+      // TODO: Complete AArch64 assembly implementation
+      x = exp2 (x) - 1.0;
 #endif
       return x;
     }

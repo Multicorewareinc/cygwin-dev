@@ -77,7 +77,11 @@ __MINGW_USYMBOL(ilogbl):
 	movl	$0x80000001, %eax	/* FP_ILOGB0  */
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+	stp q0, q1, [sp, -32]!
+	bl ilogb
+	ldp q0, q1, [sp], 32
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

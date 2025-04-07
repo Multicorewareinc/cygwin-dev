@@ -102,7 +102,8 @@ internal_modf (__FLT_TYPE value, __FLT_TYPE *iptr)
     "fldcw 4(%%esp)\n"
     "addl $8, %%esp\n\tpop %%eax\n" : "=t" (int_part) : "0" (value)); /* round */
 #elif defined(__aarch64__)
-  // TODO
+  // TODO: Complete AArch64 assembly implementation
+  int_part = round (value);
 #endif
   if (iptr)
     *iptr = int_part;
@@ -209,8 +210,7 @@ __FLT_ABI(pow) (__FLT_TYPE x, __FLT_TYPE y)
 #if defined(__x86_64__) || defined(__i386__)
 	  asm volatile ("fsqrt" : "=t" (rslt) : "0" (x));
 #elif defined(__aarch64__)
-	  // TODO
-	  rslt = 0.0;
+	  asm volatile  ("fsqrt %d0, %d1" : "=w" (rslt) : "w" (x));
 #endif
 	  return rslt;
 	}

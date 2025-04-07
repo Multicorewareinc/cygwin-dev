@@ -102,7 +102,11 @@ __MINGW_USYMBOL(log1pl):
 	fstp	%st(1)
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+	stp q0, q1, [sp, -32]!
+	bl log1p
+	ldp q0, q1, [sp], 32
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

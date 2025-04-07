@@ -33,7 +33,18 @@ __MINGW_USYMBOL(scalbl):
 	fstp	%st(1)
 	ret
 #elif defined(__aarch64__)
-	// TODO
+    fcvtzs x1, d1        
+    fmov x0, d0          
+    ubfx x2, x0, #52, #11  
+    add x2, x2, x1      
+    cmp x2, #0          
+    csel x2, xzr, x2, lt
+    mov x3, #0x7FF      
+    cmp x2, x3          
+    csel x2, x2, x3, lt  
+    bfi x0, x2, #52, #11
+    fmov d0, x0          
+    ret
 #else
 	.error "Not supported on your platform yet"
 #endif

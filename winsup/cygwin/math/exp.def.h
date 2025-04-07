@@ -103,8 +103,12 @@ __expl_internal (long double x)
        "fstp	%%st(1)\n\t"    /* 0  */
        : "=t" (res) : "0" (x), "m" (c0), "m" (c1) : "ax", "dx");
 #elif defined(__aarch64__)
-  // TODO
-  res = 0.0 * c0 * c1;
+  // TODO: Complete AArch64 assembly implementation
+  long double y = x * c0;
+  long double i;
+  long double f = modfl (y, &i);
+  long double z = 1.0L + f + (c1 * f);
+  res = ldexpl (z, (int)i);
 #endif
   return res;
 }

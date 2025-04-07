@@ -38,7 +38,11 @@ __MINGW_USYMBOL(remainderf):
 	fstp	%st(1)
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+	stp s0, s1, [sp, -16]!
+	bl remainderf
+	ldp s0, s1, [sp], 16
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

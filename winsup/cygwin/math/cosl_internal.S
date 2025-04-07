@@ -51,7 +51,13 @@ __MINGW_USYMBOL(__cosl_internal):
 	fstp	%st(1)
 	fcos
 	ret
+#elif defined(__aarch64__)
+	// TODO: Complete AArch64 assembly implementation
+	stp q0, q1, [sp, -32]!
+	bl cos
+	ldp q0, q1, [sp], 32
+	ret
 #else
-  // TODO
+  .error "Not supported on your architecture yet "
 #endif
 

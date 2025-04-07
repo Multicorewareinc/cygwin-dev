@@ -128,7 +128,13 @@ L24:
 	leave
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	// TODO: Complete AArch64 assembly implementation
+	str     x30, [sp]
+	mov     x1, sp
+	bl      frexp
+	ldr     w0, [sp]
+	ldr     x30, [sp]
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

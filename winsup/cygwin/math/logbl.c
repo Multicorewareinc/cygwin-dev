@@ -21,7 +21,8 @@ logbl (long double x)
        "fxtract\n\t"
        "fstp	%%st" : "=t" (res) : "0" (x));
 #elif defined(__aarch64__)
-  res = 0.0;
+  // TODO: Complete AArch64 assembly implementation
+  res = logb (x);
 #endif
   return res;
 }

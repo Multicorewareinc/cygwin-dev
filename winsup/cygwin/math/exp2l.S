@@ -89,6 +89,12 @@ __MINGW_USYMBOL(exp2l):
 	fstp	%st
 	fldz				/* Set result to 0.  */
 2:	ret
+#elif defined(__aarch64__)
+	// TODO: Complete AArch64 assembly implementation
+	stp q0, q0, [sp, -16]!
+	bl exp2
+	ldp q0, q0, [sp], 16
+	ret
 #else
-  // TODO
+	.error "Not supported on your architecture yet"
 #endif
