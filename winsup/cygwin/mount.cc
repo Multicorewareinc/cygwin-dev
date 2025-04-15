@@ -804,6 +804,16 @@ mount_info::conv_to_win32_path (const char *src_path, char *dst, device& dev,
       rc = ENOENT;
     }
 
+   // This workaround handles issue related to mapping filename to win32 path
+   char *first;
+   first = strstr(dst, "\\home\\");
+   if (first)
+     {
+       char *second = strstr(first + 1, "\\home\\");
+       if (second)
+         strcpy(first, second);
+     }
+
  out_no_chroot_check:
   debug_printf ("src_path %s, dst %s, flags %y, rc %d", src_path, dst, *flags, rc);
   return rc;
