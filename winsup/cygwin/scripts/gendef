@@ -370,14 +370,15 @@ EOF
 	.seh_proc _sigfe_maybe
 _sigfe_maybe:					# stack is aligned on entry!
 	.seh_endprologue
+	ldr x10, [x18, #0x8]
 0:	ret
 	.seh_endproc
 
 	.seh_proc _sigfe
 _sigfe:						# stack is aligned on entry!
 	.seh_endprologue
-	ldr x9, [sp], #16
-	br x9
+	ldr	x10, [sp], #0x10
+	br	x10
 	.seh_endproc
 
 	.global _sigbe
@@ -385,6 +386,7 @@ _sigfe:						# stack is aligned on entry!
 _sigbe:						# return here after cygwin syscall
 						# stack is aligned on entry!
 	.seh_endprologue
+	ret
 	.seh_endproc
 
 	.global	sigdelayed
