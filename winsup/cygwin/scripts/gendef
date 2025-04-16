@@ -685,7 +685,16 @@ setjmp:
 	.globl	siglongjmp
 	.seh_proc siglongjmp
 siglongjmp:
+	// prologue
+	stp	fp, lr, [sp, #-0x10]!		// save FP and LR registers
+	mov	fp, sp				// set FP to current SP
+	sub	sp, sp, #32			// allocate 32 bytes on stack
 	.seh_endprologue
+
+	bl longjmp
+
+	// epilogue
+	ldp	fp, lr, [sp], #0x10		// restore saved FP and LR registers
 	ret
 	.seh_endproc
 
