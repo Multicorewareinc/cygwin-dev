@@ -616,8 +616,16 @@ EOF
 	.globl	sigsetjmp
 	.seh_proc sigsetjmp
 sigsetjmp:
+	// prologue
+	stp	fp, lr, [sp, #-0x10]!		// save FP and LR registers
+	mov	fp, sp				// set FP to current SP
+	sub	sp, sp, #0x20			// allocate 32 bytes on stack
 	.seh_endprologue
-	mov x0, 0
+
+	bl setjmp
+
+	// epilogue
+	ldp	fp, lr, [sp], #0x10		// restore saved FP and LR registers
 	ret
 	.seh_endproc
 
