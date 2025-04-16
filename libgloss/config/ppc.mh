@@ -8,7 +8,7 @@ CFLAGS_MRELOCATABLE = -mrelocatable-lib -mno-eabi
 INCLUDES = -I. -I$(srcdir)/.. -I$(objdir)/..
 # Note that when building the library, ${MULTILIB} is not the way multilib
 # options are passed; they're passed in $(CFLAGS).
-CFLAGS_FOR_TARGET = -O2 -g ${MULTILIB} ${INCLUDES} ${NEWLIB_CFLAGS}
+CFLAGS_FOR_TARGET = -Og -g ${MULTILIB} ${INCLUDES} ${NEWLIB_CFLAGS}
 LDFLAGS_FOR_TARGET = ${MULTILIB} ${NEWLIB_LDFLAGS}
 AR_FLAGS = qc
 

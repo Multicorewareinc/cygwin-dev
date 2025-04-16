@@ -24,7 +24,7 @@ dnl normal versions of a library), tasteless as that idea is.
   if test "$ac_test_CXXFLAGS" = set; then
     CXXFLAGS="$ac_save_CXXFLAGS"
   elif test $ac_cv_prog_cxx_g = yes; then
-    CXXFLAGS="-g -O2"
+    CXXFLAGS="-g -Og"
   else
     CXXFLAGS="-O2"
   fi
@@ -121,7 +121,7 @@ dnl normal versions of a library), tasteless as that idea is.
   if test "$ac_test_CFLAGS" = set; then
     CFLAGS="$ac_save_CFLAGS"
   elif test $ac_cv_prog_cc_g = yes; then
-    CFLAGS="-g -O2"
+    CFLAGS="-g -Og"
   else
     CFLAGS="-O2"
   fi

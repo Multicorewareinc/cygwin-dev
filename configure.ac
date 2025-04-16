@@ -2381,7 +2381,7 @@ AC_SUBST(DEBUG_PREFIX_CFLAGS_FOR_TARGET)
 # CFLAGS_FOR_TARGET and CXXFLAGS_FOR_TARGET.
 if test "x$CFLAGS_FOR_TARGET" = x; then
   if test "x${is_cross_compiler}" = xyes; then
-    CFLAGS_FOR_TARGET="-g -O2"
+    CFLAGS_FOR_TARGET="-g -Og"
   else
     CFLAGS_FOR_TARGET=$CFLAGS
     case " $CFLAGS " in
@@ -2398,7 +2398,7 @@ AC_SUBST(CFLAGS_FOR_TARGET)
 
 if test "x$CXXFLAGS_FOR_TARGET" = x; then
   if test "x${is_cross_compiler}" = xyes; then
-    CXXFLAGS_FOR_TARGET="-g -O2"
+    CXXFLAGS_FOR_TARGET="-g -Og"
   else
     CXXFLAGS_FOR_TARGET=$CXXFLAGS
     case " $CXXFLAGS " in

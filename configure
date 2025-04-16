@@ -4800,7 +4800,7 @@ if test "$ac_test_CFLAGS" = set; then
   CFLAGS=$ac_save_CFLAGS
 elif test $ac_cv_prog_cc_g = yes; then
   if test "$GCC" = yes; then
-    CFLAGS="-g -O2"
+    CFLAGS="-g -Og"
   else
     CFLAGS="-g"
   fi
@@ -5147,7 +5147,7 @@ if test "$ac_test_CXXFLAGS" = set; then
   CXXFLAGS=$ac_save_CXXFLAGS
 elif test $ac_cv_prog_cxx_g = yes; then
   if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
+    CXXFLAGS="-g -Og"
   else
     CXXFLAGS="-g"
   fi
@@ -6853,7 +6853,7 @@ fi
 # CFLAGS_FOR_TARGET and CXXFLAGS_FOR_TARGET.
 if test "x$CFLAGS_FOR_TARGET" = x; then
   if test "x${is_cross_compiler}" = xyes; then
-    CFLAGS_FOR_TARGET="-g -O2"
+    CFLAGS_FOR_TARGET="-g -Og"
   else
     CFLAGS_FOR_TARGET=$CFLAGS
     case " $CFLAGS " in
@@ -6870,7 +6870,7 @@ fi
 
 if test "x$CXXFLAGS_FOR_TARGET" = x; then
   if test "x${is_cross_compiler}" = xyes; then
-    CXXFLAGS_FOR_TARGET="-g -O2"
+    CXXFLAGS_FOR_TARGET="-g -Og"
   else
     CXXFLAGS_FOR_TARGET=$CXXFLAGS
     case " $CXXFLAGS " in

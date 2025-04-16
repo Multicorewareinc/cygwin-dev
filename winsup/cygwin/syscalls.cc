@@ -1595,7 +1595,7 @@ static int
 posix_getdents_lseek (cygheap_fdget &cfd, off_t pos, int dir)
 {
   long cur = cfd->telldir (cfd->getdents_dir ());
-  long abs_pos;
+  long abs_pos = 0;
 
   switch (dir)
     {

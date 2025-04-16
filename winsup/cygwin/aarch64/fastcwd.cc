@@ -128,8 +128,8 @@ find_fast_cwd_pointer_aarch64 ()
   start = pc = (const uint32_t *) use_cwd;
 
   const uint32_t *ldrpc = NULL;
-  uint32_t ldroffset, ldrsz;
-  uint32_t ldrrn, ldrrd;
+  uint32_t ldroffset = 0, ldrsz = 0;
+  uint32_t ldrrn = 0, ldrrd = 0;
 
   /* find the ldr (immediate unsigned offset) for RtlpCurDirRef */
   for (; pc < start + 20 && !IS_INSN (pc, ret) && !IS_INSN (pc, b); pc++)
@@ -163,8 +163,8 @@ find_fast_cwd_pointer_aarch64 ()
       if (IS_INSN (pc, bl) && extract_bl_target (pc) == ent_crit)
 	break;
     }
-  uint32_t addoffset;
-  uint32_t addrn;
+  uint32_t addoffset = 0;
+  uint32_t addrn = 0;
   for (; pc >= start; pc--)
     {
       if (IS_INSN (pc, add) && (*pc & 0x1F) == 0)
