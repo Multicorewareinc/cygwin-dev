@@ -323,6 +323,7 @@ LDFLAGS_FOR_TESTDLL = -nodefaultlibs
 LDADD_FOR_TESTDLL = $(builddir)/../cygwin/libcygwin.a -lgcc -lkernel32 -luser32
 
 # flags for test executables
+AM_CFLAGS = -std=gnu89 -DDEBUG
 AM_CPPFLAGS = -I$(srcdir)/libltp/include
 AM_LDFLAGS = $(LDFLAGS_FOR_TESTDLL)
 LDADD = $(builddir)/libltp.a $(builddir)/../cygwin/binmode.o $(LDADD_FOR_TESTDLL)

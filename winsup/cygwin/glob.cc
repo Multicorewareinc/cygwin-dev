@@ -136,9 +136,10 @@ typedef wint_t Char;
 #define	M_QUOTE		0x80
 #define	M_PROTECT	0x40
 #define	M_MASK		0xff
+#define	M_COLL_MASK	0x70
 #define	M_CHAR		0x7f
 
-typedef char Char;
+typedef wint_t Char;
 
 #endif
 
