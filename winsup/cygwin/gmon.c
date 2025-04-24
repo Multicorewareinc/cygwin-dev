@@ -219,8 +219,8 @@ _mcleanup(void)
 		perror("mcount: gmon.log");
 		return;
 	}
-	len = sprintf(dbuf, "[mcleanup1] kcount 0x%x ssiz %d\n",
-	    p->kcount, p->kcountsize);
+	len = sprintf(dbuf, "[mcleanup1] kcount 0x%x ssiz %zu\n",
+	    (unsigned int) (unsigned long int) p->kcount, p->kcountsize);
 	write(log, dbuf, len);
 #endif
 	hdr = (struct gmonhdr *)&gmonhdr;
@@ -243,8 +243,8 @@ _mcleanup(void)
 		     toindex = p->tos[toindex].link) {
 #ifdef DEBUG
 			len = sprintf(dbuf,
-			"[mcleanup2] frompc 0x%x selfpc 0x%x count %d\n" ,
-				frompc, p->tos[toindex].selfpc,
+			"[mcleanup2] frompc 0x%x selfpc 0x%x count %zu\n" ,
+				(unsigned int) frompc, (unsigned int) p->tos[toindex].selfpc,
 				p->tos[toindex].count);
 			write(log, dbuf, len);
 #endif

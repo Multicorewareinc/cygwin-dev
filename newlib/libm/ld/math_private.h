@@ -20,6 +20,10 @@
 #include <sys/types.h>
 #include <machine/endian.h>
 
+#ifdef DEBUG
+#include <assert.h>
+#endif
+
 /*
  * __double_t and __float_t are defined elsewhere in
  * freebsd and used to define double_t and float_t.
