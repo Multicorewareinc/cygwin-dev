@@ -136,6 +136,24 @@ tst_tmpdir()
          tst_brkm(TBROK, tmpdir_cleanup, "%s: tempnam(%s, %s) failed",
                   FN_NAME, TEMPDIR, prefix);
 
+      struct stat st;
+      if ( stat(P_tmpdir, &st) != 0 ) {
+         if ( errno == ENOENT ) { /* Directory does not exist */
+            if ( mkdir(P_tmpdir, DIR_MODE) == -1 )
+               tst_brkm(TBROK, tmpdir_cleanup,
+                        "%s: mkdir(%s, %#o) failed; errno = %d: %s",
+                        FN_NAME, P_tmpdir, DIR_MODE, errno, strerror(errno));
+         } else {
+            tst_brkm(TBROK, tmpdir_cleanup,
+                     "%s: stat(%s) failed; errno = %d: %s",
+                     FN_NAME, P_tmpdir, errno, strerror(errno));
+         }
+      } else if ( !S_ISDIR(st.st_mode) ) {
+         tst_brkm(TBROK, tmpdir_cleanup,
+                  "%s: %s exists but is not a directory",
+                  FN_NAME, P_tmpdir);
+      }
+
       /*
        * Create the temporary directory.
        */
