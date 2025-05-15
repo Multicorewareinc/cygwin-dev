@@ -28,6 +28,8 @@ realdirpath() {
 winsup_srcdir="$(realdirpath $srcdir)"
 target_builddir="$(realdirpath ..)"
 
+AC_NO_EXECUTABLES
+
 AC_PROG_INSTALL
 AC_PROG_MKDIR_P
 AC_PROG_CC
@@ -136,6 +138,9 @@ AC_CONFIG_FILES([
     Makefile
     cygwin/Makefile
     cygserver/Makefile
+    doc/Makefile
+    utils/Makefile
+    utils/mingw/Makefile
     testsuite/Makefile
     testsuite/mingw/Makefile
 ])

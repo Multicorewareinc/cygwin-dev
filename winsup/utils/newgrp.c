@@ -25,6 +25,8 @@ details. */
 
 #define PATH_PREFIX	"PATH=/usr/bin:"
 
+char **environ;
+
 char *
 create_env_var (const char *name, const char *val)
 {

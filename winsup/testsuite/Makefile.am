@@ -332,8 +332,8 @@ LDADD = $(builddir)/libltp.a $(builddir)/../cygwin/binmode.o $(LDADD_FOR_TESTDLL
 winsup_api_devdsp_LDADD = -lwinmm $(LDADD)
 
 # all tests
-# Removing mingw/cygload test due to toolchain limitation.
-TESTS = $(check_PROGRAMS) 
+TESTS = $(check_PROGRAMS) \
+	mingw/cygload
 
 # expected fail tests
 XFAIL_TESTS = \
