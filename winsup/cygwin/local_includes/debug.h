@@ -7,7 +7,7 @@ details. */
 #if !defined(_DEBUG_H_)
 #define _DEBUG_H_
 
-#define being_debugged() (true)
+#define being_debugged() (IsDebuggerPresent ())
 
 #ifndef DEBUGGING
 # define cygbench(s)

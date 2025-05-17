@@ -434,6 +434,9 @@ NT_readline::gets ()
 static void
 SetThreadNameExc (DWORD dwThreadID, const char* threadName)
 {
+  if (!IsDebuggerPresent ())
+    return;
+
   ULONG_PTR info[] =
     {
       0x1000,                 /* type, must be 0x1000 */
