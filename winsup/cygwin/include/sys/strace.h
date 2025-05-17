@@ -38,7 +38,6 @@ class strace
   unsigned char _active;
 public:
   void activate (bool);
-  void set_active (unsigned active) {_active = active;}
   strace () {}
   int microseconds ();
   int version;
@@ -92,7 +91,6 @@ extern "C" {
 
 void small_printf (const char *, ...);
 void strace_printf (unsigned, const char *func, const char *, ...);
-void strace_set_active (unsigned);
 
 #ifdef __cplusplus
 }
