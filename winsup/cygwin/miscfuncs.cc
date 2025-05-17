@@ -443,9 +443,8 @@ SetThreadNameExc (DWORD dwThreadID, const char* threadName)
 
   __try
     {
-      // Setting thread name this way changes process return code with SEH changes.
-      /*RaiseException (MS_VC_EXCEPTION, 0, sizeof (info) / sizeof (ULONG_PTR),
-		      info);*/
+      RaiseException (MS_VC_EXCEPTION, 0, sizeof (info) / sizeof (ULONG_PTR),
+		      info);
     }
   __except (NO_ERROR)
   __endtry
