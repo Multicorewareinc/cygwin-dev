@@ -111,9 +111,9 @@ if test -z "$XMLTO"; then
 fi
 
 if test "x$with_cross_bootstrap" != "xyes"; then
-    AC_CHECK_PROGS(MINGW_CXX, ${target_cpu}-w64-mingw32-g++)
+    AC_CHECK_PROGS(MINGW_CXX, ${build_cpu}-w64-mingw32-g++)
     test -n "$MINGW_CXX" || AC_MSG_ERROR([no acceptable MinGW g++ found in \$PATH])
-    AC_CHECK_PROGS(MINGW_CC, ${target_cpu}-w64-mingw32-gcc)
+    AC_CHECK_PROGS(MINGW_CC, ${build_cpu}-w64-mingw32-gcc)
     test -n "$MINGW_CC" || AC_MSG_ERROR([no acceptable MinGW gcc found in \$PATH])
 fi
 AM_CONDITIONAL(CROSS_BOOTSTRAP, [test "x$with_cross_bootstrap" != "xyes"])
