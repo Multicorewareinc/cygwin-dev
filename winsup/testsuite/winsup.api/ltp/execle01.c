@@ -133,7 +133,7 @@ int exp_enos[]={0, 0};		/* Zero terminated list of expected errnos */
 
 int pid;		/* process id from fork */
 int status;		/* status returned from waitpid */
-extern char **environ;	/* pointer to this processes env, to pass along */
+char **environ;	/* pointer to this processes env, to pass along */
 
 int
 main(int ac, char **av)

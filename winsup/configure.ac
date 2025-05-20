@@ -129,6 +129,8 @@ AC_CONFIG_FILES([
     Makefile
     cygwin/Makefile
     cygserver/Makefile
+    testsuite/Makefile
+    testsuite/mingw/Makefile
 ])
 
 AC_OUTPUT
