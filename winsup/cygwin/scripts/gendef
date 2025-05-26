@@ -622,8 +622,53 @@ sigsetjmp:
 	.globl  setjmp
 	.seh_proc setjmp
 setjmp:
+	// prologue
+	stp	fp, lr, [sp, #-0x10]!		// save FP and LR registers
 	.seh_endprologue
-	mov x0, 0
+
+	// save callee-saved registers from jump buffer
+	stp	x19, x20, [x0, #0x08]		// save x19 and x20
+	stp	x21, x22, [x0, #0x18]		// save x21 and x22
+	stp	x23, x24, [x0, #0x28]		// save x23 and x24
+	stp	x25, x26, [x0, #0x38]		// save x25 and x26
+	stp	x27, x28, [x0, #0x48]		// save x27 and x28
+	stp	fp, lr, [x0, #0x58]		// save x29 (frame pointer) and x30 (link register)
+	mov	x1, sp				// get the current stack pointer
+	str	x1, [x0, #0x68]			// save SP
+	mrs	x1, fpcr			// get floating-point control register
+	str	x1, [x0, #0x70]			// save FPCR
+	mrs	x1, fpsr			// get floating-point status register
+	str	x1, [x0, #0x78]			// save FPSR
+
+	// save floating-point registers (d8-d15)
+	stp	d8, d9, [x0, #0x80]
+	stp	d10, d11, [x0, #0x90]
+	stp	d12, d13, [x0, #0xA0]
+	stp	d14, d15, [x0, #0xB0]
+
+	// save TLS stack pointer
+	ldr	x1, [sp]
+	str	x1, [x0, #0xB8]
+
+	bl	stabilize_sig_stack		// call stabilize_sig_stack (returns TLS in x0)
+
+	// store the stack pointer to ...
+	ldr	x2, =_cygtls.stackptr
+	add	x2, x0, x2
+	ldr	x3, [x2]
+	// TODO: Save the value somewhere.
+
+	// decrement the stack lock
+	ldr	x2, =_cygtls.stacklock
+	add	x2, x0, x2
+	ldr	w3, [x2]
+	sub	w3, w3, #1
+	str	w3, [x2]
+
+	mov	w0, #0				// return 0
+
+	// epilogue
+	ldp	fp, lr, [sp], #0x10		// restore saved FP and LR registers
 	ret
 	.seh_endproc
 
