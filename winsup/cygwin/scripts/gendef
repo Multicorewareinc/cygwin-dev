@@ -399,7 +399,74 @@ _sigdelayed_end:
 
 	.seh_proc stabilize_sig_stack
 stabilize_sig_stack:
+	// prologue
+	stp	fp, lr, [sp, #-0x10]!		// save FP and LR registers
+	.seh_save_fplr_x+ 16
 	.seh_endprologue
+
+	ldr	x10, [x18, #0x8]		// keep thread local storage base address in x10
+
+	// try to acquire the lock
+	mov	w9, #1				// set up value for atomic exchange
+	ldr	x11, =_cygtls.stacklock		// load the symbol address/offset
+	add	x12, x10, x11			// calculate final address
+1:
+	ldaxr	w13, [x12]			// load with acquire semantics
+	stlxr	w14, w9, [x12]			// store with release semantics
+	cbnz	w14, 1b				// if store failed, retry
+	cbz	w13, 2f				// if lock was acquired, continue
+	yield					// yield to allow other threads to run
+	b	1b				// retry acquiring the lock
+2:
+	// lock acquired, increment incyg counter
+	ldr	x11, =_cygtls.incyg		// load the symbol address/offset
+	add	x12, x10, x11			// calculate final address
+	ldr	w9, [x12]			// load current value of incyg counter
+	add	w9, w9, #1			// increment incyg counter
+	str	w9, [x12]			// store incremented value back
+
+	// check if there is a current signal to handle 
+	ldr	x11, =_cygtls.current_sig	// load the symbol address/offset
+	ldr	w9, [x10, x11]			// load current value of current_sig
+	cbz	w9, 3f				// if no current signal, jump to cleanup
+
+	// release lock before calling signal handler
+	ldr	x11, =_cygtls.stacklock		// load the symbol address/offset
+	add	x12, x10, x11			// calculate final address
+	ldr	w9, [x12]			// load current value of stacklock counter
+	sub	w9, w9, #1			// decrement stacklock counter
+	stlr	w9, [x12]			// store with release semantics
+
+	// prepare arguments and call signal handler
+	ldr	x0, =_cygtls.start_offset	// load the symbol address/offset
+	add	x0, x10, x0			// calculate final address
+	bl	_ZN7_cygtls19call_signal_handlerEv
+	ldr	x10, [x18, #0x8]		// restore x10 that may have been modified by the call
+
+	// decrement incyg counter
+	ldr	x11, =_cygtls.incyg		// load the symbol address/offset
+	add	x12, x10, x11			// calculate final address
+	ldr	w9, [x12]			// load current value of incyg counter
+	sub	w9, w9, #1			// decrement incyg counter
+	str	w9, [x12]			// store decremented value back
+
+	// go to the beginning to handle another signal
+	b	1b
+3:
+	// no signal to handle, decrement incyg counter
+	ldr	x11, =_cygtls.incyg		// load the symbol address/offset
+	add	x12, x10, x11			// calculate final address
+	ldr	w9, [x12]			// load current value of incyg counter
+	sub	w9, w9, #1			// decrement incyg counter
+	str	w9, [x12]			// store decremented value back
+
+	mov	x0, x10				// return TLS address in x0 (return value)
+
+	// epilogue
+	.seh_startepilogue
+	ldp	fp, lr, [sp], #0x10
+	.seh_save_fplr_x+ 16
+	.seh_endepilogue
 	ret
 	.seh_endproc
 EOF
