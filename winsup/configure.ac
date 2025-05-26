@@ -81,6 +81,13 @@ AC_ARG_ENABLE(doc,
 	      enable_doc=yes)
 AM_CONDITIONAL(BUILD_DOC, [test $enable_doc != "no"])
 
+# Disabling build of cygserver is needed for zero-bootstrap build of stage 1
+# Cygwin toolchain where the linker is not able to produce executables yet.
+AC_ARG_ENABLE(cygserver,
+	      [AS_HELP_STRING([--disable-cygserver], [do not build cygserver])],,
+	      enable_cygserver=yes)
+AM_CONDITIONAL(BUILD_CYGSERVER, [test $enable_cygserver != "no"])
+
 AC_CHECK_PROGS([DOCBOOK2XTEXI], [docbook2x-texi db2x_docbook2texi])
 if test -z "$DOCBOOK2XTEXI" ; then
     if test "x$enable_doc" != "xno"; then
