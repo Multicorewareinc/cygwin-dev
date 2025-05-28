@@ -663,7 +663,7 @@ dofork (void **proc, bool *with_forkables)
 #if defined(__x86_64__)
     __asm__ volatile ("movq %%rsp,%0": "=r" (stackp));
 #elif defined(__aarch64__)
-  // TODO
+    __asm__ volatile ("mov %0, sp" : "=r" (stackp));
 #else
 #error unimplemented for this target
 #endif
