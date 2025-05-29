@@ -22,7 +22,15 @@ _BEGIN_STD_C
 #endif
 
 #if defined(__aarch64__)
-#define _JBLEN 22
+# if defined(__CYGWIN__)
+/* 
+ * Windows Arm64 ABI requires saving x19-x28, FP, LR, SP, FPCR, FPSR, d8-d15
+ * and jump address to jmp_buf.
+ */
+#  define _JBLEN 24
+# else
+#  define _JBLEN 22
+# endif
 #define _JBTYPE long long
 #endif
 
