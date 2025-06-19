@@ -55,7 +55,7 @@ extern "C"
 #define PTHREAD_BARRIER_SERIAL_THREAD (-1)
 
 /* This condition matches the one in <sys/_pthreadtypes.h> */
-#if !defined(__INSIDE_CYGWIN__) || !defined(__cplusplus)
+#if (!defined(__INSIDE_CYGWIN__) || !defined(__cplusplus)) && !defined(__aarch64__)
 /* Constants for initializer macros */
 extern struct __pthread_mutex_t __pthread_recursive_mutex_initializer_np;
 extern struct __pthread_mutex_t __pthread_normal_mutex_initializer_np;
