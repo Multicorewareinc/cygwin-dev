@@ -127,12 +127,21 @@ AM_CONDITIONAL(CROSS_BOOTSTRAP, [test "x$with_cross_bootstrap" != "xyes"])
 
 AC_EXEEXT
 
-AC_ARG_ENABLE([dumper],
-	      [AS_HELP_STRING([--disable-dumper], [do not build the 'dumper' utility])],
-	      [build_dumper=$enableval],
-	      [build_dumper=yes])
-
-AM_CONDITIONAL(BUILD_DUMPER, [test "x$build_dumper" = "xyes"])
+case "$target_cpu" in
+  x86_64)
+    AC_ARG_ENABLE([dumper],
+		  [AS_HELP_STRING([--disable-dumper], [do not build the 'dumper' utility])],
+		  [build_dumper=$enableval],
+		  [build_dumper=yes])
+    AM_CONDITIONAL(BUILD_DUMPER, [test "x$build_dumper" = "xyes"])
+    ;;
+  aarch64)
+    AC_ARG_ENABLE([dumper],
+		  [AS_HELP_STRING([--enable-dumper], [build the 'dumper' utility])],
+		  [build_dumper=yes])
+    AM_CONDITIONAL(BUILD_DUMPER, [test "x$build_dumper" = "xno"])
+    ;;
+esac
 
 # libbfd.a doesn't have a pkgconfig file, so we guess what it's dependencies
 # are, based on what's present in the build environment
