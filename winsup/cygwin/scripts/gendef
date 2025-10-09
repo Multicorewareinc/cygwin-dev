@@ -445,9 +445,291 @@ _sigbe:
 	.seh_proc sigdelayed
 sigdelayed:
 	.seh_endprologue
-
-	ret
-	.seh_endproc
+	    sub     sp, sp, #16
+    str     x10, [sp]   // store return address which is present in x10
+    sub    sp, sp, #16   // make space for fp register
+    str    fp, [sp]  // store frame pointer
+    mov    fp, sp      // set sp to the beginning address in fp
+    sub    sp, sp, #16
+    mrs    x0, nzcv     // store psr state
+//  str    x0 , [sp]
+    msr    nzcv, xzr   // set nzcv register to zero
+    mov     x0, sp              // copy sp to general-purpose register
+    and     x0, x0, #0xFFFFFFFFFFFFFFC0        // align 64 bytes
+    mov     sp, x0      // stores back aligned address to sp
+ 
+    sub  sp, sp, #16
+    str  x0, [sp]
+ 
+    sub  sp, sp, #16
+    str  x1, [sp]
+ 
+    sub  sp, sp, #16
+    str  x2, [sp]
+ 
+    sub  sp, sp, #16
+    str  x3, [sp]
+   
+    sub  sp, sp, #16
+    str  x4, [sp]
+ 
+    sub  sp, sp, #16
+    str  x5, [sp]
+ 
+    sub  sp, sp, #16
+    str  x6, [sp]
+ 
+    sub  sp, sp, #16
+    str  x7, [sp]
+ 
+    sub  sp, sp, #16
+    str  x8, [sp]
+ 
+    sub  sp, sp, #16
+    str  x9, [sp]
+ 
+    sub  sp, sp, #16
+    str  x10, [sp]
+ 
+    sub  sp, sp, #16
+    str  x11, [sp]
+ 
+    sub  sp, sp, #16
+    str  x12, [sp]
+ 
+    sub  sp, sp, #16
+    str  x13, [sp]
+ 
+    sub  sp, sp, #16
+    str  x14, [sp]
+ 
+    sub  sp, sp, #16
+    str  x19, [sp]
+ 
+    sub  sp, sp, #16
+    str  x20, [sp]
+ 
+    sub  sp, sp, #16
+    str  x21, [sp]
+ 
+    sub  sp, sp, #16
+    str  x22, [sp]
+ 
+    sub  sp, sp, #16
+    str  x23, [sp]
+ 
+    sub  sp, sp, #16
+    str  x24, [sp]
+ 
+    /* This entire code segment should be skipped. As this involves checking if current machine that we are using is the older version of x86 architecture or not. And if it is an older version then call fxsave64(this is a x86 command which)
+ 
+    mov  x0, #0x00000001
+    cpuid
+ 
+    ands  x1, x1, #0x04000000  
+    b.ne 1f
+    mov  w2, #0x248 // Might be
+    sub x2, x2, sp
+    str w1, [sp, #0x20]  
+    str w3, [sp, #0x24]
+    fxsave64 0x30(%rsp) // needs to be done probably not required in arm. As fxsave64 is for older versions x86 architecture similar things might not be required in arm
+   
+    b   2f
+    */
+1:
+    sub     sp, sp, #32
+    stp     q0, q1, [sp]
+    sub     sp, sp, #32
+    stp     q2, q3, [sp]
+    sub     sp, sp, #32
+    stp     q4, q5, [sp]
+    sub     sp, sp, #32
+    stp     q6, q7, [sp]
+    sub     sp, sp, #32
+    stp     q8, q9, [sp]
+    sub     sp, sp, #32
+    stp     q10, q11, [sp]
+    sub     sp, sp, #32
+    stp     q12, q13, [sp]
+    sub     sp, sp, #32
+    stp     q14, q15, [sp]
+    sub     sp, sp, #32
+    stp     q16, q17, [sp]
+    sub     sp, sp, #32
+    stp     q18, q19, [sp]
+    sub     sp, sp, #32
+    stp     q20, q21, [sp]
+    sub     sp, sp, #32
+    stp     q20, q21, [sp]
+    sub     sp, sp, #32
+    stp     q22, q23, [sp]
+    sub     sp, sp, #32
+    stp     q20, q21, [sp]
+    sub     sp, sp, #32
+    stp     q22, q23, [sp]
+    sub     sp, sp, #32
+    stp     q24, q25, [sp]
+    sub     sp, sp, #32
+    stp     q26, q27, [sp]
+    sub     sp, sp, #32
+    stp     q28, q29, [sp]
+    sub     sp, sp, #32
+    stp     q30, q31, [sp]
+    mrs     x1, FPCR
+    sub     sp, sp, #16
+    str     x1, [sp]
+ 
+2:
+   
+    ldr     x10, [x18, #0x8]                            // Load TEB pointer in x10
+    ldr     x11, =_cygtls.saved_errno           //offset
+    add     x11, x10, x11                               // add offset
+    ldr     w15, [x11]                                 // load from address offset
+    ldr     x4, =_cygtls.start_offset                 // load page address of start_offset
+    add     x4, x4, x10
+    ldr     x1, [x4]    // x1 = _cygtls.start_offset
+    add     x1, x10, x1                              // x1 = TLS base + offset
+    bl      _ZN7_cygtls19call_signal_handlerEv
+   
+1:
+    mov     w11, #1         // this command can be moved up
+    mov     x4, _cygtls.stacklock             // load lock (stacklock offset from TLS)
+    add     x4, x4, x10                      //  x4 = address of stacklock in TLS
+    ldxr    x13, [ x4]                      // Exclusive load from stacklock
+    cbnz    x13, 1b                                             // if lock was not 0, retry
+    stxr    w9, w11, [x4]                       // store 1 in lock place
+    cbnz    w9, 1f                                              // if store failed (w9 != 0), retry
+                                                                // else: lock acquired
+    b       2f
+1:
+    yield
+    b       1b
+ 
+2:
+    cmp     w15, #0
+    blt 3f
+    //ldr x11, [x10, #_cygtls.errno_addr]
+    mov x5, #_cygtls.errno_addr
+    add x4, x10, x5    // add offset
+    ldr x11, [x4]      // load from address
+    str w15, [x11]
+ 
+3:
+    mov x11, #-8
+6:  
+    mov     x5, #_cygtls.stackptr    // load stack
+    add     x4, x10, x5             // add offset
+    ldxr    x0, [x4]
+    add     x1, sp, x11           // Add -8 to sp which is storedd in x11
+    add     x4, x12, x5
+ 
+    stxr    w2, x1, [x4]
+ 
+    cbnz    w2, 6b                // Retry if store failed
+    mov     x11, x0
+    mov     x0, x12
+    mov     x10, xzr
+5:
+ 
+    sub    x4, x11, #8
+    ldaxr  x9, [x4]          // load and acquire lock
+    stlxr  w10, x10, [x4]    // attempt to store x10, result in w10
+    cbnz   w10, 5b           // retry if store failed
+    mov    x10, x9           // x10 gets the old value
+    mov    w11, wzr
+    mov x5, #_cygtls.incyg
+    add  x13, x12, x5  
+    str   w11, [x13]
+    mov x5, #_cygtls.stacklock
+    add  x13, x12, x5  
+    str   w11, [x13]
+    ldr w1, [sp, #0x20]
+    cmp w1, #0
+    b.ne    1f                  // If not equal (i.e., non-zero), branch to 1f
+    /* ------------- might not be needed in arm --------------
+    ldr     x0, [sp, #0x30]     // Load base address of saved state (simulate fxrstor64)
+    bl      fxrestore_arm       // Call equivalent function or macro to restore state
+    b       2f    
+ -----mightnot be needed in arm --------------- */
+1:
+    ldp     q0, q1, [sp]        // re-store entire floating point registers q0 to q31
+    add     sp , sp, #32
+    ldp     q2, q3, [sp]
+    add     sp , sp, #32
+    ldp     q4, q5, [sp]
+    add     sp , sp, #32
+    ldp     q6, q7, [sp]
+    add     sp , sp, #32
+    ldp     q8, q9, [sp]
+    add     sp , sp, #32
+    ldp     q10, q11, [sp]
+    add     sp , sp, #32
+    ldp     q12, q13, [sp]
+    add     sp , sp, #32
+    ldp     q14, q15, [sp]
+    add     sp , sp, #32
+    ldp     q16, q17, [sp]
+    add     sp , sp, #32
+    ldp     q18, q19, [sp]
+    add     sp , sp, #32
+    ldp     q20, q21, [sp]
+    add     sp , sp, #32
+    ldp     q20, q21, [sp]
+    add     sp , sp, #32
+    ldp     q22, q23, [sp]
+    add     sp , sp, #32
+    ldp     q20, q21, [sp]
+    add     sp , sp, #32
+    ldp     q22, q23, [sp]
+    add     sp , sp, #32
+    ldp     q24, q25, [sp]
+    add     sp , sp, #32
+    ldp     q26, q27, [sp]
+    add     sp , sp, #32
+    ldp     q28, q29, [sp]
+    add     sp , sp, #32
+    ldp     q30, q31, [sp]
+    msr     FPCR, x1
+    //msr     FPR, x2       // store floating point registers state. This register might require special privilege
+    add sp, sp, #16
+    ldr x1, [sp]
+ 
+ 
+2:
+    ldr     w1, [sp, #0x24]
+    add     sp, sp, x1        
+    ldr     x0, [sp], #16
+    ldr     x1, [sp], #16
+    ldr     x2, [sp], #16
+    ldr     x3, [sp], #16    
+    ldr     x4, [sp], #16
+    ldr     x5, [sp], #16
+    ldr     x6, [sp], #16
+    ldr     x7, [sp], #16
+    ldr     x8, [sp], #16
+    ldr     x9, [sp], #16
+    ldr     x10, [sp], #16
+    ldr     x11, [sp], #16
+    ldr     x12, [sp], #16
+    ldr     x13, [sp], #16
+    ldr     x14, [sp], #16
+ 
+    ldr     x19, [sp], #16
+    ldr     x20, [sp], #16
+    ldr     x21, [sp], #16
+    ldr     x22, [sp], #16
+    ldr     x23, [sp], #16
+    ldr     x24, [sp], #16
+ 
+    ldr    x0, [sp], #16  // popf
+    msr    nzcv, x0
+1:
+    ldxr  x9, [sp]        // Load from [sp] into x9, mark exclusive
+    stxr  w10, x10, [sp]  // Try to store x10 into [sp]; if fail, w10 = 1
+    cbnz  w10, 1b         // Retry if store failed
+    mov   x10, x9  
+    ret
+    .seh_endproc
 _sigdelayed_end:
 	.global _sigdelayed_end
 
