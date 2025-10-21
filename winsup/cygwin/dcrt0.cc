@@ -964,7 +964,7 @@ dll_crt0_1 (void *)
   /* Disable case-insensitive globbing */
   ignore_case_with_glob = false;
 
-  cygbench (__progname);
+  cygbench (getprogname());
 
   ld_preload ();
   /* Per POSIX set the default application locale back to "C". */
