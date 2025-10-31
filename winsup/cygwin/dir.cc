@@ -380,7 +380,11 @@ mkdir (const char *dir, mode_t mode)
   int res = -1;
   fhandler_base *fh = NULL;
   tmp_pathbuf tp;
-
+  if (dir == NULL || IsBadReadPtr(dir, 1) || !*dir)
+  {
+      set_errno (EFAULT); // INVALID POINTER
+      return -1;
+  }
   __try
     {
       if (!*dir)
@@ -440,6 +444,11 @@ extern "C" int
 rmdir (const char *dir)
 {
   int res = -1;
+  if (dir == NULL || IsBadReadPtr(dir, 1) || !*dir)
+  {
+      set_errno (EFAULT); // INVALID POINTER
+      return -1;
+  }
   fhandler_base *fh = NULL;
   tmp_pathbuf tp;
 
