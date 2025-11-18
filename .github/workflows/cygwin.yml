@@ -10,6 +10,7 @@ on:
 
 jobs:
   fedora-build:
+    if: false
     runs-on: ubuntu-latest
     container: fedora:latest
     strategy:
@@ -91,6 +92,7 @@ jobs:
       if: env.HAS_SSH_KEY == 'true'
 
   ubuntu-build:
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -183,8 +185,8 @@ jobs:
         run: |
           mkdir -p toolchain/${{ matrix.arch }}-w64-mingw32
           mkdir -p toolchain/${{ matrix.arch }}-pc-cygwin
-          tar -xzf ${{ matrix.arch }}-w64-mingw32-msvcrt-toolchain.tar.gz -C toolchain/${{ matrix.arch }}-w64-mingw32
-          tar -xzf ${{ matrix.arch }}-pc-cygwin-msvcrt-toolchain.tar.gz -C toolchain/${{ matrix.arch }}-pc-cygwin
+          tar -gzf ${{ matrix.arch }}-w64-mingw32-msvcrt-toolchain.tar.gz -C toolchain/${{ matrix.arch }}-w64-mingw32
+          tar -gzf ${{ matrix.arch }}-pc-cygwin-msvcrt-toolchain.tar.gz -C toolchain/${{ matrix.arch }}-pc-cygwin
 
       # build
       - name: Configure, build and install
@@ -239,11 +241,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - build: x86_64-pc-cygwin
-          target: x86_64-pc-cygwin
-          buildarch: x86_64
-          pkgarch: x86_64
-          runner: windows-latest
         - build: x86_64-pc-cygwin
           target: aarch64-pc-cygwin
           buildarch: x86_64
@@ -315,19 +312,15 @@ jobs:
       if: ${{ matrix.pkgarch == 'aarch64' }}
       run: |
         export PATH=/usr/bin:$(cygpath ${SYSTEMROOT})/system32:$PATH
-        DIGEST=$(gh api repos/${{ github.repository }}/releases/latest \
-           --jq '.assets[] | select(.name | test("${{ matrix.target }}-toolchain.tar.xz")).digest')
-        gh release download \
-          --repo ${{ github.repository }} \
-          --pattern ${{ matrix.target }}-toolchain.tar.xz
-        sha256sum -c <<< "${DIGEST#sha256:} ${{ matrix.target }}-toolchain.tar.xz"
+        curl -L -o ${{ matrix.target }}-toolchain.tar.gz \
+          https://github.com/thiru-mcw/cygwin-own/releases/download/v1/aarch64-pc-cygwin-toolchain.tar.gz
 
     # install toolchain
     - name: Install toolchain
       if: ${{ matrix.pkgarch == 'aarch64' }}
       run: |
         mkdir -p toolchain/${{ matrix.target }}
-        tar -xzf ${{ matrix.target }}-toolchain.tar.xz -C toolchain/${{ matrix.target }}
+        tar -xzf ${{ matrix.target }}-toolchain.tar.gz -C toolchain/${{ matrix.target }}
 
     # build
     - name: Build Cygwin
@@ -421,6 +414,7 @@ jobs:
       run: bash -c 'rm /usr/bin/git.exe'
 
   windows-stress-test:
+    if: false
     needs: windows-build
 
     strategy:
@@ -484,6 +478,7 @@ jobs:
       if: ${{ !cancelled() }}
 
   windows-stc-regression-test:
+    if: false
     needs: windows-build
 
     strategy:

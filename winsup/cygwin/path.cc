@@ -712,6 +712,11 @@ path_conv::check (const char *src, unsigned opt,
 
       if (!(opt & PC_NULLEMPTY))
 	error = 0;
+	  else if (src == NULL || IsBadReadPtr(src, 1))
+	{
+	  error = EFAULT;   /* invalid pointer */
+	  return;
+	}
       else if (!*src)
 	{
 	  error = ENOENT;
@@ -1727,7 +1732,11 @@ extern "C" int
 symlink (const char *oldpath, const char *newpath)
 {
   path_conv win32_newpath;
-
+  if (oldpath == NULL || newpath == NULL ||
+      IsBadReadPtr(oldpath, 1) || IsBadReadPtr(newpath, 1)){
+		set_errno (EFAULT);
+      	return -1;
+    }
   __try
     {
       if (!*oldpath || !*newpath)
@@ -3824,6 +3833,11 @@ chdir (const char *in_dir)
 
   __try
     {
+	  if (in_dir == NULL || IsBadReadPtr(in_dir, 1))
+	{
+	  set_errno (EFAULT);
+	  __leave;
+	}
       if (!*in_dir)
 	{
 	  set_errno (ENOENT);

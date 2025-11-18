@@ -2090,7 +2090,11 @@ int
 stat_worker (path_conv &pc, struct stat *buf)
 {
   int res = -1;
-
+  if(IsBadWritePtr (buf, sizeof (struct stat)))
+    {
+      set_errno (EFAULT);
+      return -1;
+    }
   __try
     {
       if (pc.error)
@@ -2276,6 +2280,12 @@ rename2 (const char *oldpath, const char *newpath, unsigned int at2flags)
   IO_STATUS_BLOCK io;
   FILE_STANDARD_INFORMATION ofsi;
   PFILE_RENAME_INFORMATION pfri;
+  if (oldpath == NULL || newpath == NULL ||
+    IsBadReadPtr(oldpath, 1) || IsBadReadPtr(newpath, 1))
+  {
+    set_errno(EFAULT);
+    return res;
+  }
 
   __try
     {
