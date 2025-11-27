@@ -10,7 +10,16 @@ details. */
 
 #if defined (__aarch64__)
 #define EXCEPTION_HANDLE_REF "_ZN9exception6handleEP17_EXCEPTION_RECORDPvP8_CONTEXTP25_DISPATCHER_CONTEXT_ARM64"
-#define EXCEPTION_HANDLER_DATA
+#define EXCEPTION_HANDLER_DATA \
+  asm volatile ("\n\
+  1:									\n\
+    .seh_handler "							  \
+      EXCEPTION_HANDLE_REF ",						  \
+      @except								\n\
+    .seh_handlerdata							\n\
+    .long 1								\n\
+    .rva 1b, 2f, 2f, 2f							\n\
+    .text								\n")
 #else
 #define EXCEPTION_HANDLE_REF "_ZN9exception6handleEP17_EXCEPTION_RECORDPvP8_CONTEXTP19_DISPATCHER_CONTEXT"
 #define EXCEPTION_HANDLER_DATA \
