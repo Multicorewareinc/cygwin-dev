@@ -619,9 +619,10 @@ exception::myfault (EXCEPTION_RECORD *e, exception_list *frame, CONTEXT *in,
 		    PDISPATCHER_CONTEXT dispatch)
 {
   PSCOPE_TABLE table = (PSCOPE_TABLE) dispatch->HandlerData;
-  RtlUnwindEx (frame,
-	       (char *) dispatch->ImageBase + table->ScopeRecord[0].JumpTarget,
-	       e, 0, in, dispatch->HistoryTable);
+  (void)table;
+  // RtlUnwindEx (frame,
+	//        (char *) dispatch->ImageBase + table->ScopeRecord[0].JumpTarget,
+	//        e, 0, in, dispatch->HistoryTable);
   /* NOTREACHED, make gcc happy. */
   return ExceptionContinueSearch;
 }
