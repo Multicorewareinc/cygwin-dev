@@ -370,30 +370,101 @@ EOF
 	.seh_proc _sigfe_maybe
 _sigfe_maybe:					# stack is aligned on entry!
 	.seh_endprologue
-0:	ret
+	ldr     x10, [x18, #0x8]               	// Load TEB pointer in x10
+	ldr     x11, =_cygtls.initialized	    // Load relative offset of _cygtls.initialized
+	add     x11, x10, x11                  	// compute absolute address and store in x11
+	cmp     sp, x11				            // Compare current stack pointer with TLS location
+	b.hs    0f                             	// if sp >= tls, skip TLS logic
+	ldr     w12, [x11]                    	// Load the value at _cygtls.initialized (32-bit)
+	movz    w13, #0xc763			        // Prepare magic value(0xc763173f) lower 16 bits
+	movk    w13, #0x173f, lsl #16		    // Add upper 16 bits, full value now in w13
+	cmp     w12, w13			            // Compare loaded value with magic
+	b.ne    0f                              // If not equal, not initialized, skip TLS logic
+	ret
+0:
+	ret
 	.seh_endproc
 
-	.seh_proc _sigfe
-_sigfe:						# stack is aligned on entry!
-	.seh_endprologue
-	ldr x9, [sp], #16
-	br x9
-	.seh_endproc
+    .seh_proc _sigfe
+_sigfe:
+    .seh_endprologue
+    ldr     x10, [x18, #0x8]              // TLS base
+    mov     w9, #1
+0:  ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldaxr   w13, [x12]
+    stlxr   w14, w9, [x12]
+    cbnz    w14, 0b
+    cbz     w13, 1f
+    yield
+    b       0b
+1:
+    ldr     x11, =_cygtls.incyg
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    add     w9, w9, #1
+    str     w9, [x12]
+    mov     x9, #8
+2:  ldr     x11, =_cygtls.stackptr
+    add     x12, x10, x11
+    ldaxr   x13, [x12]
+    add     x14, x13, x9
+    stlxr   w15, x14, [x12]
+    cbnz    w15, 2b
+    str     x30, [x13]                    // save LR
+    adr     x11, _sigbe
+    mov     x30, x11                      // LR = _sigbe
+    ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    stlr    w9, [x12]
+    ldr     x9, [sp], #16                 // pop real func
+    br      x9
+    .seh_endproc
 
-	.global _sigbe
-	.seh_proc _sigbe
-_sigbe:						# return here after cygwin syscall
-						# stack is aligned on entry!
-	.seh_endprologue
-	.seh_endproc
+    .global _sigbe
+    .seh_proc _sigbe
+_sigbe:
+    .seh_endprologue
+    ldr     x10, [x18, #0x8]              // TLS base
+    mov     w9, #1
+3:  ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldaxr   w13, [x12]
+    stlxr   w14, w9, [x12]
+    cbnz    w14, 3b
+    cbz     w13, 4f
+    yield
+    b       3b
+4:
+    mov     x9, #-8
+5:  ldr     x11, =_cygtls.stackptr
+    add     x12, x10, x11
+    ldaxr   x13, [x12]
+    add     x14, x13, x9
+    stlxr   w15, x14, [x12]
+    cbnz    w15, 5b
+    sub     x13, x13, #8                  // addr of saved LR
+    ldr     x30, [x13]                    // restore LR
+    ldr     x11, =_cygtls.incyg
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    str     w9, [x12]
+    ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    stlr    w9, [x12]
+    ret
+    .seh_endproc
 
 	.global	sigdelayed
 	.seh_proc sigdelayed
 sigdelayed:
-	.seh_endprologue
-
-	ret
-	.seh_endproc
+    ret
+    .seh_endproc
 _sigdelayed_end:
 	.global _sigdelayed_end
 
@@ -425,7 +496,7 @@ stabilize_sig_stack:
 	add	w9, w9, #1			// increment incyg counter
 	str	w9, [x12]			// store incremented value back
 
-	// check if there is a current signal to handle 
+	// check if there is a current signal to handle
 	ldr	x11, =_cygtls.current_sig	// load the symbol address/offset
 	ldr	w9, [x10, x11]			// load current value of current_sig
 	cbz	w9, 3f				// if no current signal, jump to cleanup

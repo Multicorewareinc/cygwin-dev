@@ -25,6 +25,10 @@ if TARGET_X86_64
 AM_CCASFLAGS=-D_WIN64
 endif
 
+if TARGET_AARCH64
+AM_CCASFLAGS=-Wa,-march=armv8.1-a
+endif
+
 target_builddir=@target_builddir@
 newlib_build=$(target_builddir)/newlib
 
