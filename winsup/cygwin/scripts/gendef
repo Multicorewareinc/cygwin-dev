@@ -423,7 +423,43 @@ _sigfe:
     br      x9
     .seh_endproc
 
+    .global _sigbe
+    .seh_proc _sigbe
 _sigbe:
+    .seh_endprologue
+    ldr     x10, [x18, #0x8]              // TLS base
+    mov     w9, #1
+3:  ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldaxr   w13, [x12]
+    stlxr   w14, w9, [x12]
+    cbnz    w14, 3b
+    cbz     w13, 4f
+    yield
+    b       3b
+4:
+    mov     x9, #-8
+5:  ldr     x11, =_cygtls.stackptr
+    add     x12, x10, x11
+    ldaxr   x13, [x12]
+    add     x14, x13, x9
+    stlxr   w15, x14, [x12]
+    cbnz    w15, 5b
+    sub     x13, x13, #8                  // addr of saved LR
+    ldr     x30, [x13]                    // restore LR
+    ldr     x11, =_cygtls.incyg
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    str     w9, [x12]
+    ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    stlr    w9, [x12]
+    ret
+    .seh_endproc
+
 	.global	sigdelayed
 sigdelayed:
 _sigdelayed_end:
