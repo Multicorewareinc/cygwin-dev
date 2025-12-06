@@ -468,7 +468,83 @@ sigdelayed:
 	.seh_endproc
 _sigdelayed_end:
 	.global _sigdelayed_end
+	.seh_proc stabilize_sig_stack
 stabilize_sig_stack:
+    // prologue
+    stp     fp, lr, [sp, #-0x10]!        // Save FP and LR registers
+    .seh_save_fplr_x 0x10
+    mov     fp, sp                       // Set frame pointer for unwinder
+    .seh_set_fp
+    .seh_endprologue
+
+    ldr     x10, [x18, #0x8]             // Load TLS block base into x10
+
+    // try to acquire the lock
+    mov     w9, #1                       // Constant value 1 for lock acquisition
+    ldr     x11, =_cygtls.stacklock      // Load offset of stacklock
+    add     x12, x10, x11                // Compute final address of stacklock
+1:
+    ldaxr   w13, [x12]                   // Load current stacklock value atomically
+    stlxr   w14, w9, [x12]               // Attempt to store 1 atomically
+    cbnz    w14, 1b                      // if store failed, retry
+    cbz     w13, 2f                      // if lock was acquired, continue
+    yield
+    b       1b                           // Retry acquiring the lock
+
+2:
+    // lock acquired, increment incyg counter
+    ldr     x11, =_cygtls.incyg          	// Load the symbol offset of incyg
+    add     x12, x10, x11                	// Compute final address of incyg
+    ldr     w9, [x12]                    	// Load current value incyg
+    add     w9, w9, #1                   	// Increment incyg
+    str     w9, [x12]                    	// Store back incremented value
+
+    // check current_sig
+    ldr     x11, =_cygtls.current_sig    	// Load the symbol offset
+    ldr     w9, [x10, x11]               	// Load current value of current_sig
+    cbz     w9, 3f                       	// if no current signal, jump to cleanup
+
+    // release lock before calling signal handler
+    ldr     x11, =_cygtls.stacklock      	// Load the symbol offset
+    add     x12, x10, x11                	// x12 = tls_base + &stacklock
+    ldr     w9, [x12]                    	// Load current value of stacklock
+    sub     w9, w9, #1                   	// Decrement stacklock (releas lock)
+    stlr    w9, [x12]                    	// Store back stacklock value
+
+    // prepare arg and call handler
+    ldr     x0, =_cygtls.start_offset    	// Load the symbol offset
+    add     x0, x10, x0                  	// x0 = tls_base + &start_offset
+    bl      _ZN7_cygtls19call_signal_handlerEv
+
+    // call may clobber x10, restore TLS base
+    ldr     x10, [x18, #0x8]             	// reload tls_base
+
+    // decrement incyg
+    ldr     x11, =_cygtls.incyg			// Load the symbol offset of incyg
+    add     x12, x10, x11			// Compute final address of incyg
+    ldr     w9, [x12]				// Load current value incyg
+    sub     w9, w9, #1				// Decrement incyg
+    str     w9, [x12]				// Store back
+
+    // loop to handle another signal
+    b       1b
+
+3:
+    // no signal to handle, decrement incyg counter
+    ldr     x11, =_cygtls.incyg
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    str     w9, [x12]
+
+    mov     x0, x10                      	// return TLS address in x0 (return register)
+
+    // epilogue
+    .seh_startepilogue
+    ldp     fp, lr, [sp], #0x10
+    .seh_endepilogue
+    ret
+    .seh_endproc
 EOF
 	}
     }
