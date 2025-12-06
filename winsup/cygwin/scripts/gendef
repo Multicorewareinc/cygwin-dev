@@ -385,7 +385,44 @@ _sigfe_maybe:					# stack is aligned on entry!
 	ret
 	.seh_endproc
 
+    .seh_proc _sigfe
 _sigfe:
+    .seh_endprologue
+    ldr     x10, [x18, #0x8]              // TLS base
+    mov     w9, #1
+0:  ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldaxr   w13, [x12]
+    stlxr   w14, w9, [x12]
+    cbnz    w14, 0b
+    cbz     w13, 1f
+    yield
+    b       0b
+1:
+    ldr     x11, =_cygtls.incyg
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    add     w9, w9, #1
+    str     w9, [x12]
+    mov     x9, #8
+2:  ldr     x11, =_cygtls.stackptr
+    add     x12, x10, x11
+    ldaxr   x13, [x12]
+    add     x14, x13, x9
+    stlxr   w15, x14, [x12]
+    cbnz    w15, 2b
+    str     x30, [x13]                    // save LR
+    adr     x11, _sigbe
+    mov     x30, x11                      // LR = _sigbe
+    ldr     x11, =_cygtls.stacklock
+    add     x12, x10, x11
+    ldr     w9, [x12]
+    sub     w9, w9, #1
+    stlr    w9, [x12]
+    ldr     x9, [sp], #16                 // pop real func
+    br      x9
+    .seh_endproc
+
 _sigbe:
 	.global	sigdelayed
 sigdelayed:
