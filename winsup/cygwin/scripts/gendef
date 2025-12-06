@@ -115,7 +115,18 @@ EOF
 	$res = <<EOF;
 	.extern $func
 	.global $fe
+	.seh_proc $fe
 $fe:
+	sub sp, sp, 16
+	.seh_stackalloc 16
+	.seh_endprologue
+	adrp x9, $func
+	add x9, x9, :lo12:$func
+	str x9, [sp, 0]
+	adrp x9, $sigfe_func
+	add x9, x9, :lo12:$sigfe_func
+	br x9
+	.seh_endproc
 EOF
     }
 
