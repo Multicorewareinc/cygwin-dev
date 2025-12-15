@@ -53,12 +53,12 @@ include %D%/complex/Makefile.inc
 include %D%/fenv/Makefile.inc
 include %D%/test/Makefile.inc
 
+if HAVE_FPMATH_H
 if HAVE_LIBM_MACHINE_AARCH64
 include %D%/machine/aarch64/Makefile.inc
-if HAVE_FPMATH_H
 include %D%/ld128/Makefile.inc
-endif # HAVE_FPMATH_H
 endif # HAVE_LIBM_MACHINE_AARCH64
+endif # HAVE_FPMATH_H
 if HAVE_LIBM_MACHINE_AMDGCN
 include %D%/machine/amdgcn/Makefile.inc
 endif
