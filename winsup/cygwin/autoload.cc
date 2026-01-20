@@ -84,8 +84,21 @@ bool NO_COPY wsock_started;
 .endif							\n\
 ");
 #elif defined(__aarch64__)
-  // TODO
-  #define LoadDLLprime(dllname, init_also, no_resolve_on_fork) __asm__ ("");
+#define LoadDLLprime(dllname, init_also, no_resolve_on_fork) __asm__ ( "\n\
+.ifndef " #dllname "_primed                              \n\
+  .section   .data_cygwin_nocopy,\"w\"                   \n\
+  .balign    8                                          \n\
+." #dllname "_info:                                     \n\
+  .xword     _std_dll_init                               \n\
+  .xword     " #no_resolve_on_fork "                     \n\
+  .long      -1                                         \n\
+  .balign    8                                          \n\
+  .xword     " #init_also "                              \n\
+  .string16  \"" #dllname ".dll\"                        \n\
+  .text                                                \n\
+  .set       " #dllname "_primed, 1                      \n\
+.endif                                                  \n\
+");
 #else
 #error unimplemented for this target
 #endif
@@ -128,11 +141,42 @@ _win32_" #name ":					\n\
 ");
 #elif defined(__aarch64__)
 #define LoadDLLfuncEx3(name, dllname, notimp, err, no_resolve_on_fork) \
-  // TODO
-  LoadDLLprime (dllname, dll_func_load, no_resolve_on_fork) __asm__ ("");
+  LoadDLLprime (dllname, dll_func_load, no_resolve_on_fork) \
+  __asm__ ( "\n\
+  .section   ." #dllname "_autoload_text,\"wx\"          \n\
+  .global    " #name "                                   \n\
+  .global    _win32_" #name "                            \n\
+  .p2align   4                                           \n\
+" #name ":                                               \n\
+_win32_" #name ":                                       \n\
+  adr        x16, 3f                                     \n\
+  ldr        x16, [x16]                                  \n\
+  br         x16                                         \n\
+1:                                                      \n\
+  sub        sp, sp, #80                                 \n\
+  stp        x0, x1, [sp, #0]                            \n\
+  stp        x2, x3, [sp, #16]                           \n\
+  stp        x4, x5, [sp, #32]                           \n\
+  stp        x6, x7, [sp, #48]                           \n\
+  stp        x8, x30, [sp, #64]                          \n\
+  adr        x16, 2f                                     \n\
+  ldur       x17, [x16]                                  \n\
+  ldr        x17, [x17]                                  \n\
+  blr        x17                                         \n\
+2:                                                      \n\
+  .xword     ." #dllname "_info                          \n\
+  .hword     " #notimp "                                 \n\
+  .hword     ((" #err ") & 0xffff)                       \n\
+3:                                                      \n\
+  .xword     1b                                          \n\
+  .asciz     \"" #name "\"                               \n\
+  .text                                                \n\
+");
 #else
 #error unimplemented for this target
 #endif
+
+
 
 /* DLL loader helper functions used during initialization. */
 
@@ -211,7 +255,41 @@ dll_chain:								\n\
 	jmp	*%rdx		# Jump to next init function		\n\
 ");
 #elif defined(__aarch64__)
-  // TODO
+__asm__ ( "\n\
+  .section .rdata,\"r\"                                  \n\
+msg1:                                                    \n\
+  .ascii \"couldn't dynamically determine load address for '%s' (handle %p), %E\\0\" \n\
+                                                         \n\
+  .text                                                  \n\
+  .p2align 2                                             \n\
+  .globl     dll_func_load                               \n\
+dll_func_load:                                          \n\
+  ldr        x2, [sp]                                    \n\
+  ldur       x3, [x2]                                    \n\
+  ldr        x0, [x3, #8]                                \n\
+  add        x1, x2, #20                                 \n\
+  bl         GetProcAddress                              \n\
+                                                         \n\
+  ldr        x2, [sp]                                    \n\
+  add        x3, x2, #12                                 \n\
+  str        x0, [x3]                                    \n\
+                                                         \n\
+  sub        x16, x2, #52                                 \n\
+                                                         \n\
+  add        sp, sp, #16                                 \n\
+  ldp        x0, x1, [sp, #0]                            \n\
+  ldp        x2, x3, [sp, #16]                           \n\
+  ldp        x4, x5, [sp, #32]                           \n\
+  ldp        x6, x7, [sp, #48]                           \n\
+  ldp        x8, x30, [sp, #64]                          \n\
+  add        sp, sp, #80                                 \n\
+  br         x16                                       \n\
+                                                         \n\
+  .global    dll_chain                                   \n\
+dll_chain:                                              \n\
+  stp        x0, xzr, [sp, #-16]!                        \n\
+  br         x1                                         \n\
+");
 #else
 #error unimplemented for this target
 #endif
@@ -310,9 +388,22 @@ _" #func ":								\n\
 INIT_WRAPPER (std_dll_init)
 
 #elif defined(__aarch64__)
-
-// TODO
-#define INIT_WRAPPER(func) __asm__ ("");
+#define INIT_WRAPPER(func) __asm__ ( "\n\
+  .text                                                  \n\
+  .p2align 2                                             \n\
+  .seh_proc _" #func "                                   \n\
+_" #func ":                                              \n\
+  stp        x29, x30, [sp, #-16]!                        \n\
+  .seh_save_fplr_x 16                                    \n\
+  .seh_endprologue                                       \n\
+  mov        x0, x30                                     \n\
+  bl         " #func "                                   \n\
+  ldp        x29, xzr, [sp], #16                          \n\
+  adrp       x30, dll_chain                              \n\
+  add        x30, x30, #:lo12:dll_chain                  \n\
+  ret                                                   \n\
+  .seh_endproc                                           \n\
+");
 
 INIT_WRAPPER (std_dll_init)
 
