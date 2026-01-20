@@ -36,20 +36,20 @@ details. */
 
 /* That's where the cygheap is located. CYGHEAP_STORAGE_INITIAL defines the
    end of the initially committed heap area. */
-#define CYGHEAP_STORAGE_LOW		0x800000000UL
-#define CYGHEAP_STORAGE_INITIAL		0x800300000UL
-#define CYGHEAP_STORAGE_HIGH		0xa00000000UL
+#define CYGHEAP_STORAGE_LOW		0x0ff700000000UL
+#define CYGHEAP_STORAGE_INITIAL		0x0ff700300000UL
+#define CYGHEAP_STORAGE_HIGH		0x0ff900000000UL
 
 /* This is where the user heap starts.  There's no defined end address.
    The user heap pontentially grows into the mmap arena.  However,
    the user heap grows upwards and the mmap arena grows downwards,
    so there's not much chance to meet unluckily. */
-#define USERHEAP_START			0xa00000000UL
+#define USERHEAP_START			0x0ff900000000UL
 
 /* The memory region used for memory maps.  Mmaps grow downwards.
    Set the lowest address to leave ~32 Gigs for heap. */
-#define MMAP_STORAGE_LOW		0x001000000000UL
-#define MMAP_STORAGE_HIGH		0x700000000000UL
+#define MMAP_STORAGE_LOW		0x0fff00000000UL
+#define MMAP_STORAGE_HIGH		0x7fef00000000UL
 
 /* Default number of pages used as thread stack guard pages. */
 #define DEFAULT_GUARD_PAGE_COUNT	3
