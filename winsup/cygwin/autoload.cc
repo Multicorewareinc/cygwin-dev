@@ -177,7 +177,6 @@ _win32_" #name ":                                       \n\
 #endif
 
 
-
 /* DLL loader helper functions used during initialization. */
 
 /* The function which finds the address, given the name and overwrites
@@ -262,6 +261,27 @@ msg1:                                                    \n\
                                                          \n\
   .text                                                  \n\
   .p2align 2                                             \n\
+noload:                                                  \n\
+  ldr        x2, [sp]            // func_info*           \n\
+  ldr        w3, [x2, #8]        // decoration           \n\
+  tbz        w3, #0, 1f                                  \n\
+                                                         \n\
+  asr        w4, w3, #16                                 \n\
+  str        w4, [sp, #8]                                \n\
+  mov        w0, #127            // ERROR_PROC_NOT_FOUND \n\
+  bl         SetLastError                                \n\
+  ldr        w0, [sp, #8]                                \n\
+  ldr        x30, [sp, #88]                              \n\
+  add        sp, sp, #96                                 \n\
+  ret                                                   \n\
+1:                                                      \n\
+  add        x1, x2, #20                                 \n\
+  ldur       x3, [x2]                                    \n\
+  ldr        x2, [x3, #8]                                \n\
+  adrp       x0, msg1                                   \n\
+  add        x0, x0, #:lo12:msg1                         \n\
+  bl         api_fatal                                  \n\
+                                                         \n\
   .globl     dll_func_load                               \n\
 dll_func_load:                                          \n\
   ldr        x2, [sp]                                    \n\
@@ -269,6 +289,7 @@ dll_func_load:                                          \n\
   ldr        x0, [x3, #8]                                \n\
   add        x1, x2, #20                                 \n\
   bl         GetProcAddress                              \n\
+  cbz        x0, noload                                  \n\
                                                          \n\
   ldr        x2, [sp]                                    \n\
   add        x3, x2, #12                                 \n\
@@ -283,7 +304,7 @@ dll_func_load:                                          \n\
   ldp        x6, x7, [sp, #48]                           \n\
   ldp        x8, x30, [sp, #64]                          \n\
   add        sp, sp, #80                                 \n\
-  br         x16                                       \n\
+  br         x16                                         \n\
                                                          \n\
   .global    dll_chain                                   \n\
 dll_chain:                                              \n\
@@ -293,6 +314,7 @@ dll_chain:                                              \n\
 #else
 #error unimplemented for this target
 #endif
+
 
 /* C representations of the two info blocks described above.
    FIXME: These structures confuse gdb for some reason.  GDB can print
