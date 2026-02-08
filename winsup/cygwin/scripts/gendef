@@ -33,6 +33,23 @@ while (<>) {
 }
 my @in = cleanup <>;
 
+# Derive arch-specific cygwin.din relative to the common cygwin.din path
+my $arch_din = $ARGV[0];
+$arch_din =~ s/cygwin\.din$//;
+$arch_din .= "$cpu/cygwin.din";
+
+if (-f $arch_din) {
+    open(ARCH_DIN, '<', $arch_din) or die "Cannot open $arch_din: $!\n";
+    my $in_exports = 0;
+    while (<ARCH_DIN>) {
+        $in_exports = 1 if /^\s*exports$/oi;
+        next unless $in_exports;
+        next if /^\s*exports$/oi;
+        push(@in, cleanup $_);
+    }
+    close(ARCH_DIN);
+}
+
 my %sigfe = ();
 my @data = ();
 my @nosigfuncs = ();

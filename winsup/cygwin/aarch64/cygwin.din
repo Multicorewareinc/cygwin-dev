@@ -1,0 +1,4 @@
+# aarch64-specific exports
+# These symbols are only available on aarch64 architecture
+
+# Currently empty - all exports are in common cygwin.din
