@@ -1,2 +1,4 @@
 # x86_64-specific exports
 # These symbols are only available on x86/x64 architectures
+
+_alloca = __alloca NOSIGFE
