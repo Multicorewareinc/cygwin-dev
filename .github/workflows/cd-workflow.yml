@@ -101,6 +101,8 @@ jobs:
         else
           export PATH=/usr/bin:$(cygpath ${SYSTEMROOT})/system32
         fi
+        set -Eeuo pipefail
+        trap 'echo "::error::Build failed at line $LINENO"' ERR
         echo PATH=$PATH
         export DESTDIR=$(realpath $(pwd)/install)
         mkdir build install
