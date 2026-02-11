@@ -48,14 +48,19 @@ static char opts[] = "+cdehlstvV";
 typedef DWORD64 CONTEXT_REG;
 #define CONTEXT_REG_FMT "%016llx"
 #define ADDR_SSCANF_FMT "%lli"
+
 #elif defined(__aarch64__)
-// TODO
 #define KERNEL_ADDR 0x00007FF000000000
 #define CONTEXT_SP Sp
 #define CONTEXT_IP Pc
+#define CONTEXT_LR Lr
 typedef DWORD64 CONTEXT_REG;
 #define CONTEXT_REG_FMT "%016llx"
 #define ADDR_SSCANF_FMT "%lli"
+
+/* ARM64 PSTATE.SS bit (bit 21) for software single-step */
+#define ARM64_PSR_SS 0x00200000
+
 #else
 #error unimplemented for this target
 #endif
@@ -214,7 +219,10 @@ set_step_threads (int threadId, int trace)
       else
 	context.EFlags &= ~0x100; /* TRAP (single step) flag */
 #elif defined(__aarch64__)
-	// TODO
+  if (trace)
+    context.Cpsr |= ARM64_PSR_SS;
+  else
+    context.Cpsr &= ~ARM64_PSR_SS;
 #else
 #error unimplemented for this target
 #endif
@@ -232,8 +240,7 @@ set_steps ()
 #if defined(__i386__) || defined(__x86_64__)
       s = context.EFlags & 0x0100;
 #elif defined(__aarch64__)
-      // TODO
-      s = 0;
+  s = context.Cpsr & ARM64_PSR_SS;
 #else
 #error unimplemented for this target
 #endif
@@ -279,7 +286,10 @@ dump_registers (HANDLE thread)
   printf ("esi %016llx edi %016llx ebp %016llx esp %016llx %016llx\n",
 	  context.Rsi, context.Rdi, context.Rbp, context.Rsp, context.Rip);
 #elif defined(__aarch64__)
-  // TODO
+  printf("x0  %016llx x1  %016llx x2  %016llx x3  %016llx\n",
+         context.X0, context.X1, context.X2, context.X3);
+  printf("sp  %016llx pc  %016llx cpsr %08x\n",
+         context.Sp, context.Pc, (unsigned int)context.Cpsr);
 #else
 #error unimplemented for this target
 #endif
@@ -572,7 +582,11 @@ run_program (char *cmdline)
 		      SetThreadContext (hThread, &context);
 		    }
 #elif defined(__aarch64__)
-		  // TODO
+		  if (context.Cpsr & ARM64_PSR_SS)
+		    {
+		      context.Cpsr &= ~ARM64_PSR_SS;
+		      SetThreadContext (hThread, &context);
+		    }
 #else
 #error unimplemented for this target
 #endif
@@ -586,7 +600,11 @@ run_program (char *cmdline)
 		      SetThreadContext (hThread, &context);
 		    }
 #elif defined(__aarch64__)
-		  // TODO
+		  if (!(context.Cpsr & ARM64_PSR_SS))
+		    {
+		      context.Cpsr |= ARM64_PSR_SS;
+		      SetThreadContext (hThread, &context);
+		    }
 #else
 #error unimplemented for this target
 #endif
