@@ -60,9 +60,21 @@ typedef DWORD64 CONTEXT_REG;
 
 /* ARM64 PSTATE.SS bit (bit 21) for software single-step */
 #define ARM64_PSR_SS 0x00200000
-
 #else
 #error unimplemented for this target
+#endif
+
+/* Software breakpoint instruction encoding differs by architecture.
+   - x86/x86_64 uses 1-byte INT3 (0xCC)
+   - AArch64 uses 4-byte BRK #0xF000 (0xD43E0000), which matches MSVC's
+     __debugbreak recommendation on Windows/ARM64. */
+#if defined(__aarch64__)
+# define SW_BREAKPOINT_SIZE 4
+# define AARCH64_BRK_INSN 0xD43E0000u
+#elif defined(__i386__) || defined(__x86_64__)
+# define SW_BREAKPOINT_SIZE 1
+#else
+# error unimplemented for this target
 #endif
 
 #define TRACE_SSP 0
@@ -98,7 +110,7 @@ typedef struct {
 
 typedef struct {
   CONTEXT_REG address;
-  unsigned char real_byte;
+  unsigned char real_bytes[SW_BREAKPOINT_SIZE];
 } PendingBreakpoints;
 
 CONTEXT_REG low_pc, high_pc=0;
@@ -141,47 +153,80 @@ static void
 add_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T rv;
-  static char int3[] = { 0xcc };
-  for (i=0; i<num_breakpoints; i++)
+  SIZE_T nread = 0, nwritten = 0;
+
+#if defined(__aarch64__)
+  /* 4-byte BRK #0xF000 */
+  static const DWORD trap_insn = AARCH64_BRK_INSN;
+#elif defined(__i386__) || defined(__x86_64__)
+  /* 1-byte INT3 */
+  static const unsigned char trap_insn = 0xCC;
+#endif
+
+  for (i = 0; i < num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
-	return;
+        return;
       if (pending_breakpoints[i].address == 0)
-	break;
+        break;
     }
+
   if (i == MAXPENDS)
     return;
-  pending_breakpoints[i].address = address;
-  ReadProcessMemory (hProcess,
-		     (void *)address,
-		     &(pending_breakpoints[i].real_byte),
-		     1, &rv);
 
-  WriteProcessMemory (hProcess,
-		      (void *)address,
-		      (LPVOID)int3, 1, &rv);
+  pending_breakpoints[i].address = address;
+
+  /* Save original instruction bytes */
+  if (!ReadProcessMemory (hProcess,
+                          (void *)address,
+                          pending_breakpoints[i].real_bytes,
+                          SW_BREAKPOINT_SIZE,
+                          &nread)
+      || nread != SW_BREAKPOINT_SIZE)
+    {
+      pending_breakpoints[i].address = 0;
+      return;
+    }
+
+  /* Write architecture-specific breakpoint */
+  if (!WriteProcessMemory (hProcess,
+                           (void *)address,
+                           &trap_insn,
+                           SW_BREAKPOINT_SIZE,
+                           &nwritten)
+      || nwritten != SW_BREAKPOINT_SIZE)
+    {
+      pending_breakpoints[i].address = 0;
+      return;
+    }
+
   if (i >= num_breakpoints)
-    num_breakpoints = i+1;
+    num_breakpoints = i + 1;
 }
 
 static int
 remove_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T rv;
-  for (i=0; i<num_breakpoints; i++)
+  SIZE_T nwritten = 0;
+
+  for (i = 0; i < num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
-	{
-	  pending_breakpoints[i].address = 0;
-	  WriteProcessMemory (hProcess,
-			      (void *)address,
-			      &(pending_breakpoints[i].real_byte),
-			      1, &rv);
-	  return 1;
-	}
+        {
+          pending_breakpoints[i].address = 0;
+
+          /* Restore original instruction bytes */
+          WriteProcessMemory (hProcess,
+                              (void *)address,
+                              pending_breakpoints[i].real_bytes,
+                              SW_BREAKPOINT_SIZE,
+                              &nwritten);
+
+          return 1;
+        }
     }
+
   return 0;
 }
 
