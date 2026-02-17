@@ -48,7 +48,6 @@ static char opts[] = "+cdehlstvV";
 typedef DWORD64 CONTEXT_REG;
 #define CONTEXT_REG_FMT "%016llx"
 #define ADDR_SSCANF_FMT "%lli"
-
 #elif defined(__aarch64__)
 #define KERNEL_ADDR 0x00007FF000000000
 #define CONTEXT_SP Sp
@@ -57,8 +56,8 @@ typedef DWORD64 CONTEXT_REG;
 typedef DWORD64 CONTEXT_REG;
 #define CONTEXT_REG_FMT "%016llx"
 #define ADDR_SSCANF_FMT "%lli"
-
-/* ARM64 PSTATE.SS bit (bit 21) for software single-step */
+/* PSTATE.SS (Software Step) lives in bit[21].  Setting it requests a
+   single-step debug exception after the next instruction.  */
 #define ARM64_PSR_SS 0x00200000
 #else
 #error unimplemented for this target
@@ -148,85 +147,92 @@ int num_dlls=0;
 #define MAXPENDS 100
 PendingBreakpoints pending_breakpoints[MAXPENDS];
 int num_breakpoints=0;
+static int
+patch_code_bytes (CONTEXT_REG address, const void *bytes, SIZE_T len)
+{
+  DWORD old_prot = 0, tmp_prot = 0;
+  SIZE_T written = 0;
+
+  if (!VirtualProtectEx (hProcess, (LPVOID)address, len,
+			 PAGE_EXECUTE_READWRITE, &old_prot))
+    return 0;
+
+  if (!WriteProcessMemory (hProcess, (LPVOID)address,
+			   bytes, len, &written)
+      || written != len)
+    {
+      VirtualProtectEx (hProcess, (LPVOID)address, len, old_prot, &tmp_prot);
+      return 0;
+    }
+
+  FlushInstructionCache (hProcess, (LPCVOID)address, len);
+  VirtualProtectEx (hProcess, (LPVOID)address, len, old_prot, &tmp_prot);
+  return 1;
+}
 
 static void
 add_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T nread = 0, nwritten = 0;
+  SIZE_T nread;
 
 #if defined(__aarch64__)
-  /* 4-byte BRK #0xF000 */
+  /* brk #0xF000 */
   static const DWORD trap_insn = AARCH64_BRK_INSN;
-#elif defined(__i386__) || defined(__x86_64__)
-  /* 1-byte INT3 */
+#else
+  /* int3 */
   static const unsigned char trap_insn = 0xCC;
 #endif
 
-  for (i = 0; i < num_breakpoints; i++)
+  for (i=0; i<num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
-        return;
+	return;
       if (pending_breakpoints[i].address == 0)
-        break;
+	break;
     }
-
   if (i == MAXPENDS)
     return;
 
   pending_breakpoints[i].address = address;
 
-  /* Save original instruction bytes */
+  nread = 0;
   if (!ReadProcessMemory (hProcess,
-                          (void *)address,
-                          pending_breakpoints[i].real_bytes,
-                          SW_BREAKPOINT_SIZE,
-                          &nread)
+			  (void *)address,
+			  pending_breakpoints[i].real_bytes,
+			  SW_BREAKPOINT_SIZE, &nread)
       || nread != SW_BREAKPOINT_SIZE)
     {
       pending_breakpoints[i].address = 0;
       return;
     }
 
-  /* Write architecture-specific breakpoint */
-  if (!WriteProcessMemory (hProcess,
-                           (void *)address,
-                           &trap_insn,
-                           SW_BREAKPOINT_SIZE,
-                           &nwritten)
-      || nwritten != SW_BREAKPOINT_SIZE)
+  if (!patch_code_bytes (address, &trap_insn, SW_BREAKPOINT_SIZE))
     {
       pending_breakpoints[i].address = 0;
       return;
     }
 
   if (i >= num_breakpoints)
-    num_breakpoints = i + 1;
+    num_breakpoints = i+1;
 }
 
 static int
 remove_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T nwritten = 0;
 
-  for (i = 0; i < num_breakpoints; i++)
+  for (i=0; i<num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
-        {
-          pending_breakpoints[i].address = 0;
-
-          /* Restore original instruction bytes */
-          WriteProcessMemory (hProcess,
-                              (void *)address,
-                              pending_breakpoints[i].real_bytes,
-                              SW_BREAKPOINT_SIZE,
-                              &nwritten);
-
-          return 1;
-        }
+	{
+	  pending_breakpoints[i].address = 0;
+	  patch_code_bytes (address,
+			    pending_breakpoints[i].real_bytes,
+			    SW_BREAKPOINT_SIZE);
+	  return 1;
+	}
     }
-
   return 0;
 }
 
@@ -254,38 +260,49 @@ set_step_threads (int threadId, int trace)
   int rv, tix;
   HANDLE thread = lookup_thread_id (threadId, &tix);
 
+  if (!thread)
+    return;
+
+  context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
   rv = GetThreadContext (thread, &context);
-  if (rv != -1)
-    {
-      thread_step_flags[tix] = trace;
+  if (!rv)
+    return;
+
+  thread_step_flags[tix] = trace;
+
 #if defined(__i386__) || defined(__x86_64__)
-      if (trace)
-	context.EFlags |= 0x100; /* TRAP (single step) flag */
-      else
-	context.EFlags &= ~0x100; /* TRAP (single step) flag */
+  if (trace)
+    context.EFlags |= 0x100; /* TRAP (single step) flag */
+  else
+    context.EFlags &= ~0x100; /* TRAP (single step) flag */
 #elif defined(__aarch64__)
   if (trace)
-    context.Cpsr |= ARM64_PSR_SS;
+    context.Cpsr |= ARM64_PSR_SS; /* PSTATE.SS (software step) */
   else
     context.Cpsr &= ~ARM64_PSR_SS;
 #else
 #error unimplemented for this target
 #endif
-      SetThreadContext (thread, &context);
-    }
+
+  SetThreadContext (thread, &context);
 }
 
 static void
 set_steps ()
 {
-  int i, s;
+  int i;
   for (i=0; i<num_active_threads; i++)
     {
-      GetThreadContext (active_threads[i], &context);
+      int s;
+
+      context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
+      if (!GetThreadContext (active_threads[i], &context))
+	continue;
+
 #if defined(__i386__) || defined(__x86_64__)
       s = context.EFlags & 0x0100;
 #elif defined(__aarch64__)
-  s = context.Cpsr & ARM64_PSR_SS;
+      s = context.Cpsr & ARM64_PSR_SS;
 #else
 #error unimplemented for this target
 #endif
@@ -331,10 +348,24 @@ dump_registers (HANDLE thread)
   printf ("esi %016llx edi %016llx ebp %016llx esp %016llx %016llx\n",
 	  context.Rsi, context.Rdi, context.Rbp, context.Rsp, context.Rip);
 #elif defined(__aarch64__)
-  printf("x0  %016llx x1  %016llx x2  %016llx x3  %016llx\n",
-         context.X0, context.X1, context.X2, context.X3);
-  printf("sp  %016llx pc  %016llx cpsr %08x\n",
-         context.Sp, context.Pc, (unsigned int)context.Cpsr);
+  printf ("x0  %016llx x1  %016llx x2  %016llx x3  %016llx\n",
+	  context.X0, context.X1, context.X2, context.X3);
+  printf ("x4  %016llx x5  %016llx x6  %016llx x7  %016llx\n",
+	  context.X4, context.X5, context.X6, context.X7);
+  printf ("x8  %016llx x9  %016llx x10 %016llx x11 %016llx\n",
+	  context.X8, context.X9, context.X10, context.X11);
+  printf ("x12 %016llx x13 %016llx x14 %016llx x15 %016llx\n",
+	  context.X12, context.X13, context.X14, context.X15);
+  printf ("x16 %016llx x17 %016llx x18 %016llx x19 %016llx\n",
+	  context.X16, context.X17, context.X18, context.X19);
+  printf ("x20 %016llx x21 %016llx x22 %016llx x23 %016llx\n",
+	  context.X20, context.X21, context.X22, context.X23);
+  printf ("x24 %016llx x25 %016llx x26 %016llx x27 %016llx\n",
+	  context.X24, context.X25, context.X26, context.X27);
+  printf ("x28 %016llx fp  %016llx lr  %016llx\n",
+	  context.X28, context.Fp, context.Lr);
+  printf ("sp  %016llx pc  %016llx cpsr %08x\n",
+	  context.Sp, context.Pc, (unsigned int)context.Cpsr);
 #else
 #error unimplemented for this target
 #endif
