@@ -22,7 +22,11 @@
 #include <windows.h>
 #include <getopt.h>
 #include <cygwin/version.h>
-
+#if defined(__aarch64__)
+#define PC_STRIDE 4
+#else
+#define PC_STRIDE 2
+#endif
 static char *prog_name;
 
 static struct option longopts[] =
@@ -147,6 +151,7 @@ int num_dlls=0;
 #define MAXPENDS 100
 PendingBreakpoints pending_breakpoints[MAXPENDS];
 int num_breakpoints=0;
+
 static int
 patch_code_bytes (CONTEXT_REG address, const void *bytes, SIZE_T len)
 {
@@ -327,13 +332,11 @@ static char *
 addr2dllname (CONTEXT_REG addr)
 {
   int i;
-  for (i=num_dlls-1; i>=0; i--)
-    {
-      if (dll_info[i].base_address < addr)
-	{
-	  return dll_info[i].name;
-	}
-    }
+  if (num_dlls == 0)
+    return (char *)"";
+  for (i = num_dlls - 1; i >= 0; i--)
+    if (dll_info[i].base_address < addr && dll_info[i].name)
+      return dll_info[i].name;
   return (char *)"";
 }
 
@@ -553,17 +556,30 @@ run_program (char *cmdline)
 	  break;
 
 	case EXCEPTION_DEBUG_EVENT:
+	  context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
 	  rv = GetThreadContext (hThread, &context);
 	  switch (event.u.Exception.ExceptionRecord.ExceptionCode)
 	    {
 	    case STATUS_BREAKPOINT:
 	      if (remove_breakpoint ((CONTEXT_REG)event.u.Exception.ExceptionRecord.ExceptionAddress))
 		{
-		  context.CONTEXT_IP --;
-		  if (!rv)
+		  /* Rewind IP/PC to the breakpoint instruction (x86 INT3 reports RIP+1). */
+		  context.CONTEXT_IP = (CONTEXT_REG)event.u.Exception.ExceptionRecord.ExceptionAddress;
+		  if (rv)
 		    SetThreadContext (hThread, &context);
-		  if (ReadProcessMemory (hProcess, (void *)context.CONTEXT_SP, &rv, sizeof(rv), &rv))
-		      thread_return_address[tix] = rv;
+#if defined(__aarch64__)
+		  thread_return_address[tix] = (CONTEXT_REG)context.CONTEXT_LR;
+#else
+		  {
+		    CONTEXT_REG retaddr = 0;
+		    SIZE_T nread = 0;
+		    if (ReadProcessMemory (hProcess,
+					   (void *)context.CONTEXT_SP,
+					   &retaddr, sizeof (retaddr), &nread)
+			&& nread == sizeof (retaddr))
+		      thread_return_address[tix] = retaddr;
+		  }
+#endif
 		}
 	      set_step_threads (event.dwThreadId, stepping_enabled);
 	      /*FALLTHRU*/
@@ -595,6 +611,39 @@ run_program (char *cmdline)
 		    }
 		}
 
+#if defined(__aarch64__)
+	      {
+		static int ncalls=0;
+		static int qq=0;
+		DWORD insn = 0;
+		SIZE_T nread = 0;
+
+		/* AArch64 calls don't push a return address on the stack.
+		   Detect calls by decoding the previously executed instruction:
+		     - BL  imm26:  (insn & 0xFC000000) == 0x94000000
+		     - BLR Xn   :  (insn & 0xFFFFFC1F) == 0xD63F0000  */
+		if (last_pc
+		    && ReadProcessMemory (hProcess, (void *)last_pc,
+					  &insn, sizeof (insn), &nread)
+		    && nread == sizeof (insn))
+		  {
+		    if ((insn & 0xFC000000) == 0x94000000
+			|| (insn & 0xFFFFFC1F) == 0xD63F0000)
+		      {
+			ncalls++;
+			store_call_edge (last_pc, pc);
+		      }
+		  }
+
+		/* Keep the original progress printing behavior. */
+		if (pc < last_pc || pc > last_pc+10)
+		  {
+		    if (++qq % 100 == 0)
+		      fprintf (stderr, " " CONTEXT_REG_FMT " %d %d \r",
+			       pc, ncalls, opcode_count);
+		  }
+	      }
+#else
 	      if (pc < last_pc || pc > last_pc+10)
 		{
 		  static int ncalls=0;
@@ -625,12 +674,13 @@ run_program (char *cmdline)
 			}
 		    }
 		}
+#endif
 
 	      total_cycles++;
 	      last_sp = sp;
 	      last_pc = pc;
 	      if (pc >= low_pc && pc < high_pc)
-		hits[(pc - low_pc)/2] ++;
+		hits[(pc - low_pc)/PC_STRIDE] ++;
 	      break;
 	    default:
 	      if (verbose)
@@ -647,7 +697,7 @@ run_program (char *cmdline)
 	      break;
 	    }
 
-	  if (!rv)
+	  if (rv)
 	    {
 	      if (pc == thread_return_address[tix])
 		{
@@ -784,9 +834,9 @@ run_program (char *cmdline)
     }
 
   count = 0;
-  for (pc=low_pc; pc<high_pc; pc+=2)
+  for (pc=low_pc; pc<high_pc; pc+=PC_STRIDE)
     {
-      count += hits[(pc - low_pc)/2];
+      count += hits[(pc - low_pc)/PC_STRIDE];
     }
   printf ("total cycles: %d, counted cycles: %d\n", total_cycles, count);
 
@@ -1037,13 +1087,13 @@ main (int argc, char **argv)
       exit (1);
     }
 
-  hits = (HISTCOUNTER *)malloc (range+4);
+  hits = (HISTCOUNTER *)malloc((range / PC_STRIDE) * sizeof(HISTCOUNTER) + 4);
   if (!hits)
     {
       fprintf (stderr, "Ouch, malloc failed\n");
       exit (1);
     }
-  memset (hits, 0, range+4);
+  memset(hits, 0, (range / PC_STRIDE) * sizeof(HISTCOUNTER) + 4);
 
   fprintf (stderr, "prun: [" CONTEXT_REG_FMT "," CONTEXT_REG_FMT "] Running '%s'\n",
 	  low_pc, high_pc, argv[optind]);
@@ -1052,13 +1102,13 @@ main (int argc, char **argv)
 
   hdr.lpc = low_pc;
   hdr.hpc = high_pc;
-  hdr.ncnt = range + sizeof (hdr);
+  hdr.ncnt = (range / PC_STRIDE) * sizeof(HISTCOUNTER) + sizeof(hdr);
   hdr.version = GMONVERSION;
   hdr.profrate = 100;
 
   gmon = fopen ("gmon.out", "wb");
   fwrite (&hdr, 1, sizeof (hdr), gmon);
-  fwrite (hits, 1, range, gmon);
+  fwrite(hits, 1, (range / PC_STRIDE) * sizeof(HISTCOUNTER), gmon);
   write_call_edges (gmon);
   fclose (gmon);
 
