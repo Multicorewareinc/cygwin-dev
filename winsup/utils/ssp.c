@@ -22,11 +22,7 @@
 #include <windows.h>
 #include <getopt.h>
 #include <cygwin/version.h>
-#if defined(__aarch64__)
-#define PC_STRIDE 4
-#else
-#define PC_STRIDE 2
-#endif
+
 static char *prog_name;
 
 static struct option longopts[] =
@@ -332,11 +328,13 @@ static char *
 addr2dllname (CONTEXT_REG addr)
 {
   int i;
-  if (num_dlls == 0)
-    return (char *)"";
-  for (i = num_dlls - 1; i >= 0; i--)
-    if (dll_info[i].base_address < addr && dll_info[i].name)
-      return dll_info[i].name;
+  for (i=num_dlls-1; i>=0; i--)
+    {
+      if (dll_info[i].base_address < addr)
+	{
+	  return dll_info[i].name;
+	}
+    }
   return (char *)"";
 }
 
@@ -680,7 +678,7 @@ run_program (char *cmdline)
 	      last_sp = sp;
 	      last_pc = pc;
 	      if (pc >= low_pc && pc < high_pc)
-		hits[(pc - low_pc)/PC_STRIDE] ++;
+		hits[(pc - low_pc)/2] ++;
 	      break;
 	    default:
 	      if (verbose)
@@ -834,9 +832,9 @@ run_program (char *cmdline)
     }
 
   count = 0;
-  for (pc=low_pc; pc<high_pc; pc+=PC_STRIDE)
+  for (pc=low_pc; pc<high_pc; pc+=2)
     {
-      count += hits[(pc - low_pc)/PC_STRIDE];
+      count += hits[(pc - low_pc)/2];
     }
   printf ("total cycles: %d, counted cycles: %d\n", total_cycles, count);
 
@@ -1087,13 +1085,13 @@ main (int argc, char **argv)
       exit (1);
     }
 
-  hits = (HISTCOUNTER *)malloc((range / PC_STRIDE) * sizeof(HISTCOUNTER) + 4);
+  hits = (HISTCOUNTER *)malloc (range+4);
   if (!hits)
     {
       fprintf (stderr, "Ouch, malloc failed\n");
       exit (1);
     }
-  memset(hits, 0, (range / PC_STRIDE) * sizeof(HISTCOUNTER) + 4);
+  memset (hits, 0, range+4);
 
   fprintf (stderr, "prun: [" CONTEXT_REG_FMT "," CONTEXT_REG_FMT "] Running '%s'\n",
 	  low_pc, high_pc, argv[optind]);
@@ -1102,13 +1100,13 @@ main (int argc, char **argv)
 
   hdr.lpc = low_pc;
   hdr.hpc = high_pc;
-  hdr.ncnt = (range / PC_STRIDE) * sizeof(HISTCOUNTER) + sizeof(hdr);
+  hdr.ncnt = range + sizeof (hdr);
   hdr.version = GMONVERSION;
   hdr.profrate = 100;
 
   gmon = fopen ("gmon.out", "wb");
   fwrite (&hdr, 1, sizeof (hdr), gmon);
-  fwrite(hits, 1, (range / PC_STRIDE) * sizeof(HISTCOUNTER), gmon);
+  fwrite (hits, 1, range, gmon);
   write_call_edges (gmon);
   fclose (gmon);
 
