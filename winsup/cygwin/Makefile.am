@@ -563,6 +563,10 @@ proc_CFLAGS=-DUSERNAME="\"$(USER)\"" -DHOSTNAME="\"$(HOSTNAME)\"" \
 
 dtable_CFLAGS=-fcheck-new
 
+if TARGET_AARCH64
+exceptions_CFLAGS = -mnop-fun-dllimport
+endif
+
 #
 # libraries and installed objects
 #
@@ -639,7 +643,7 @@ $(NEW_DLL_NAME): $(LDSCRIPT) libdll.a $(VERSION_OFILES) $(LIBSERVER)\
 	$(LIBSERVER) \
 	$(newlib_build)/libm.a \
 	$(newlib_build)/libc.a \
-	-lgcc -lpdh -lntdll -lonecore -Wl,-Map,cygwin.map
+	-lgcc -lkernel32 -lntdll -Wl,-Map,cygwin.map
 	@$(MKDIR_P) ${target_builddir}/winsup/testsuite/testinst/bin/
 	$(AM_V_at)$(INSTALL_PROGRAM) $(NEW_DLL_NAME) ${target_builddir}/winsup/testsuite/testinst/bin/$(DLL_NAME)
 
