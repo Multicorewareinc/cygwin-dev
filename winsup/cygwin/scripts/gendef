@@ -866,7 +866,68 @@ sigsetjmp:
 	.seh_endproc
 
 	.globl  setjmp
+	.seh_proc setjmp
 setjmp:
+	// prologue
+	stp	fp, lr, [sp, #-0x10]!		// save FP and LR registers
+	.seh_save_fplr_x 0x10
+	mov	fp, sp				// set frame pointer for unwinder
+	.seh_set_fp
+	.seh_endprologue
+
+	// save callee-saved registers from jump buffer
+	stp	x19, x20, [x0, #0x08]		// save x19, x20
+	stp	x21, x22, [x0, #0x18]		// save x21, x22
+	stp	x23, x24, [x0, #0x28]		// save x23, x24
+	stp	x25, x26, [x0, #0x38]		// save x25, x26
+	stp	x27, x28, [x0, #0x48]		// save x27, x28
+	stp	x29, x30, [x0, #0x58]		// save x29 (FP) and x30 (LR)
+
+	add	x1, sp, #0x10			// get the old stack pointer
+	str	x1, [x0, #0x68]			// save SP
+
+	mrs	x1, fpcr			// get fp control register
+	str	x1, [x0, #0x70]			// save FPCR
+	mrs	x1, fpsr			// get fp status register
+	str	x1, [x0, #0x78]			// save FPSR
+
+	// save fp registers (d8-d15)
+	stp	d8,  d9,  [x0, #0x80]		// save d8, d9
+	stp	d10, d11, [x0, #0x90]		// save d10, d11
+	stp	d12, d13, [x0, #0xA0]		// save d12, d13
+	stp	d14, d15, [x0, #0xB0]		// save d14, d15
+
+	// save TLS stack pointer
+	ldr	x1, [sp, #0x10]			// get the TLS stack pointer
+	str	x1, [x0, #0xB8]			// save TLS stack pointer
+
+	str	x0, [sp, #-0x10]!		// save jmp_buf before call
+	bl	stabilize_sig_stack		// call stabilize_sig_stack (returns TLS in x10)
+	ldr	x0, [sp], #0x10			// restore jmp_buf after call
+
+	// store the stack pointer to jump_buf
+	ldr	x2, =_cygtls.stackptr		// load the symbol offset
+	add	x2, x10, x2			// x2 = tls_base + &stackptr
+	ldr	x3, [x2]			// load current value of stackptr
+	str	x3, [x0]			// store stackptr into jmp_buf
+
+	// decrement the stack lock
+	ldr	x2, =_cygtls.stacklock		// load the symbol offset
+	add	x2, x10, x2			// x2 = tls_base + &stacklock
+	ldr	w3, [x2]			// load current stacklock value
+	sub	w3, w3, #1			// decrement
+	str	w3, [x2]			// store back
+
+	mov	w0, wzr				// return 0
+
+	// epilogue
+	.seh_startepilogue
+	ldp	fp, lr, [sp], #0x10		// restore saved FP and LR registers
+	.seh_save_fplr_x 0x10
+	.seh_endepilogue
+	ret
+	.seh_endproc
+
 	.globl	siglongjmp
 	.seh_proc siglongjmp
 siglongjmp:
