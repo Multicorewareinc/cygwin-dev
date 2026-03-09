@@ -82,7 +82,7 @@ jobs:
       run: |
         export PATH=/usr/bin:$(cygpath ${SYSTEMROOT})/system32:$PATH
         curl -L -o ${{ matrix.target }}-toolchain.tar.gz \
-          https://github.com/thiru-mcw/cygwin-own/releases/download/v2/aarch64-pc-cygwin-toolchain.tar.gz
+          https://github.com/thiru-mcw/cygwin-own/releases/download/v3/aarch64-pc-cygwin-toolchain.tar.gz
 
     # install toolchain
     - name: Install toolchain
