@@ -82,7 +82,7 @@ jobs:
       run: |
         export PATH=/usr/bin:$(cygpath ${SYSTEMROOT})/system32:$PATH
         curl -L -o ${{ matrix.target }}-toolchain.tar.gz \
-          https://github.com/thiru-mcw/cygwin-own/releases/download/v2/aarch64-pc-cygwin-toolchain.tar.gz
+          https://github.com/thiru-mcw/cygwin-own/releases/download/v3/aarch64-pc-cygwin-toolchain.tar.gz
 
     # install toolchain
     - name: Install toolchain
@@ -106,7 +106,7 @@ jobs:
         mkdir build install
         (cd winsup; ./autogen.sh)
         cd build
-        ../configure --prefix=/usr --build=${{ matrix.build }} --target=${{ matrix.target }} -v
+        ../configure --prefix=/usr --build=${{ matrix.build }} --target=${{ matrix.target }} --disable-dumper -v
         export MAKEFLAGS=-j$(nproc)
         make
         export CYGWIN=winsymlinks:sys
