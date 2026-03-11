@@ -106,7 +106,7 @@ jobs:
         mkdir build install
         (cd winsup; ./autogen.sh)
         cd build
-        ../configure --prefix=/usr --build=${{ matrix.build }} --target=${{ matrix.target }} -v
+        ../configure --prefix=/usr --build=${{ matrix.build }} --target=${{ matrix.target }} --disable-dumper -v
         export MAKEFLAGS=-j$(nproc)
         make
         export CYGWIN=winsymlinks:sys
