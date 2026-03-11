@@ -41,15 +41,39 @@ static struct option longopts[] =
 
 static char opts[] = "+cdehlstvV";
 
-#ifdef __x86_64__
+#if defined(__x86_64__)
 #define KERNEL_ADDR 0x00007FF000000000
 #define CONTEXT_SP Rsp
 #define CONTEXT_IP Rip
 typedef DWORD64 CONTEXT_REG;
 #define CONTEXT_REG_FMT "%016llx"
 #define ADDR_SSCANF_FMT "%lli"
+#elif defined(__aarch64__)
+#define KERNEL_ADDR 0x00007FF000000000
+#define CONTEXT_SP Sp
+#define CONTEXT_IP Pc
+#define CONTEXT_LR Lr
+typedef DWORD64 CONTEXT_REG;
+#define CONTEXT_REG_FMT "%016llx"
+#define ADDR_SSCANF_FMT "%lli"
+/* PSTATE.SS (Software Step) lives in bit[21].  Setting it requests a
+   single-step debug exception after the next instruction.  */
+#define ARM64_PSR_SS 0x00200000
 #else
 #error unimplemented for this target
+#endif
+
+/* Software breakpoint instruction encoding differs by architecture.
+   - x86/x86_64 uses 1-byte INT3 (0xCC)
+   - AArch64 uses 4-byte BRK #0xF000 (0xD43E0000), which matches MSVC's
+     __debugbreak recommendation on Windows/ARM64. */
+#if defined(__aarch64__)
+# define SW_BREAKPOINT_SIZE 4
+# define AARCH64_BRK_INSN 0xD43E0000u
+#elif defined(__i386__) || defined(__x86_64__)
+# define SW_BREAKPOINT_SIZE 1
+#else
+# error unimplemented for this target
 #endif
 
 #define TRACE_SSP 0
@@ -85,7 +109,7 @@ typedef struct {
 
 typedef struct {
   CONTEXT_REG address;
-  unsigned char real_byte;
+  unsigned char real_bytes[SW_BREAKPOINT_SIZE];
 } PendingBreakpoints;
 
 CONTEXT_REG low_pc, high_pc=0;
@@ -124,12 +148,43 @@ int num_dlls=0;
 PendingBreakpoints pending_breakpoints[MAXPENDS];
 int num_breakpoints=0;
 
+static int
+patch_code_bytes (CONTEXT_REG address, const void *bytes, SIZE_T len)
+{
+  DWORD old_prot = 0, tmp_prot = 0;
+  SIZE_T written = 0;
+
+  if (!VirtualProtectEx (hProcess, (LPVOID)address, len,
+			 PAGE_EXECUTE_READWRITE, &old_prot))
+    return 0;
+
+  if (!WriteProcessMemory (hProcess, (LPVOID)address,
+			   bytes, len, &written)
+      || written != len)
+    {
+      VirtualProtectEx (hProcess, (LPVOID)address, len, old_prot, &tmp_prot);
+      return 0;
+    }
+
+  FlushInstructionCache (hProcess, (LPCVOID)address, len);
+  VirtualProtectEx (hProcess, (LPVOID)address, len, old_prot, &tmp_prot);
+  return 1;
+}
+
 static void
 add_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T rv;
-  static char int3[] = { 0xcc };
+  SIZE_T nread;
+
+#if defined(__aarch64__)
+  /* brk #0xF000 */
+  static const DWORD trap_insn = AARCH64_BRK_INSN;
+#else
+  /* int3 */
+  static const unsigned char trap_insn = 0xCC;
+#endif
+
   for (i=0; i<num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
@@ -139,15 +194,26 @@ add_breakpoint (CONTEXT_REG address)
     }
   if (i == MAXPENDS)
     return;
-  pending_breakpoints[i].address = address;
-  ReadProcessMemory (hProcess,
-		     (void *)address,
-		     &(pending_breakpoints[i].real_byte),
-		     1, &rv);
 
-  WriteProcessMemory (hProcess,
-		      (void *)address,
-		      (LPVOID)int3, 1, &rv);
+  pending_breakpoints[i].address = address;
+
+  nread = 0;
+  if (!ReadProcessMemory (hProcess,
+			  (void *)address,
+			  pending_breakpoints[i].real_bytes,
+			  SW_BREAKPOINT_SIZE, &nread)
+      || nread != SW_BREAKPOINT_SIZE)
+    {
+      pending_breakpoints[i].address = 0;
+      return;
+    }
+
+  if (!patch_code_bytes (address, &trap_insn, SW_BREAKPOINT_SIZE))
+    {
+      pending_breakpoints[i].address = 0;
+      return;
+    }
+
   if (i >= num_breakpoints)
     num_breakpoints = i+1;
 }
@@ -156,16 +222,15 @@ static int
 remove_breakpoint (CONTEXT_REG address)
 {
   int i;
-  SIZE_T rv;
+
   for (i=0; i<num_breakpoints; i++)
     {
       if (pending_breakpoints[i].address == address)
 	{
 	  pending_breakpoints[i].address = 0;
-	  WriteProcessMemory (hProcess,
-			      (void *)address,
-			      &(pending_breakpoints[i].real_byte),
-			      1, &rv);
+	  patch_code_bytes (address,
+			    pending_breakpoints[i].real_bytes,
+			    SW_BREAKPOINT_SIZE);
 	  return 1;
 	}
     }
@@ -196,26 +261,52 @@ set_step_threads (int threadId, int trace)
   int rv, tix;
   HANDLE thread = lookup_thread_id (threadId, &tix);
 
+  if (!thread)
+    return;
+
+  context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
   rv = GetThreadContext (thread, &context);
-  if (rv != -1)
-    {
-      thread_step_flags[tix] = trace;
-      if (trace)
-	context.EFlags |= 0x100; /* TRAP (single step) flag */
-      else
-	context.EFlags &= ~0x100; /* TRAP (single step) flag */
-      SetThreadContext (thread, &context);
-    }
+  if (!rv)
+    return;
+
+  thread_step_flags[tix] = trace;
+
+#if defined(__i386__) || defined(__x86_64__)
+  if (trace)
+    context.EFlags |= 0x100; /* TRAP (single step) flag */
+  else
+    context.EFlags &= ~0x100; /* TRAP (single step) flag */
+#elif defined(__aarch64__)
+  if (trace)
+    context.Cpsr |= ARM64_PSR_SS; /* PSTATE.SS (software step) */
+  else
+    context.Cpsr &= ~ARM64_PSR_SS;
+#else
+#error unimplemented for this target
+#endif
+
+  SetThreadContext (thread, &context);
 }
 
 static void
 set_steps ()
 {
-  int i, s;
+  int i;
   for (i=0; i<num_active_threads; i++)
     {
-      GetThreadContext (active_threads[i], &context);
+      int s;
+
+      context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
+      if (!GetThreadContext (active_threads[i], &context))
+	continue;
+
+#if defined(__i386__) || defined(__x86_64__)
       s = context.EFlags & 0x0100;
+#elif defined(__aarch64__)
+      s = context.Cpsr & ARM64_PSR_SS;
+#else
+#error unimplemented for this target
+#endif
       if (!s && thread_step_flags[i])
 	{
 	  set_step_threads (active_thread_ids[i], 1);
@@ -252,11 +343,30 @@ dump_registers (HANDLE thread)
 {
   context.ContextFlags = CONTEXT_FULL;
   GetThreadContext (thread, &context);
-#ifdef __x86_64__
+#if defined(__x86_64__)
   printf ("eax %016llx ebx %016llx ecx %016llx edx %016llx eip\n",
 	  context.Rax, context.Rbx, context.Rcx, context.Rdx);
   printf ("esi %016llx edi %016llx ebp %016llx esp %016llx %016llx\n",
 	  context.Rsi, context.Rdi, context.Rbp, context.Rsp, context.Rip);
+#elif defined(__aarch64__)
+  printf ("x0  %016llx x1  %016llx x2  %016llx x3  %016llx\n",
+	  context.X0, context.X1, context.X2, context.X3);
+  printf ("x4  %016llx x5  %016llx x6  %016llx x7  %016llx\n",
+	  context.X4, context.X5, context.X6, context.X7);
+  printf ("x8  %016llx x9  %016llx x10 %016llx x11 %016llx\n",
+	  context.X8, context.X9, context.X10, context.X11);
+  printf ("x12 %016llx x13 %016llx x14 %016llx x15 %016llx\n",
+	  context.X12, context.X13, context.X14, context.X15);
+  printf ("x16 %016llx x17 %016llx x18 %016llx x19 %016llx\n",
+	  context.X16, context.X17, context.X18, context.X19);
+  printf ("x20 %016llx x21 %016llx x22 %016llx x23 %016llx\n",
+	  context.X20, context.X21, context.X22, context.X23);
+  printf ("x24 %016llx x25 %016llx x26 %016llx x27 %016llx\n",
+	  context.X24, context.X25, context.X26, context.X27);
+  printf ("x28 %016llx fp  %016llx lr  %016llx\n",
+	  context.X28, context.Fp, context.Lr);
+  printf ("sp  %016llx pc  %016llx cpsr %08x\n",
+	  context.Sp, context.Pc, (unsigned int)context.Cpsr);
 #else
 #error unimplemented for this target
 #endif
@@ -444,17 +554,30 @@ run_program (char *cmdline)
 	  break;
 
 	case EXCEPTION_DEBUG_EVENT:
+	  context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
 	  rv = GetThreadContext (hThread, &context);
 	  switch (event.u.Exception.ExceptionRecord.ExceptionCode)
 	    {
 	    case STATUS_BREAKPOINT:
 	      if (remove_breakpoint ((CONTEXT_REG)event.u.Exception.ExceptionRecord.ExceptionAddress))
 		{
-		  context.CONTEXT_IP --;
-		  if (!rv)
+		  /* Rewind IP/PC to the breakpoint instruction (x86 INT3 reports RIP+1). */
+		  context.CONTEXT_IP = (CONTEXT_REG)event.u.Exception.ExceptionRecord.ExceptionAddress;
+		  if (rv)
 		    SetThreadContext (hThread, &context);
-		  if (ReadProcessMemory (hProcess, (void *)context.CONTEXT_SP, &rv, sizeof(rv), &rv))
-		      thread_return_address[tix] = rv;
+#if defined(__aarch64__)
+		  thread_return_address[tix] = (CONTEXT_REG)context.CONTEXT_LR;
+#else
+		  {
+		    CONTEXT_REG retaddr = 0;
+		    SIZE_T nread = 0;
+		    if (ReadProcessMemory (hProcess,
+					   (void *)context.CONTEXT_SP,
+					   &retaddr, sizeof (retaddr), &nread)
+			&& nread == sizeof (retaddr))
+		      thread_return_address[tix] = retaddr;
+		  }
+#endif
 		}
 	      set_step_threads (event.dwThreadId, stepping_enabled);
 	      /*FALLTHRU*/
@@ -486,6 +609,39 @@ run_program (char *cmdline)
 		    }
 		}
 
+#if defined(__aarch64__)
+	      {
+		static int ncalls=0;
+		static int qq=0;
+		DWORD insn = 0;
+		SIZE_T nread = 0;
+
+		/* AArch64 calls don't push a return address on the stack.
+		   Detect calls by decoding the previously executed instruction:
+		     - BL  imm26:  (insn & 0xFC000000) == 0x94000000
+		     - BLR Xn   :  (insn & 0xFFFFFC1F) == 0xD63F0000  */
+		if (last_pc
+		    && ReadProcessMemory (hProcess, (void *)last_pc,
+					  &insn, sizeof (insn), &nread)
+		    && nread == sizeof (insn))
+		  {
+		    if ((insn & 0xFC000000) == 0x94000000
+			|| (insn & 0xFFFFFC1F) == 0xD63F0000)
+		      {
+			ncalls++;
+			store_call_edge (last_pc, pc);
+		      }
+		  }
+
+		/* Keep the original progress printing behavior. */
+		if (pc < last_pc || pc > last_pc+10)
+		  {
+		    if (++qq % 100 == 0)
+		      fprintf (stderr, " " CONTEXT_REG_FMT " %d %d \r",
+			       pc, ncalls, opcode_count);
+		  }
+	      }
+#else
 	      if (pc < last_pc || pc > last_pc+10)
 		{
 		  static int ncalls=0;
@@ -516,6 +672,7 @@ run_program (char *cmdline)
 			}
 		    }
 		}
+#endif
 
 	      total_cycles++;
 	      last_sp = sp;
@@ -538,23 +695,43 @@ run_program (char *cmdline)
 	      break;
 	    }
 
-	  if (!rv)
+	  if (rv)
 	    {
 	      if (pc == thread_return_address[tix])
 		{
+#if defined(__i386__) || defined(__x86_64__)
 		  if (context.EFlags & 0x100)
 		    {
 		      context.EFlags &= ~0x100; /* TRAP (single step) flag */
 		      SetThreadContext (hThread, &context);
 		    }
+#elif defined(__aarch64__)
+		  if (context.Cpsr & ARM64_PSR_SS)
+		    {
+		      context.Cpsr &= ~ARM64_PSR_SS;
+		      SetThreadContext (hThread, &context);
+		    }
+#else
+#error unimplemented for this target
+#endif
 		}
 	      else if (stepping_enabled)
 		{
+#if defined(__i386__) || defined(__x86_64__)
 		  if (!(context.EFlags & 0x100))
 		    {
 		      context.EFlags |= 0x100; /* TRAP (single step) flag */
 		      SetThreadContext (hThread, &context);
 		    }
+#elif defined(__aarch64__)
+		  if (!(context.Cpsr & ARM64_PSR_SS))
+		    {
+		      context.Cpsr |= ARM64_PSR_SS;
+		      SetThreadContext (hThread, &context);
+		    }
+#else
+#error unimplemented for this target
+#endif
 		}
 	    }
 	  break;
@@ -935,7 +1112,7 @@ main (int argc, char **argv)
 
   if (dll_counts)
     {
-#ifdef __x86_64__
+#if defined(__x86_64__) || defined(__aarch64__)
       /*       1234567 123% 1234567 123% 1234567812345678 xxxxxxxxxxx */
       printf (" Main-Thread Other-Thread BaseAddr         DLL Name\n");
 #else
