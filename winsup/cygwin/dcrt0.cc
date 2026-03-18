@@ -767,7 +767,7 @@ dll_crt0_0 ()
     sigproc_init ();
 
   /* See comment preceeding myfault_altstack_handler in exception.cc. */
-  AddVectoredContinueHandler (0, myfault_altstack_handler);
+//   AddVectoredContinueHandler (0, myfault_altstack_handler);
 
   debug_printf ("finished dll_crt0_0 initialization");
 }
