@@ -329,7 +329,7 @@ public:
 #if defined(__x86_64__)
     __asm__ volatile ("movq %%rsp,%0": "=o" (frame));
 #elif defined(__aarch64__)
-    __asm__ volatile ("mov %0, sp" : "=r" (frame));
+    __asm__ volatile ("mov %0, x29" : "=r" (frame));
 #else
 #error unimplemented for this target
 #endif
