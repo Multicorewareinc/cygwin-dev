@@ -19,15 +19,16 @@
 #define XPD_LONG
 #endif
 
-#if UNK
+typedef union uD { unsigned short sh[4]; double d; } uD;
+
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+typedef union uLD { long double ld; unsigned long long u; } uLD;
+#elif UNK
 typedef union uLD { long double ld; unsigned short sh[8]; long lo[4]; } uLD;
-typedef union uD { double d; unsigned short sh[4]; } uD;
 #elif IBMPC
 typedef union uLD { unsigned short sh[8]; long double ld; long lo[4]; } uLD;
-typedef union uD { unsigned short sh[4]; double d; } uD;
 #elif MIEEE
 typedef union uLD { long lo[4]; long double ld; unsigned short sh[8]; } uLD;
-typedef union uD { unsigned short sh[4]; double d; } uD;
 #else
 #error Unknown uLD/uD type definition
 #endif
@@ -66,7 +67,7 @@ extern double __QNAN;
 #endif
 
 /*long double*/
-#if defined(__arm__) || defined(_ARM_) || defined(__aarch64__)
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
 #define MAXNUML	1.7976931348623158E308
 #define MAXLOGL	7.09782712893383996843E2
 #define MINLOGL	-7.08396418532264106224E2
@@ -84,7 +85,7 @@ extern double __QNAN;
 #define PIL	3.1415926535897932384626L
 #define PIO2L	1.5707963267948966192313L
 #define PIO4L	7.8539816339744830961566E-1L
-#endif /* defined(__arm__) || defined(_ARM_)  || defined(__aarch64__) */
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 
 #define isfinitel isfinite
 #define isinfl isinf
@@ -281,6 +282,19 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
 /* Polynomial evaluator:
  *  P[0] x^n  +  P[1] x^(n-1)  +  ...  +  P[n]
  */
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+
+static __inline__ long double polevll(long double x, const long double *p, int n)
+{
+    long double y = *p++;
+    do {
+        y = y * x + *p++;
+    } while (--n);
+    return y;
+}
+
+#else 
+
 static __inline__ long double polevll(long double x, const uLD *p, int n)
 {
 	register long double y;
@@ -295,12 +309,28 @@ static __inline__ long double polevll(long double x, const uLD *p, int n)
 	while (--n);
 	return y;
 }
-
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 
 
 /* Polynomial evaluator:
  *  x^n  +  P[0] x^(n-1)  +  P[1] x^(n-2)  +  ...  +  P[n]
  */
+
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+
+static __inline__ long double p1evll(long double x, const long double *p, int n)
+{
+    long double y;
+    n -= 1;
+    y = x + *p++;
+    do {
+        y = y * x + *p++;
+    } while (--n);
+    return y;
+}
+
+#else
+
 static __inline__ long double p1evll(long double x, const uLD *p, int n)
 {
 	register long double y;
@@ -317,6 +347,7 @@ static __inline__ long double p1evll(long double x, const uLD *p, int n)
 	while (--n);
 	return (y);
 }
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 
 /* Float version */
 

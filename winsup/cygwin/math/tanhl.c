@@ -8,6 +8,22 @@
 #define _SET_ERRNO(x)
 #endif
 
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+
+static const long double P[] = {
+    -6.8473739392677100872869E-5L,
+    -9.5658283111794641589011E-1L,
+    -8.4053568599672284488465E1L,
+    -1.3080425704712825945553E3L,
+};
+static const long double Q[] = {
+     9.6259501838840336946872E1L,
+     1.8218117903645559060232E3L,
+     3.9241277114138477845780E3L,
+};
+
+#else
+
 #ifdef UNK
 static uLD P[] = {
   { { -6.8473739392677100872869E-5L } },
@@ -49,6 +65,7 @@ static uLD Q[] = {
   { { 0x400a0000,0xf5420b1b,0x1f9cd5a2, 0 } }
 };
 #endif
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */ 
 
 long double tanhl(long double x)
 {

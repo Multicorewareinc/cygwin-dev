@@ -5,10 +5,17 @@
  */
 #include <math.h>
 
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+static const long double CBRT2  = 1.2599210498948732;  
+static const long double CBRT4  = 1.5874010519681995;
+static const long double CBRT2I = 0.79370052598409974;
+static const long double CBRT4I = 0.62996052494743658;
+#else
 static const long double CBRT2  = 1.2599210498948731647672L;
 static const long double CBRT4  = 1.5874010519681994747517L;
 static const long double CBRT2I = 0.79370052598409973737585L;
 static const long double CBRT4I = 0.62996052494743658238361L;
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 
 long double cbrtl(long double x)
 {

@@ -111,7 +111,66 @@ long double erfl(long double x);
 /* erfc(x) = exp(-x^2) P(1/x)/Q(1/x)
    1/8 <= 1/x <= 1
    Peak relative error 5.8e-21  */
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
 
+static const long double P[10] = {
+     2.46196981473530512524E-10L,
+     5.64189564831068821977E-1L,
+     7.46321056442269912687E0L,
+     4.86371970985681366614E1L,
+     1.96520832956077098242E2L,
+     5.26445194995477358631E2L,
+     9.34528527171957607540E2L,
+     1.02755188689515710272E3L,
+     5.57535335369399327526E2L,
+    -1.37149477526550683E-19L,
+};
+static const long double Q[10] = {
+     1.32281951154744992508E1L,
+     8.67072140885989742329E1L,
+     3.54937778887819891062E2L,
+     9.75708501743205489753E2L,
+     1.82390916687909736289E3L,
+     2.24633760818710981792E3L,
+     1.65666309194161350182E3L,
+     5.57535340817727401220E2L,
+     2.96224740187720961093E1L,
+     1.99999999999999999984E0L,
+};
+
+static const long double R[5] = {
+    -2.99610707703542174363E-3L,
+    -4.94730910623250359793E-2L,
+    -2.26956593539700352819E-1L,
+    -2.78661308609647788149E-1L,
+    -2.23192459734184686777E-2L,
+};
+static const long double S[5] = {
+     3.36907645100081462098E-2L,
+     5.21357949780152679795E-1L,
+     4.59432382970980127987E0L,
+     2.26290000613890934246E1L,
+     4.94730910623250359793E1L,
+};
+
+static const long double T[7] = {
+    -9.86494403484714822405E-3L,
+    -6.93858572707181764372E-1L,
+    -1.47077505154951170175E1L,
+    -1.47349087823801212252E2L,
+    -7.06940843604200325038E2L,
+    -1.41208095994526232726E3L,
+    -9.90191814623914047114E2L,
+};
+static const long double U[5] = {
+     3.04705539729868241662E1L,
+     3.28067571055789233683E2L,
+     1.76522992117648709687E3L,
+     5.11697656894622468066E3L,
+     6.10441338137856904749E3L,
+};
+
+#else
 static const uLD P[10] = {
   { { 0x4bf0,0x9ad8,0x7a03,0x86c7,0x401d, 0, 0, 0 } },
   { { 0xdf23,0xd843,0x4032,0x8881,0x401e, 0, 0, 0 } },
@@ -179,6 +238,7 @@ static const uLD U[] = {
   { { 0x71a7,0x1cad,0x012e,0xeef3,0x4012, 0, 0, 0 } }
 };
 
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 /*							expx2l.c
  *
  *	Exponential of squared argument
@@ -210,8 +270,13 @@ static const uLD U[] = {
  *
  */
 
-#define M 32768.0L
-#define MINV 3.0517578125e-5L
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+#define M     1024.0L
+#define MINV  9.765625e-4L
+#else
+#define M     32768.0L
+#define MINV  3.0517578125e-5L
+#endif
 
 static long double expx2l (long double x)
 {
@@ -268,7 +333,11 @@ under:
 	if (x < 8.0L)
 	{
 		p = polevll(y, P, 9);
-		q = p1evll(y, Q, 10);
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+    	q = polevll(y, Q, 9);
+#else
+    	q = p1evll(y, Q, 10);   
+#endif
 	}
 	else
 	{
@@ -301,6 +370,10 @@ long double erfl(long double x)
 		return (1.0L - erfcl(x));
 
 	z = x * x;
-	y = x * polevll(z, T, 6) / p1evll(z, U, 6);
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+    y = x * polevll(z, T, 6) / p1evll(z, U, 5);  
+#else
+    y = x * polevll(z, T, 6) / p1evll(z, U, 6);
+#endif
 	return (y);
 }

@@ -6,6 +6,24 @@
 #include "cephes_mconf.h"
 #include <errno.h>
 
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+
+static const long double P[] = {
+    1.7550769032975377032681E-6L,
+    4.1680702175874268714539E-4L,
+    3.0993532520425419002409E-2L,
+    9.9999999999999999998002E-1L,
+};
+static const long double Q[] = {
+    1.7453965448620151484660E-8L,
+   -5.9116673682651952419571E-6L,
+    1.0599252315677389339530E-3L,
+   -1.1403880487744749056675E-1L,
+    6.0000000000000000000200E0L,
+};
+
+#else
+
 #ifdef UNK
 static uLD P[] = {
   { { 1.7550769032975377032681E-6L } },
@@ -53,6 +71,7 @@ static uLD Q[] = {
   { { 0x40010000,0xc0000000,0x00000000, 0 } }
 };
 #endif
+#endif /* __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__ */
 
 long double sinhl(long double x)
 {

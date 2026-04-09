@@ -45,8 +45,10 @@
 #include "complex_internal.h"
 #include <errno.h>
 
+#if defined(__x86_64__) || defined(__i386__)
 static long double c0 = 1.44268798828125L; // INV_LN2
 static long double c1 = 7.05260771340735992468e-6L;
+#endif
 
 static long double
 __expl_internal (long double x)
@@ -103,8 +105,7 @@ __expl_internal (long double x)
        "fstp	%%st(1)\n\t"    /* 0  */
        : "=t" (res) : "0" (x), "m" (c0), "m" (c1) : "ax", "dx");
 #elif defined(__aarch64__)
-  // TODO
-  res = 0.0 * c0 * c1;
+  res = expl(x);
 #endif
   return res;
 }

@@ -23,7 +23,11 @@ Direct inquiries to 30 Frost Street, Cambridge, MA 02140
    by scalbnl to avoid duplicated range checks.
 */
 
+#if __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+#define PRECL 27
+#else
 #define PRECL 32
+#endif
 
 long double
 hypotl (long double x, long double y)
