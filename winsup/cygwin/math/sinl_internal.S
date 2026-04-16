@@ -55,8 +55,9 @@ __MINGW_USYMBOL(__sinl_internal):
 	fstp	%st(1)
 	fsin
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	sin
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

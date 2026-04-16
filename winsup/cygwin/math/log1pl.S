@@ -47,7 +47,7 @@ __MINGW_USYMBOL(log1pl):
 	fnstsw
 	fld	%st
 	sahf
-	jc	3f		// in case x is NaN or ±Inf
+	jc	3f		// in case x is NaN or Â±Inf
 4:
 	fabs
 	fldt	limit(%rip)
@@ -68,7 +68,7 @@ __MINGW_USYMBOL(log1pl):
 	fstpt	(%rcx)
 	ret
 
-3:	jp	4b		// in case x is ±Inf
+3:	jp	4b		// in case x is Â±Inf
 	fstp	%st(1)
 	fstp	%st(1)
 	movq	%rcx,%rax
@@ -82,7 +82,7 @@ __MINGW_USYMBOL(log1pl):
 	fnstsw
 	fld	%st
 	sahf
-	jc	3f		// in case x is NaN or ±Inf
+	jc	3f		// in case x is NaN or Â±Inf
 4:
 	fabs
 	fldt	limit
@@ -97,12 +97,13 @@ __MINGW_USYMBOL(log1pl):
 2:	fyl2xp1
 	ret
 
-3:	jp	4b		// in case x is ±Inf
+3:	jp	4b		// in case x is Â±Inf
 	fstp	%st(1)
 	fstp	%st(1)
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	log1p
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

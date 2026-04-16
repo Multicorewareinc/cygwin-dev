@@ -28,7 +28,7 @@ __MINGW_USYMBOL(log2l):
 	fnstsw
 	fld	%st		// x : x : 1
 	sahf
-	jc	3f		// in case x is NaN or ±Inf
+	jc	3f		// in case x is NaN or Â±Inf
 4:	fsub	%st(2), %st	// x-1 : x : 1
 	fld	%st		// x-1 : x-1 : x : 1
 	fabs			// |x-1| : x-1 : x : 1
@@ -50,7 +50,7 @@ __MINGW_USYMBOL(log2l):
 	fstpt	(%rcx)
 	ret
 
-3:	jp	4b		// in case x is ±Inf
+3:	jp	4b		// in case x is Â±Inf
 	fstp	%st(1)
 	fstp	%st(1)
 	movq	%rcx,%rax
@@ -64,7 +64,7 @@ __MINGW_USYMBOL(log2l):
 	fnstsw
 	fld	%st		// x : x : 1
 	sahf
-	jc	3f		// in case x is NaN or ±Inf
+	jc	3f		// in case x is NaN or Â±Inf
 4:	fsub	%st(2), %st	// x-1 : x : 1
 	fld	%st		// x-1 : x-1 : x : 1
 	fabs			// |x-1| : x-1 : x : 1
@@ -80,12 +80,13 @@ __MINGW_USYMBOL(log2l):
 	fyl2x			// log(x)
 	ret
 
-3:	jp	4b		// in case x is ±Inf
+3:	jp	4b		// in case x is Â±Inf
 	fstp	%st(1)
 	fstp	%st(1)
 	ret
-#elif (__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	log2
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

@@ -28,9 +28,8 @@ static __inline__ long double __fast_sqrtl (long double x)
   long double res;
 #if defined(__x86_64__)
   asm __volatile__ ("fsqrt" : "=t" (res) : "0" (x));
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = sqrt((double)x);
 #endif
   return res;
 }
@@ -52,9 +51,8 @@ static __inline__ double __fast_log (double x)
       "fxch\n\t"
       "fyl2x"
        : "=t" (res) : "0" (x) : "st(1)");
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = log(x);
 #endif
    return res;
 }
@@ -68,9 +66,8 @@ static __inline__ long double __fast_logl (long double x)
      "fxch\n\t"
      "fyl2x"
       : "=t" (res) : "0" (x) : "st(1)");
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = log((double)x);
 #endif
    return res;
 }
@@ -115,9 +112,8 @@ static __inline__ long double __fast_log1pl (long double x)
        "fxch\n\t"
        "fyl2xp1"
        : "=t" (res) : "0" (x) : "st(1)");
-#elif defined(__aarch64__)
-    // TODO
-    res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = log1p((double)x);
 #endif
    }
    return res;
