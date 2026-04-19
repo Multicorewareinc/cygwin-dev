@@ -1,7 +1,7 @@
 name: cygwin-self-hosted
 
 on:
- push:
+ pull_request:
 
 jobs:
   windows-build:
