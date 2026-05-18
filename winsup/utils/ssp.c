@@ -41,7 +41,7 @@ static struct option longopts[] =
 
 static char opts[] = "+cdehlstvV";
 
-#if defined(__x86_64__)
+#ifdef __x86_64__
 #define KERNEL_ADDR 0x00007FF000000000
 #define CONTEXT_SP Rsp
 #define CONTEXT_IP Rip
@@ -237,14 +237,14 @@ set_step_threads (int threadId, int trace)
       thread_step_flags[tix] = trace;
 #if defined(__i386__) || defined(__x86_64__)
       if (trace)
-	context.EFlags |= 0x100; /* TRAP (single step) flag */
+	  context.EFlags |= 0x100; /* TRAP (single step) flag */
       else
-	context.EFlags &= ~0x100; /* TRAP (single step) flag */
+	  context.EFlags &= ~0x100; /* TRAP (single step) flag */
 #elif defined(__aarch64__)
       if (trace)
-	context.Cpsr |= 0x00200000; /* PSTATE.SS (single step) flag */
+	  context.Cpsr |= 0x00200000; /* PSTATE.SS (single step) flag */
       else
-	context.Cpsr &= ~0x00200000; /* PSTATE.SS (single step) flag */
+	  context.Cpsr &= ~0x00200000; /* PSTATE.SS (single step) flag */
 #else
 #error unimplemented for this target
 #endif
@@ -302,17 +302,17 @@ dump_registers (HANDLE thread)
 {
   context.ContextFlags = CONTEXT_FULL;
   GetThreadContext (thread, &context);
-#if defined(__x86_64__)
+#ifdef __x86_64__
   printf ("eax %016llx ebx %016llx ecx %016llx edx %016llx eip\n",
 	  context.Rax, context.Rbx, context.Rcx, context.Rdx);
   printf ("esi %016llx edi %016llx ebp %016llx esp %016llx %016llx\n",
 	  context.Rsi, context.Rdi, context.Rbp, context.Rsp, context.Rip);
 #elif defined(__aarch64__)
-  printf (" x0 %016llx  x1 %016llx  x2 %016llx  x3 %016llx\n",
+  printf ("x0 %016llx x1 %016llx x2 %016llx x3 %016llx\n",
 	  context.X[0], context.X[1], context.X[2], context.X[3]);
-  printf (" x4 %016llx  x5 %016llx  x6 %016llx  x7 %016llx\n",
+  printf ("x4 %016llx x5 %016llx x6 %016llx x7 %016llx\n",
 	  context.X[4], context.X[5], context.X[6], context.X[7]);
-  printf (" x8 %016llx  x9 %016llx x10 %016llx x11 %016llx\n",
+  printf ("x8 %016llx x9 %016llx x10 %016llx x11 %016llx\n",
 	  context.X[8], context.X[9], context.X[10], context.X[11]);
   printf ("x12 %016llx x13 %016llx x14 %016llx x15 %016llx\n",
 	  context.X[12], context.X[13], context.X[14], context.X[15]);
@@ -322,9 +322,9 @@ dump_registers (HANDLE thread)
 	  context.X[20], context.X[21], context.X[22], context.X[23]);
   printf ("x24 %016llx x25 %016llx x26 %016llx x27 %016llx\n",
 	  context.X[24], context.X[25], context.X[26], context.X[27]);
-  printf ("x28 %016llx  fp %016llx  lr %016llx\n",
+  printf ("x28 %016llx fp %016llx lr %016llx\n",
 	  context.X[28], context.Fp, context.Lr);
-  printf (" sp %016llx  pc %016llx cpsr %08x\n",
+  printf ("sp %016llx pc %016llx cpsr %08x\n",
 	  context.Sp, context.Pc, context.Cpsr);
 #else
 #error unimplemented for this target
@@ -520,10 +520,8 @@ run_program (char *cmdline)
 	      if (remove_breakpoint ((CONTEXT_REG)event.u.Exception.ExceptionRecord.ExceptionAddress))
 		{
 #if defined(__aarch64__)
-		  /* On ARM64, PC points at the BRK instruction; no adjustment needed. */
 		  if (!rv)
 		    SetThreadContext (hThread, &context);
-		  /* Return address is in LR (X30), not on the stack. */
 		  thread_return_address[tix] = context.Lr;
 #else
 		  context.CONTEXT_IP --;
@@ -570,52 +568,45 @@ run_program (char *cmdline)
 		{
 		  static int ncalls=0;
 		  static int qq=0;
-		  int is_call;
 		  if (++qq % 100 == 0)
 		    fprintf (stderr, " " CONTEXT_REG_FMT " %d %d \r",
 			    pc, ncalls, opcode_count);
 #if defined(__aarch64__)
-		  is_call = (lr != last_lr && lr == last_pc + 4);
+		  if (lr != last_lr && lr == last_pc + 4)
 #else
-		  is_call = (sp == last_sp-sizeof(CONTEXT_REG));
+		  if (sp == last_sp-sizeof(CONTEXT_REG))
 #endif
-		  if (is_call)
 		    {
-		      		      ncalls++;
+		      ncalls++;
 		      store_call_edge (last_pc, pc);
-		    }
-		  if (last_pc && last_pc < KERNEL_ADDR && pc > KERNEL_ADDR)
-		    {
+		      if (last_pc < KERNEL_ADDR && pc > KERNEL_ADDR)
+			      {
 #if defined(__aarch64__)
-		      /* On ARM64, the return address for a BL/BLR is in
-			 LR.  For a tail-call (B/BR) it isn't, but LR will
-			 still hold the return address of whatever frame
-			 made the original call into our code, so it's the
-			 correct place to break to resume stepping.  Place
-			 a breakpoint there and stop single-stepping until
-			 we return from the kernel/DLL call. */
-		      CONTEXT_REG retaddr = lr;
-		  if (verbose)
+			  CONTEXT_REG retaddr = lr;
+			  if (verbose)
 			  printf ("skip kernel call: " CONTEXT_REG_FMT " -> " CONTEXT_REG_FMT ", ret = " CONTEXT_REG_FMT "\n",
 				        last_pc, pc, retaddr);
-		  if (retaddr && retaddr < KERNEL_ADDR)
-			{
+			  if (retaddr && retaddr < KERNEL_ADDR)
+			    {
+			      add_breakpoint (retaddr);
+			      set_step_threads (event.dwThreadId, 0);
+			    }
+#else
+#if 0
+			  CONTEXT_REG retaddr;
+			  SIZE_T rv;
+			  ReadProcessMemory (hProcess,
+					    (void *)sp,
+					    (LPVOID)&(retaddr),
+					     sizeof(retaddr), &rv);
+			  printf ("call last_pc = " CONTEXT_REG_FMT " pc = " CONTEXT_REG_FMT " rv = " CONTEXT_REG_FMT "\n",
+				 last_pc, pc, retaddr);
+			  /* experimental - try to skip kernel calls for speed */
 			  add_breakpoint (retaddr);
 			  set_step_threads (event.dwThreadId, 0);
-			}
-#else
-		  CONTEXT_REG retaddr;
-		  SIZE_T bytes_read;
-		  ReadProcessMemory (hProcess,
-					               (void *)sp,
-					               (LPVOID)&(retaddr),
-					               sizeof(retaddr), &bytes_read);
-		  if (verbose)
-			  printf ("skip kernel call: " CONTEXT_REG_FMT " -> " CONTEXT_REG_FMT ", ret = " CONTEXT_REG_FMT "\n",
-				        last_pc, pc, retaddr);
-		    add_breakpoint (retaddr);
-		    set_step_threads (event.dwThreadId, 0);
 #endif
+#endif
+			      }
 		    }
 		}
 
@@ -639,8 +630,12 @@ run_program (char *cmdline)
 		    dump_registers (hThread);
 		}
 	      contv = DBG_EXCEPTION_NOT_HANDLED;
+#if defined(__aarch64__)
 	      if (!event.u.Exception.dwFirstChance)
-		  running = 0;
+	      running = 0;
+#else
+	      running = 0;
+#endif
 	      break;
 	    }
 
