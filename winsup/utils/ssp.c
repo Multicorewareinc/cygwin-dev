@@ -90,13 +90,19 @@ typedef struct {
   char *name;
 } DllInfo;
 
+/* Size in bytes of the software breakpoint instruction (INT3 on x86,
+   BRK on AArch64).  */
+#if defined(__i386__) || defined(__x86_64__)
+#define SW_BREAKPOINT_SIZE 1
+#elif defined(__aarch64__)
+#define SW_BREAKPOINT_SIZE 4
+#else
+#error unimplemented for this target
+#endif
+
 typedef struct {
   CONTEXT_REG address;
-#if defined(__aarch64__)
-  unsigned char real_insn[4]; /* ARM64 instructions are 4 bytes */
-#else
-  unsigned char real_byte;
-#endif
+  unsigned char real_insn[SW_BREAKPOINT_SIZE];
 } PendingBreakpoints;
 
 CONTEXT_REG low_pc, high_pc=0;
@@ -143,11 +149,12 @@ add_breakpoint (CONTEXT_REG address)
 {
   int i;
   SIZE_T rv;
-#if defined(__aarch64__)
-  static unsigned char brk_insn[] = { 0x00, 0x00, 0x20, 0xd4 }; /* BRK #0, which matches MSVC's
-     __debugbreak recommendation on Windows/ARM64.*/
+#if defined(__i386__) || defined(__x86_64__)
+  static unsigned char brk_insn[] = { 0xcc };
+#elif defined(__aarch64__)
+  static unsigned char brk_insn[] = { 0x00, 0x00, 0x20, 0xd4 };
 #else
-  static unsigned char int3[] = { 0xcc };
+#error unimplemented for this target
 #endif
   for (i=0; i<num_breakpoints; i++)
     {
@@ -159,23 +166,13 @@ add_breakpoint (CONTEXT_REG address)
   if (i == MAXPENDS)
     return;
   pending_breakpoints[i].address = address;
-#if defined(__aarch64__)
   ReadProcessMemory (hProcess,
 		     (void *)address,
 		     pending_breakpoints[i].real_insn,
-		     4, &rv);
+		     SW_BREAKPOINT_SIZE, &rv);
   WriteProcessMemory (hProcess,
 		      (void *)address,
-		      (LPVOID)brk_insn, 4, &rv);
-#else
-  ReadProcessMemory (hProcess,
-		     (void *)address,
-		     &(pending_breakpoints[i].real_byte),
-		     1, &rv);
-  WriteProcessMemory (hProcess,
-		      (void *)address,
-		      (LPVOID)int3, 1, &rv);
-#endif
+		      (LPVOID)brk_insn, SW_BREAKPOINT_SIZE, &rv);
   if (i >= num_breakpoints)
     num_breakpoints = i+1;
 }
@@ -190,17 +187,10 @@ remove_breakpoint (CONTEXT_REG address)
       if (pending_breakpoints[i].address == address)
 	{
 	  pending_breakpoints[i].address = 0;
-#if defined(__aarch64__)
 	  WriteProcessMemory (hProcess,
 			      (void *)address,
 			      pending_breakpoints[i].real_insn,
-			      4, &rv);
-#else
-	  WriteProcessMemory (hProcess,
-			      (void *)address,
-			      &(pending_breakpoints[i].real_byte),
-			      1, &rv);
-#endif
+			      SW_BREAKPOINT_SIZE, &rv);
 	  return 1;
 	}
     }
@@ -564,7 +554,7 @@ run_program (char *cmdline)
 		    }
 		}
 
-	  if (pc < last_pc || pc > last_pc+10)
+	      if (pc < last_pc || pc > last_pc+10)
 		{
 		  static int ncalls=0;
 		  static int qq=0;
@@ -580,12 +570,12 @@ run_program (char *cmdline)
 		      ncalls++;
 		      store_call_edge (last_pc, pc);
 		      if (last_pc < KERNEL_ADDR && pc > KERNEL_ADDR)
-			      {
+			{
 #if defined(__aarch64__)
 			  CONTEXT_REG retaddr = lr;
 			  if (verbose)
-			  printf ("skip kernel call: " CONTEXT_REG_FMT " -> " CONTEXT_REG_FMT ", ret = " CONTEXT_REG_FMT "\n",
-				        last_pc, pc, retaddr);
+			    printf ("skip kernel call: " CONTEXT_REG_FMT " -> " CONTEXT_REG_FMT ", ret = " CONTEXT_REG_FMT "\n",
+				    last_pc, pc, retaddr);
 			  if (retaddr && retaddr < KERNEL_ADDR)
 			    {
 			      add_breakpoint (retaddr);
@@ -606,7 +596,7 @@ run_program (char *cmdline)
 			  set_step_threads (event.dwThreadId, 0);
 #endif
 #endif
-			      }
+			}
 		    }
 		}
 
@@ -632,7 +622,7 @@ run_program (char *cmdline)
 	      contv = DBG_EXCEPTION_NOT_HANDLED;
 #if defined(__aarch64__)
 	      if (!event.u.Exception.dwFirstChance)
-	      running = 0;
+		running = 0;
 #else
 	      running = 0;
 #endif
@@ -1037,9 +1027,17 @@ main (int argc, char **argv)
     }
   memset (hits, 0, range+4);
 
-    fprintf (stderr, "prun: [" CONTEXT_REG_FMT "," CONTEXT_REG_FMT "] Running '%s'\n",
+  fprintf (stderr, "prun: [" CONTEXT_REG_FMT "," CONTEXT_REG_FMT "] Running '%s'\n",
 	  low_pc, high_pc, argv[optind]);
   {
+    /* CreateProcess (called below with lpApplicationName == NULL) is
+       documented to modify the lpCommandLine buffer in place.  argv[optind]
+       points into our own argv, so passing it directly lets CreateProcess
+       scribble on it; this was observed on aarch64-cygwin as the command
+       line coming back mangled (e.g. 'test_hello.exe' -> 'st_hello.exxee')
+       on later use.  Pass a private writable copy instead.  It is not freed
+       because run_program() stores it in dll_info[0].name, which is read
+       later when printing the DLL-profile table.  */
     char *cmdline_copy = strdup (argv[optind]);
     if (!cmdline_copy)
       {
