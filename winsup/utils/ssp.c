@@ -385,12 +385,13 @@ run_program (char *cmdline)
   startup.cb = sizeof (startup);
 
   /* CreateProcess (called with lpApplicationName == NULL) is documented to
-     modify the lpCommandLine buffer in place.  Pass a private writable copy
-     so the caller's string (also stored in dll_info[0].name below and read
-     later when printing the DLL-profile table) is not scribbled on; this was
-     observed on aarch64-cygwin as the command line coming back mangled
-     (e.g. 'test_hello.exe' -> 'st_hello.exxee').  The copy is intentionally
-     not freed: it lives for the duration of the debugged process.  */
+     modify the lpCommandLine buffer in place.  dll_info[0].name below points
+     at the caller's original string, which is read later when printing the
+     DLL-profile table, so hand CreateProcess a private writable copy to
+     scribble on instead; otherwise the program name comes back mangled
+     (observed on aarch64-cygwin as 'test_hello.exe' -> 'st_hello.exxee').
+     The copy is only needed for the CreateProcess call and is intentionally
+     leaked rather than freed, as ssp is short-lived.  */
   cmdline_copy = strdup (cmdline);
   if (!cmdline_copy)
     {
