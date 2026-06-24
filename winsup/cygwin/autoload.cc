@@ -295,6 +295,10 @@ dll_func_load:                                           \n\
   .global    dll_chain                                   \n\
 dll_chain:                                              \n\
   stp        x0, xzr, [sp, #-16]! // x0 = func_info* (= ret.high); push for dll_func_load\n\
+  mov        x30, x0          // also pass func_info in x30: a chained INIT_WRAPPER\n\
+                              // (e.g. _wsock_init) reads its arg from x30, but is\n\
+                              // reached here via 'br' which would otherwise leave\n\
+                              // x30 stale.  dll_func_load ignores x30 (reads [sp]).\n\
   br         x1                   // x1 = dll->init (= ret.low); tail-call resolver\n\
 ");
 #else
