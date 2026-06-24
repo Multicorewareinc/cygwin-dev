@@ -479,9 +479,48 @@ std_dll_init (struct func_info *func)
 
 /* Initialization function for winsock stuff. */
 
-#if defined(__x86_64__) || defined(__aarch64__)
+#if defined(__x86_64__)
 /* See above comment preceeding std_dll_init. */
 INIT_WRAPPER (wsock_init)
+#elif defined(__aarch64__)
+/* ws2_32 is the only DLL with a SECOND, chained init stage (wsock_init):
+   trampoline -> std_dll_init -> dll_chain -> wsock_init -> dll_chain ->
+   dll_func_load.  Every dll_chain hand-off pushes a 16-byte frame carrying
+   func_info for the next stage.  dll_func_load consumes the frame pushed for
+   IT (it reads func_info from [sp] and drops 16 bytes), and it assumes that
+   directly below sits the trampoline's register-save frame.  But wsock_init
+   takes its argument from x30 (set by dll_chain), NOT from the stack, so the
+   dll_chain frame pushed *before wsock_init* is never consumed -- it strands
+   on the stack between dll_func_load's frame and the trampoline frame.
+   dll_func_load then restores the caller's argument registers from a
+   16-byte-shifted offset, corrupting the very first ws2_32 call (later calls
+   take the patched fast path and bypass this).  Fix: this dedicated wrapper
+   drops that stranded dll_chain frame (the extra "add sp, sp, #16") before
+   chaining onward.  std_dll_init keeps the plain INIT_WRAPPER: it is reached
+   via blr with no preceding dll_chain frame to clean up. */
+__asm__ ( "\n\
+  .text                                                  \n\
+  .p2align 2                                             \n\
+  .seh_proc _wsock_init                                  \n\
+_wsock_init:                                             \n\
+  // Reached from dll_chain via 'br' (NOT 'blr'): dll_chain has put func_info\n\
+  // in x30 for us and left its own 16-byte hand-off frame on the stack just\n\
+  // above the trampoline's register-save frame.  We consume our arg from x30\n\
+  // and must drop that stranded frame before chaining onward (see note above).\n\
+  stp        x29, x30, [sp, #-16]!  // save fp/lr, open our 16-byte frame\n\
+  .seh_save_fplr_x 16                                   \n\
+  .seh_endprologue                                      \n\
+  mov        x0, x30           // x0 = func_info  (the wsock_init() argument)\n\
+  bl         wsock_init        // run WSAStartup; returns x0=func_info, x1=dll_func_load\n\
+  ldp        x29, xzr, [sp], #16  // restore fp, discard saved lr, close our frame\n\
+  add        sp, sp, #16       // drop the stranded dll_chain frame so the\n\
+                               // downstream dll_func_load sees exactly one\n\
+                               // dll_chain frame above the trampoline frame\n\
+  adrp       x30, dll_chain    // x30 = &dll_chain ...\n\
+  add        x30, x30, #:lo12:dll_chain  // ... so the 'ret' below tail-chains there\n\
+  ret                          // -> dll_chain, which tail-calls x1 (dll_func_load)\n\
+  .seh_endproc                                          \n\
+");
 #else
 #error unimplemented for this target
 #endif
