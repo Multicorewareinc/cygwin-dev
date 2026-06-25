@@ -77,13 +77,13 @@ bool NO_COPY wsock_started;
    function. WORD64 stands in for .quad/.xword, and .balign (which means
    "align to N bytes" on both targets - "x64" and "arm64) is used for
    alignment.  */
-#define LoadDLLprime(dllname, init_also, no_resolve_on_fork) __asm__ ("\n\
+#define LoadDLLprime(dllname, init_also) __asm__ ("\n\
 .ifndef " #dllname "_primed                              \n\
   .section   .data_cygwin_nocopy,\"w\"                   \n\
   .balign    8                                           \n\
 ." #dllname "_info:                                      \n\
   " WORD64 "   _std_dll_init                             \n\
-  " WORD64 "   " #no_resolve_on_fork "                   \n\
+  " WORD64 "   0                                         \n\
   .long      -1                                          \n\
   .balign    8                                           \n\
   " WORD64 "   " #init_also "                            \n\
@@ -100,12 +100,12 @@ bool NO_COPY wsock_started;
 #define LoadDLLfuncEx(name, dllname, notimp) \
   LoadDLLfuncEx2(name, dllname, notimp, 0)
 #define LoadDLLfuncEx2(name, dllname, notimp, err) \
-  LoadDLLfuncEx3(name, dllname, notimp, err, 0)
+  LoadDLLfuncEx3(name, dllname, notimp, err)
 
 /* Main DLL setup stuff. */
 #if defined(__x86_64__)
-#define LoadDLLfuncEx3(name, dllname, notimp, err, no_resolve_on_fork) \
-  LoadDLLprime (dllname, dll_func_load, no_resolve_on_fork) \
+#define LoadDLLfuncEx3(name, dllname, notimp, err) \
+  LoadDLLprime (dllname, dll_func_load) \
   __asm__ ("						\n\
   .section	." #dllname "_autoload_text,\"wx\"	\n\
   .global	" #name "				\n\
@@ -130,8 +130,8 @@ _win32_" #name ":					\n\
   .text							\n\
 ");
 #elif defined(__aarch64__)
-#define LoadDLLfuncEx3(name, dllname, notimp, err, no_resolve_on_fork) \
-  LoadDLLprime (dllname, dll_func_load, no_resolve_on_fork) \
+#define LoadDLLfuncEx3(name, dllname, notimp, err) \
+  LoadDLLprime (dllname, dll_func_load) \
   __asm__ ( "\n\
   .section   ." #dllname "_autoload_text,\"wx\"          \n\
   .global    " #name "                                   \n\
@@ -436,7 +436,7 @@ std_dll_init (struct func_info *func)
 	yield ();
       }
     while (InterlockedIncrement (&dll->here));
-  else if ((uintptr_t) dll->handle <= 1)
+  else if (!dll->handle)
     {
       fenv_t fpuenv;
       fegetenv (&fpuenv);
@@ -459,7 +459,7 @@ std_dll_init (struct func_info *func)
 	  if (i < RETRY_COUNT)
 	    yield ();
 	}
-      if ((uintptr_t) dll->handle <= 1)
+      if (!dll->handle)
 	{
 	  if ((func->decoration & 1))
 	    dll->handle = INVALID_HANDLE_VALUE;
@@ -483,42 +483,23 @@ std_dll_init (struct func_info *func)
 /* See above comment preceeding std_dll_init. */
 INIT_WRAPPER (wsock_init)
 #elif defined(__aarch64__)
-/* ws2_32 is the only DLL with a SECOND, chained init stage (wsock_init):
-   trampoline -> std_dll_init -> dll_chain -> wsock_init -> dll_chain ->
-   dll_func_load.  Every dll_chain hand-off pushes a 16-byte frame carrying
-   func_info for the next stage.  dll_func_load consumes the frame pushed for
-   IT (it reads func_info from [sp] and drops 16 bytes), and it assumes that
-   directly below sits the trampoline's register-save frame.  But wsock_init
-   takes its argument from x30 (set by dll_chain), NOT from the stack, so the
-   dll_chain frame pushed *before wsock_init* is never consumed -- it strands
-   on the stack between dll_func_load's frame and the trampoline frame.
-   dll_func_load then restores the caller's argument registers from a
-   16-byte-shifted offset, corrupting the very first ws2_32 call (later calls
-   take the patched fast path and bypass this).  Fix: this dedicated wrapper
-   drops that stranded dll_chain frame (the extra "add sp, sp, #16") before
-   chaining onward.  std_dll_init keeps the plain INIT_WRAPPER: it is reached
-   via blr with no preceding dll_chain frame to clean up. */
 __asm__ ( "\n\
   .text                                                  \n\
   .p2align 2                                             \n\
   .seh_proc _wsock_init                                  \n\
 _wsock_init:                                             \n\
-  // Reached from dll_chain via 'br' (NOT 'blr'): dll_chain has put func_info\n\
-  // in x30 for us and left its own 16-byte hand-off frame on the stack just\n\
-  // above the trampoline's register-save frame.  We consume our arg from x30\n\
-  // and must drop that stranded frame before chaining onward (see note above).\n\
-  stp        x29, x30, [sp, #-16]!  // save fp/lr, open our 16-byte frame\n\
-  .seh_save_fplr_x 16                                   \n\
-  .seh_endprologue                                      \n\
+  stp        x29, x30, [sp, #-16]!  // save fp/lr, open 16-byte frame\n\
+  .seh_save_fplr_x 16                                    \n\
+  .seh_endprologue                                       \n\
   mov        x0, x30           // x0 = func_info  (the wsock_init() argument)\n\
   bl         wsock_init        // run WSAStartup; returns x0=func_info, x1=dll_func_load\n\
-  ldp        x29, xzr, [sp], #16  // restore fp, discard saved lr, close our frame\n\
+  ldp        x29, xzr, [sp], #16  // restore fp, discard saved lr, close frame\n\
   add        sp, sp, #16       // drop the stranded dll_chain frame so the\n\
                                // downstream dll_func_load sees exactly one\n\
                                // dll_chain frame above the trampoline frame\n\
-  adrp       x30, dll_chain    // x30 = &dll_chain ...\n\
-  add        x30, x30, #:lo12:dll_chain  // ... so the 'ret' below tail-chains there\n\
-  ret                          // -> dll_chain, which tail-calls x1 (dll_func_load)\n\
+  adrp       x30, dll_chain    // x30 = &dll_chain so the 'ret' below tail-chains there\n\
+  add        x30, x30, #:lo12:dll_chain // -> dll_chain, which tail-calls x1 (dll_func_load)\n\
+  ret                                                   \n\
   .seh_endproc                                          \n\
 ");
 #else
@@ -571,7 +552,7 @@ wsock_init (struct func_info *func)
   return ret.ll;
 }
 
-LoadDLLprime (ws2_32, _wsock_init, 0)
+LoadDLLprime (ws2_32, _wsock_init)
 
 LoadDLLfunc (CheckTokenMembership, advapi32)
 LoadDLLfunc (CreateProcessAsUserW, advapi32)
@@ -748,25 +729,25 @@ LoadDLLfuncEx2 (CreateProfile, userenv, 1, 1)
 LoadDLLfunc (DestroyEnvironmentBlock, userenv)
 LoadDLLfunc (LoadUserProfileW, userenv)
 
-LoadDLLfuncEx3 (waveInAddBuffer, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInClose, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInGetNumDevs, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInOpen, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInPrepareHeader, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInReset, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInStart, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveInUnprepareHeader, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutClose, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutGetNumDevs, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutGetVolume, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutOpen, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutPrepareHeader, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutReset, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutSetVolume, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutUnprepareHeader, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutWrite, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutMessage, winmm, 1, 0, 1)
-LoadDLLfuncEx3 (waveOutGetDevCapsA, winmm, 1, 0, 1)
+LoadDLLfuncEx3 (waveInAddBuffer, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInClose, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInGetNumDevs, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInOpen, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInPrepareHeader, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInReset, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInStart, winmm, 1, 0)
+LoadDLLfuncEx3 (waveInUnprepareHeader, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutClose, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutGetNumDevs, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutGetVolume, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutOpen, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutPrepareHeader, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutReset, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutSetVolume, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutUnprepareHeader, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutWrite, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutMessage, winmm, 1, 0)
+LoadDLLfuncEx3 (waveOutGetDevCapsA, winmm, 1, 0)
 
 LoadDLLfunc (accept, ws2_32)
 LoadDLLfunc (bind, ws2_32)
