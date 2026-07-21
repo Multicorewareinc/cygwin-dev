@@ -405,12 +405,11 @@ _sigfe:
     add     w9, w9, #1			// Increment incyg
     str     w9, [x12]			// Store updated incyg value
     mov     x9, #8			// Set stack frame size increment (8 bytes)
-2:  ldr     x11, =_cygtls.stackptr	// Load offset of stack pointer
+    ldr     x11, =_cygtls.stackptr	// Load offset of stack pointer
     add     x12, x10, x11		// Compute final address of stack pointer
-    ldaxr   x13, [x12]			// Atomically load current stack pointer
+    ldr     x13, [x12]			// Load current stack pointer (plain — protected by stacklock)
     add     x14, x13, x9		// Compute new stack pointer value
-    stlxr   w15, x14, [x12]		// Attempt to update stack pointer atomically
-    cbnz    w15, 2b			// Retry if atomic update failed
+    str     x14, [x12]			// Store updated stack pointer (plain — protected by stacklock)
     str     x30, [x13]                 // Save LR(return address) on stack
     adr     x11, _sigbe		// Load address of _sigbe
     mov     x30, x11                   // Set LR = _sigbe
@@ -439,12 +438,11 @@ _sigbe:
     b       3b				// Retry acquiring the lock
 4:
     mov     x9, #-8			// Set stack pointer decrement value
-5:  ldr     x11, =_cygtls.stackptr	// Load offset of stack pointer
+    ldr     x11, =_cygtls.stackptr	// Load offset of stack pointer
     add     x12, x10, x11		// Compute final address of stack pointer
-    ldaxr   x13, [x12]			// Load current stack pointer atomically
+    ldr     x13, [x12]			// Load current stack pointer (plain — protected by stacklock)
     add     x14, x13, x9		// Compute new stack pointer value
-    stlxr   w15, x14, [x12]		// Attempt to update stack pointer atomically
-    cbnz    w15, 5b			// Retry if atomic update failed
+    str     x14, [x12]			// Store updated stack pointer (plain — protected by stacklock)
     sub     x13, x13, #8               // Compute address where LR was saved
     ldr     x30, [x13]                 // Restore saved LR
     ldr     x11, =_cygtls.incyg	// Load offset of incyg
