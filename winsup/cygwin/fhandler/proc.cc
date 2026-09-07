@@ -437,12 +437,12 @@ format_proc_version (void *, char *&destbuf)
 static off_t
 format_proc_loadavg (void *, char *&destbuf)
 {
-  extern int get_process_state (DWORD dwProcessId);
+  extern int get_process_state (DWORD dwProcessId, DWORD *num_threads);
   unsigned int running = 0;
   winpids pids ((DWORD) 0);
 
   for (unsigned i = 0; i < pids.npids; i++)
-    switch (get_process_state (i)) {
+    switch (get_process_state (pids[i]->dwProcessId, NULL)) {
       case 'O':
       case 'R':
 	running++;

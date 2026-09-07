@@ -42,7 +42,9 @@ No supporting OS subroutines are required.
 */
 
 
-/*
+/*-
+ * SPDX-License-Identifier: BSD-3-Clause
+ *
  * Copyright (c) 1990 Regents of the University of California.
  * All rights reserved.
  *
@@ -78,22 +80,12 @@ No supporting OS subroutines are required.
 #include <stdlib.h>		/* ldiv_t */
 
 ldiv_t
-ldiv (long num,
-        long denom)
+ldiv(long numer, long denom)
 {
 	ldiv_t r;
 
-	/* see div.c for comments */
+	r.quot = numer / denom;
+	r.rem = numer % denom;
 
-	r.quot = num / denom;
-	r.rem = num % denom;
-	if (num >= 0 && r.rem < 0) {
-		++r.quot;
-		r.rem -= denom;
-	}
-	else if (num < 0 && r.rem > 0) {
-		--r.quot;
-		r.rem += denom;
-	}
 	return (r);
 }

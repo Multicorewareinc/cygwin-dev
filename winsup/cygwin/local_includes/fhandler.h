@@ -1983,6 +1983,7 @@ class fhandler_termios: public fhandler_base
   pid_t tcgetsid ();
   virtual int fstat (struct stat *buf);
   int tcflow (int);
+  virtual void discard_key_events (size_t n) {}
 
   fhandler_termios (void *) {}
 
@@ -2200,6 +2201,7 @@ private:
   HANDLE input_mutex, output_mutex;
   handle_set_t handle_set;
   _minor_t unit;
+  size_t num_input_events_processed;
 
   /* Used when we encounter a truncated multi-byte sequence.  The
      lead bytes are stored here and revisited in the next write call. */
@@ -2326,7 +2328,7 @@ private:
     fh->copy_from (this);
     return fh;
   }
-  input_states process_input_message ();
+  input_states process_input_message (size_t len);
   bg_check_types bg_check (int sig, bool dontsignal = false);
   void setup_io_mutex (void);
   DWORD __acquire_input_mutex (const char *fn, int ln, DWORD ms);
@@ -2363,6 +2365,7 @@ private:
   void wpbuf_put (char c);
   void wpbuf_send ();
   int fstat (struct stat *buf);
+  void discard_key_events (size_t n);
 
   class console_unit
   {
@@ -2531,6 +2534,7 @@ class fhandler_pty_slave: public fhandler_pty_common
   void setpgid_aux (pid_t pid);
   static void release_ownership_of_nat_pipe (tty *ttyp, fhandler_termios *fh);
   void replace_nat_handles (HANDLE new_input, HANDLE new_output);
+  void req_fixup_pcon_state (void);
 };
 
 #define __ptsname(buf, unit) __small_sprintf ((buf), "/dev/pty%d", (unit))
@@ -2637,6 +2641,9 @@ public:
   void get_master_fwd_thread_param (master_fwd_thread_param_t *p);
   bool need_send_ctrl_c_event ();
   void apply_line_edit_to_transferred_input ();
+  line_edit_status line_edit_maybe (const char *p, size_t len, termios&,
+				    ssize_t *n);
+  void fixup_pcon_cursor_position (int x, int y);
 };
 
 class fhandler_dev_null: public fhandler_base

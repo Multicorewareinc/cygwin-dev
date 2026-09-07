@@ -10,15 +10,13 @@
 */
 
 #include "newlib.h"
+#include "asm.h"
 
 #=========================================================================
 # crt0.S : Entry point for RISC-V user programs
 #=========================================================================
 
-  .text
-  .global _start
-  .type   _start, @function
-_start:
+ENTRY(_start)
   # Initialize global pointer
 .option push
 .option norelax
@@ -105,4 +103,4 @@ _start:
   .weak   __libc_fini_array
   .dword __libc_fini_array
 #endif
-  .size  _start, .-_start
+END(_start)

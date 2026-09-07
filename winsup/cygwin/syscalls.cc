@@ -24,6 +24,7 @@ details. */
 #include <dirent.h>
 #include <ntsecapi.h>
 #include <iptypes.h>
+#include <assert.h>
 #include "ntdll.h"
 
 #include <cygwin/version.h>
@@ -146,7 +147,9 @@ dup_finish (int oldfd, int newfd, int flags)
   int res;
   if ((res = cygheap->fdtab.dup3 (oldfd, newfd, flags | O_EXCL)) == newfd)
     {
-      cygheap_fdget (newfd)->inc_refcnt ();
+      cygheap_fdget cfd (newfd);
+      assert ((fhandler_base *) cfd);
+      cfd->inc_refcnt ();
       cygheap->fdtab.unlock ();	/* dup3 exits with lock set on success */
     }
   return res;
@@ -1451,6 +1454,7 @@ extern "C" int
 open (const char *unix_path, int flags, ...)
 {
   int res = -1;
+  int fd = -1;
   va_list ap;
   mode_t mode = 0;
   fhandler_base *fh = NULL;
@@ -1547,6 +1551,19 @@ open (const char *unix_path, int flags, ...)
 	  fh = fh_file;
 	}
 
+      /* Reserve an fdtable entry here, before calling open_with_arch() below.
+         Otherwise there's a tiny chance of hitting OPEN_MAX further on which
+         could create a new file without any way for Cygwin to refer to it. */
+      cygheap->fdtab.lock();
+      fd = cygheap->fdtab.find_unused_handle ();
+      if (fd < 0)
+	{
+	  cygheap->fdtab.unlock ();
+	  __leave;		/* errno already set */
+	}
+      cygheap->fdtab.reserve (fd);
+      cygheap->fdtab.unlock ();
+
       if (fh->dev () == FH_PROCESSFD && fh->pc.follow_fd_symlink ())
 	{
 	  /* Reopen file by descriptor */
@@ -1573,21 +1590,23 @@ open (const char *unix_path, int flags, ...)
 	try_to_bin (fh->pc, fh->get_handle (), DELETE,
 		    FILE_OPEN_FOR_BACKUP_INTENT);
 
-      cygheap_fdnew fd;
+      cygheap->fdtab.lock ();
+      cygheap->fdtab.set_fhandler (fd, fh);
+      fh->inc_refcnt ();
+      cygheap->fdtab.unlock ();
 
-      if (fd < 0)
-	{
-	  fh->close();
-	  __leave;		/* errno already set */
-	}
-
-      fd = fh;
       if (fd <= 2)
 	set_std_handle (fd);
       res = fd;
     }
   __except (EFAULT) {}
   __endtry
+    if (res < 0 && fd >= 0)
+      {
+	cygheap->fdtab.lock ();
+	cygheap->fdtab.unreserve (fd);
+	cygheap->fdtab.unlock ();
+      }
   if (res < 0 && fh)
     delete fh;
   syscall_printf ("%R = open(%s, %y)", res, unix_path, flags);

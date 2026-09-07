@@ -63,8 +63,9 @@ __MINGW_USYMBOL(__logl_internal):
 2:	fstp	%st(0)		// x : log(2)
 	fyl2x			// log(x)
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	log
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

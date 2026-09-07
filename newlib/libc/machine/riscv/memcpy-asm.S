@@ -9,14 +9,10 @@
    http://www.opensource.org/licenses.
 */
 
+#include <sys/asm.h>
+
 #if defined(PREFER_SIZE_OVER_SPEED) || defined(__OPTIMIZE_SIZE__)
-.text
-.global memcpy
-.type	memcpy, @function
-memcpy:
-#if __riscv_landing_pad
-  lpad 0
-#endif
+ENTRY(memcpy)
 
   mv a3, a0
   beqz a2, 2f
@@ -31,18 +27,9 @@ memcpy:
 
 2:
   ret
-
-  .size	memcpy, .-memcpy
+END(memcpy)
 #elif defined(__riscv_vector)
-.text
-.option push
-.option arch, +zve32x
-.global memcpy
-.type memcpy, @function
-memcpy:
-#if __riscv_landing_pad
-  lpad 0
-#endif
+ENTRY(memcpy)
   mv     t0, a0                   /* t0 = running dst */
   mv     t1, a1                   /* t1 = running src */
   beqz   a2, .Ldone               /* if n == 0, return */
@@ -85,7 +72,5 @@ memcpy:
 
 .Ldone:
   ret
-
-  .size memcpy, .-memcpy
-  .option pop
+END(memcpy)
 #endif

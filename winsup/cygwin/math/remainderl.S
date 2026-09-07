@@ -37,7 +37,8 @@ __MINGW_USYMBOL(remainderl):
 	fstp	%st(1)
 	ret
 #elif defined(__aarch64__)
-	// TODO
+	bl	remainder
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif
