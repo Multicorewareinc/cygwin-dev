@@ -76,8 +76,9 @@ __MINGW_USYMBOL(ilogbl):
 2:	fstp    %st
 	movl	$0x80000001, %eax	/* FP_ILOGB0  */
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	ilogb
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

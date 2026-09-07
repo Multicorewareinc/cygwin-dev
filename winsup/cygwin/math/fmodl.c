@@ -3,6 +3,9 @@
  * This file is part of the mingw-w64 runtime package.
  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
  */
+
+#include <math.h>
+
 long double fmodl (long double x, long double y);
 
 long double
@@ -18,9 +21,8 @@ fmodl (long double x, long double y)
        "jp      1b\n\t"
        "fstp    %%st(1)"
        : "=t" (res) : "0" (x), "u" (y) : "ax", "st(1)");
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = fmod((double)x, (double)y);
 #endif
   return res;
 }

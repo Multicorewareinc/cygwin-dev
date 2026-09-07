@@ -16,10 +16,9 @@ long double ldexpl(long double x, int expn)
   __asm__ __volatile__ ("fscale"
 	    : "=t" (res)
 	    : "0" (x), "u" ((long double) expn));
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0L;
-#endif 
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = ldexp((double)x, expn);
+#endif
 
   if (!isfinite (res) || res == 0.0L)
     errno = ERANGE;

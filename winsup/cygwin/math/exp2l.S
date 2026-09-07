@@ -89,6 +89,7 @@ __MINGW_USYMBOL(exp2l):
 	fstp	%st
 	fldz				/* Set result to 0.  */
 2:	ret
-#else
-  // TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	exp2
+	ret
 #endif

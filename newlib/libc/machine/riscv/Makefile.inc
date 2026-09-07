@@ -1,3 +1,25 @@
 libc_a_SOURCES += \
-	%D%/memmove-asm.S %D%/memmove.c %D%/memset.S %D%/memcpy-asm.S %D%/memcpy.c %D%/strlen.c \
-	%D%/strcpy.c %D%/stpcpy.c %D%/strcmp.S %D%/memchr.c %D%/memrchr.c %D%/setjmp.S %D%/ieeefp.c %D%/ffs.c
+	%D%/ffs.c \
+	%D%/ieeefp.c \
+	%D%/memccpy-asm.S \
+	%D%/memccpy.c \
+	%D%/memchr-asm.S \
+	%D%/memchr.c \
+	%D%/memcmp-asm.S \
+	%D%/memcmp.c \
+	%D%/memcpy-asm.S \
+	%D%/memcpy.c \
+	%D%/memmove-asm.S \
+	%D%/memmove.c \
+	%D%/mempcpy-asm.S \
+	%D%/mempcpy.c \
+	%D%/memrchr-asm.S \
+	%D%/memrchr.c \
+	%D%/rawmemchr-asm.S \
+	%D%/rawmemchr.c \
+	%D%/memset.S \
+	%D%/setjmp.S \
+	%D%/stpcpy.c \
+	%D%/strcmp.S \
+	%D%/strcpy.c \
+	%D%/strlen.c

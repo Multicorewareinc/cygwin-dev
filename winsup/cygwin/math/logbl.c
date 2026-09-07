@@ -20,8 +20,8 @@ logbl (long double x)
   asm volatile (
        "fxtract\n\t"
        "fstp	%%st" : "=t" (res) : "0" (x));
-#elif defined(__aarch64__)
-  res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  res = logb((double)x);
 #endif
   return res;
 }

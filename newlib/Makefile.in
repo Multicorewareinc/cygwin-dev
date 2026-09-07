@@ -852,8 +852,30 @@ check_PROGRAMS =
 
 @HAVE_LIBC_MACHINE_PRU_TRUE@am__append_113 = libc/machine/pru/setjmp.s
 @HAVE_LIBC_MACHINE_RISCV_TRUE@am__append_114 = \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memmove-asm.S libc/machine/riscv/memmove.c libc/machine/riscv/memset.S libc/machine/riscv/memcpy-asm.S libc/machine/riscv/memcpy.c libc/machine/riscv/strlen.c \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/strcpy.c libc/machine/riscv/stpcpy.c libc/machine/riscv/strcmp.S libc/machine/riscv/memchr.c libc/machine/riscv/memrchr.c libc/machine/riscv/setjmp.S libc/machine/riscv/ieeefp.c libc/machine/riscv/ffs.c
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/ffs.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/ieeefp.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memccpy-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memccpy.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memchr-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memchr.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memcmp-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memcmp.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memcpy-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memcpy.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memmove-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memmove.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/mempcpy-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/mempcpy.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memrchr-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memrchr.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/rawmemchr-asm.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/rawmemchr.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/memset.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/setjmp.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/stpcpy.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/strcmp.S \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/strcpy.c \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/strlen.c
 
 @HAVE_LIBC_MACHINE_RL78_TRUE@am__append_115 = libc/machine/rl78/setjmp.S
 @HAVE_LIBC_MACHINE_RX_TRUE@am__append_116 = \
@@ -2172,20 +2194,30 @@ am__objects_51 = libc/ssp/libc_a-chk_fail.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_POWERPC_TRUE@@HAVE_POWERPC_SPE_TRUE@	libc/machine/powerpc/libc_a-vfprintf.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_POWERPC_TRUE@@HAVE_POWERPC_SPE_TRUE@	libc/machine/powerpc/libc_a-vfscanf.$(OBJEXT)
 @HAVE_LIBC_MACHINE_PRU_TRUE@am__objects_123 = libc/machine/pru/libc_a-setjmp.$(OBJEXT)
-@HAVE_LIBC_MACHINE_RISCV_TRUE@am__objects_124 = libc/machine/riscv/libc_a-memmove-asm.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memmove.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memset.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@am__objects_124 = libc/machine/riscv/libc_a-ffs.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-ieeefp.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memccpy-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memccpy.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memchr-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memchr.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memcmp-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memcmp.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memcpy-asm.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memcpy.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-strlen.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-strcpy.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memmove-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memmove.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-mempcpy-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-mempcpy.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memrchr-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memrchr.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-rawmemchr-asm.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-rawmemchr.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memset.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-setjmp.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-stpcpy.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-strcmp.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memchr.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-memrchr.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-setjmp.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-ieeefp.$(OBJEXT) \
-@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-ffs.$(OBJEXT)
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-strcpy.$(OBJEXT) \
+@HAVE_LIBC_MACHINE_RISCV_TRUE@	libc/machine/riscv/libc_a-strlen.$(OBJEXT)
 @HAVE_LIBC_MACHINE_RL78_TRUE@am__objects_125 = libc/machine/rl78/libc_a-setjmp.$(OBJEXT)
 @HAVE_LIBC_MACHINE_RX_TRUE@am__objects_126 = libc/machine/rx/libc_a-setjmp.$(OBJEXT) \
 @HAVE_LIBC_MACHINE_RX_TRUE@	libc/machine/rx/libc_a-strncmp.$(OBJEXT) \
@@ -4029,7 +4061,6 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
-runstatedir = @runstatedir@
 sbindir = @sbindir@
 shared_machine_dir = @shared_machine_dir@
 sharedstatedir = @sharedstatedir@
@@ -9242,13 +9273,28 @@ libc/machine/riscv/$(am__dirstamp):
 libc/machine/riscv/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) libc/machine/riscv/$(DEPDIR)
 	@: > libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-memmove-asm.$(OBJEXT):  \
+libc/machine/riscv/libc_a-ffs.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-memmove.$(OBJEXT):  \
+libc/machine/riscv/libc_a-ieeefp.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-memset.$(OBJEXT):  \
+libc/machine/riscv/libc_a-memccpy-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memccpy.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memchr-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memchr.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memcmp-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memcmp.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
 libc/machine/riscv/libc_a-memcpy-asm.$(OBJEXT):  \
@@ -9257,10 +9303,34 @@ libc/machine/riscv/libc_a-memcpy-asm.$(OBJEXT):  \
 libc/machine/riscv/libc_a-memcpy.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-strlen.$(OBJEXT):  \
+libc/machine/riscv/libc_a-memmove-asm.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-strcpy.$(OBJEXT):  \
+libc/machine/riscv/libc_a-memmove.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-mempcpy-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-mempcpy.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memrchr-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memrchr.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-rawmemchr-asm.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-rawmemchr.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-memset.$(OBJEXT):  \
+	libc/machine/riscv/$(am__dirstamp) \
+	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
+libc/machine/riscv/libc_a-setjmp.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
 libc/machine/riscv/libc_a-stpcpy.$(OBJEXT):  \
@@ -9269,19 +9339,10 @@ libc/machine/riscv/libc_a-stpcpy.$(OBJEXT):  \
 libc/machine/riscv/libc_a-strcmp.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-memchr.$(OBJEXT):  \
+libc/machine/riscv/libc_a-strcpy.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-memrchr.$(OBJEXT):  \
-	libc/machine/riscv/$(am__dirstamp) \
-	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-setjmp.$(OBJEXT):  \
-	libc/machine/riscv/$(am__dirstamp) \
-	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-ieeefp.$(OBJEXT):  \
-	libc/machine/riscv/$(am__dirstamp) \
-	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
-libc/machine/riscv/libc_a-ffs.$(OBJEXT):  \
+libc/machine/riscv/libc_a-strlen.$(OBJEXT):  \
 	libc/machine/riscv/$(am__dirstamp) \
 	libc/machine/riscv/$(DEPDIR)/$(am__dirstamp)
 libc/machine/rl78/$(am__dirstamp):
@@ -13232,13 +13293,23 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/powerpc/$(DEPDIR)/libc_a-vfscanf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-ieeefp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memcpy-asm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-memset.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-setjmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Po@am__quote@
@@ -19209,33 +19280,47 @@ libc/machine/powerpc/libc_a-setjmp.obj: libc/machine/powerpc/setjmp.S
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/powerpc/libc_a-setjmp.obj `if test -f 'libc/machine/powerpc/setjmp.S'; then $(CYGPATH_W) 'libc/machine/powerpc/setjmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/powerpc/setjmp.S'; fi`
 
-libc/machine/riscv/libc_a-memmove-asm.o: libc/machine/riscv/memmove-asm.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memmove-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo -c -o libc/machine/riscv/libc_a-memmove-asm.o `test -f 'libc/machine/riscv/memmove-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memmove-asm.S
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memmove-asm.S' object='libc/machine/riscv/libc_a-memmove-asm.o' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memccpy-asm.o: libc/machine/riscv/memccpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memccpy-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Tpo -c -o libc/machine/riscv/libc_a-memccpy-asm.o `test -f 'libc/machine/riscv/memccpy-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memccpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memccpy-asm.S' object='libc/machine/riscv/libc_a-memccpy-asm.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memmove-asm.o `test -f 'libc/machine/riscv/memmove-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memmove-asm.S
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memccpy-asm.o `test -f 'libc/machine/riscv/memccpy-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memccpy-asm.S
 
-libc/machine/riscv/libc_a-memmove-asm.obj: libc/machine/riscv/memmove-asm.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memmove-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo -c -o libc/machine/riscv/libc_a-memmove-asm.obj `if test -f 'libc/machine/riscv/memmove-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memmove-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove-asm.S'; fi`
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memmove-asm.S' object='libc/machine/riscv/libc_a-memmove-asm.obj' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memccpy-asm.obj: libc/machine/riscv/memccpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memccpy-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Tpo -c -o libc/machine/riscv/libc_a-memccpy-asm.obj `if test -f 'libc/machine/riscv/memccpy-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memccpy-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memccpy-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memccpy-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memccpy-asm.S' object='libc/machine/riscv/libc_a-memccpy-asm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memmove-asm.obj `if test -f 'libc/machine/riscv/memmove-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memmove-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove-asm.S'; fi`
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memccpy-asm.obj `if test -f 'libc/machine/riscv/memccpy-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memccpy-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memccpy-asm.S'; fi`
 
-libc/machine/riscv/libc_a-memset.o: libc/machine/riscv/memset.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memset.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo -c -o libc/machine/riscv/libc_a-memset.o `test -f 'libc/machine/riscv/memset.S' || echo '$(srcdir)/'`libc/machine/riscv/memset.S
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memset.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memset.S' object='libc/machine/riscv/libc_a-memset.o' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memchr-asm.o: libc/machine/riscv/memchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memchr-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Tpo -c -o libc/machine/riscv/libc_a-memchr-asm.o `test -f 'libc/machine/riscv/memchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memchr-asm.S' object='libc/machine/riscv/libc_a-memchr-asm.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memset.o `test -f 'libc/machine/riscv/memset.S' || echo '$(srcdir)/'`libc/machine/riscv/memset.S
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memchr-asm.o `test -f 'libc/machine/riscv/memchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memchr-asm.S
 
-libc/machine/riscv/libc_a-memset.obj: libc/machine/riscv/memset.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memset.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo -c -o libc/machine/riscv/libc_a-memset.obj `if test -f 'libc/machine/riscv/memset.S'; then $(CYGPATH_W) 'libc/machine/riscv/memset.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memset.S'; fi`
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memset.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memset.S' object='libc/machine/riscv/libc_a-memset.obj' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memchr-asm.obj: libc/machine/riscv/memchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memchr-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Tpo -c -o libc/machine/riscv/libc_a-memchr-asm.obj `if test -f 'libc/machine/riscv/memchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memchr-asm.S' object='libc/machine/riscv/libc_a-memchr-asm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memset.obj `if test -f 'libc/machine/riscv/memset.S'; then $(CYGPATH_W) 'libc/machine/riscv/memset.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memset.S'; fi`
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memchr-asm.obj `if test -f 'libc/machine/riscv/memchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr-asm.S'; fi`
+
+libc/machine/riscv/libc_a-memcmp-asm.o: libc/machine/riscv/memcmp-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memcmp-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Tpo -c -o libc/machine/riscv/libc_a-memcmp-asm.o `test -f 'libc/machine/riscv/memcmp-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memcmp-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memcmp-asm.S' object='libc/machine/riscv/libc_a-memcmp-asm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memcmp-asm.o `test -f 'libc/machine/riscv/memcmp-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memcmp-asm.S
+
+libc/machine/riscv/libc_a-memcmp-asm.obj: libc/machine/riscv/memcmp-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memcmp-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Tpo -c -o libc/machine/riscv/libc_a-memcmp-asm.obj `if test -f 'libc/machine/riscv/memcmp-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memcmp-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcmp-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcmp-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memcmp-asm.S' object='libc/machine/riscv/libc_a-memcmp-asm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memcmp-asm.obj `if test -f 'libc/machine/riscv/memcmp-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memcmp-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcmp-asm.S'; fi`
 
 libc/machine/riscv/libc_a-memcpy-asm.o: libc/machine/riscv/memcpy-asm.S
 @am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memcpy-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcpy-asm.Tpo -c -o libc/machine/riscv/libc_a-memcpy-asm.o `test -f 'libc/machine/riscv/memcpy-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memcpy-asm.S
@@ -19251,19 +19336,75 @@ libc/machine/riscv/libc_a-memcpy-asm.obj: libc/machine/riscv/memcpy-asm.S
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memcpy-asm.obj `if test -f 'libc/machine/riscv/memcpy-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memcpy-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcpy-asm.S'; fi`
 
-libc/machine/riscv/libc_a-strcmp.o: libc/machine/riscv/strcmp.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-strcmp.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo -c -o libc/machine/riscv/libc_a-strcmp.o `test -f 'libc/machine/riscv/strcmp.S' || echo '$(srcdir)/'`libc/machine/riscv/strcmp.S
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/strcmp.S' object='libc/machine/riscv/libc_a-strcmp.o' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memmove-asm.o: libc/machine/riscv/memmove-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memmove-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo -c -o libc/machine/riscv/libc_a-memmove-asm.o `test -f 'libc/machine/riscv/memmove-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memmove-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memmove-asm.S' object='libc/machine/riscv/libc_a-memmove-asm.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-strcmp.o `test -f 'libc/machine/riscv/strcmp.S' || echo '$(srcdir)/'`libc/machine/riscv/strcmp.S
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memmove-asm.o `test -f 'libc/machine/riscv/memmove-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memmove-asm.S
 
-libc/machine/riscv/libc_a-strcmp.obj: libc/machine/riscv/strcmp.S
-@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-strcmp.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo -c -o libc/machine/riscv/libc_a-strcmp.obj `if test -f 'libc/machine/riscv/strcmp.S'; then $(CYGPATH_W) 'libc/machine/riscv/strcmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcmp.S'; fi`
-@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Po
-@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/strcmp.S' object='libc/machine/riscv/libc_a-strcmp.obj' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memmove-asm.obj: libc/machine/riscv/memmove-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memmove-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo -c -o libc/machine/riscv/libc_a-memmove-asm.obj `if test -f 'libc/machine/riscv/memmove-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memmove-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memmove-asm.S' object='libc/machine/riscv/libc_a-memmove-asm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-strcmp.obj `if test -f 'libc/machine/riscv/strcmp.S'; then $(CYGPATH_W) 'libc/machine/riscv/strcmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcmp.S'; fi`
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memmove-asm.obj `if test -f 'libc/machine/riscv/memmove-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memmove-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove-asm.S'; fi`
+
+libc/machine/riscv/libc_a-mempcpy-asm.o: libc/machine/riscv/mempcpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-mempcpy-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Tpo -c -o libc/machine/riscv/libc_a-mempcpy-asm.o `test -f 'libc/machine/riscv/mempcpy-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/mempcpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/mempcpy-asm.S' object='libc/machine/riscv/libc_a-mempcpy-asm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-mempcpy-asm.o `test -f 'libc/machine/riscv/mempcpy-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/mempcpy-asm.S
+
+libc/machine/riscv/libc_a-mempcpy-asm.obj: libc/machine/riscv/mempcpy-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-mempcpy-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Tpo -c -o libc/machine/riscv/libc_a-mempcpy-asm.obj `if test -f 'libc/machine/riscv/mempcpy-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/mempcpy-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/mempcpy-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/mempcpy-asm.S' object='libc/machine/riscv/libc_a-mempcpy-asm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-mempcpy-asm.obj `if test -f 'libc/machine/riscv/mempcpy-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/mempcpy-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/mempcpy-asm.S'; fi`
+
+libc/machine/riscv/libc_a-memrchr-asm.o: libc/machine/riscv/memrchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memrchr-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Tpo -c -o libc/machine/riscv/libc_a-memrchr-asm.o `test -f 'libc/machine/riscv/memrchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memrchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memrchr-asm.S' object='libc/machine/riscv/libc_a-memrchr-asm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memrchr-asm.o `test -f 'libc/machine/riscv/memrchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/memrchr-asm.S
+
+libc/machine/riscv/libc_a-memrchr-asm.obj: libc/machine/riscv/memrchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memrchr-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Tpo -c -o libc/machine/riscv/libc_a-memrchr-asm.obj `if test -f 'libc/machine/riscv/memrchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memrchr-asm.S' object='libc/machine/riscv/libc_a-memrchr-asm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memrchr-asm.obj `if test -f 'libc/machine/riscv/memrchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr-asm.S'; fi`
+
+libc/machine/riscv/libc_a-rawmemchr-asm.o: libc/machine/riscv/rawmemchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-rawmemchr-asm.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Tpo -c -o libc/machine/riscv/libc_a-rawmemchr-asm.o `test -f 'libc/machine/riscv/rawmemchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/rawmemchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/rawmemchr-asm.S' object='libc/machine/riscv/libc_a-rawmemchr-asm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-rawmemchr-asm.o `test -f 'libc/machine/riscv/rawmemchr-asm.S' || echo '$(srcdir)/'`libc/machine/riscv/rawmemchr-asm.S
+
+libc/machine/riscv/libc_a-rawmemchr-asm.obj: libc/machine/riscv/rawmemchr-asm.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-rawmemchr-asm.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Tpo -c -o libc/machine/riscv/libc_a-rawmemchr-asm.obj `if test -f 'libc/machine/riscv/rawmemchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/rawmemchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/rawmemchr-asm.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr-asm.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/rawmemchr-asm.S' object='libc/machine/riscv/libc_a-rawmemchr-asm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-rawmemchr-asm.obj `if test -f 'libc/machine/riscv/rawmemchr-asm.S'; then $(CYGPATH_W) 'libc/machine/riscv/rawmemchr-asm.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/rawmemchr-asm.S'; fi`
+
+libc/machine/riscv/libc_a-memset.o: libc/machine/riscv/memset.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memset.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo -c -o libc/machine/riscv/libc_a-memset.o `test -f 'libc/machine/riscv/memset.S' || echo '$(srcdir)/'`libc/machine/riscv/memset.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memset.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memset.S' object='libc/machine/riscv/libc_a-memset.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memset.o `test -f 'libc/machine/riscv/memset.S' || echo '$(srcdir)/'`libc/machine/riscv/memset.S
+
+libc/machine/riscv/libc_a-memset.obj: libc/machine/riscv/memset.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-memset.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo -c -o libc/machine/riscv/libc_a-memset.obj `if test -f 'libc/machine/riscv/memset.S'; then $(CYGPATH_W) 'libc/machine/riscv/memset.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memset.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memset.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memset.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/memset.S' object='libc/machine/riscv/libc_a-memset.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-memset.obj `if test -f 'libc/machine/riscv/memset.S'; then $(CYGPATH_W) 'libc/machine/riscv/memset.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memset.S'; fi`
 
 libc/machine/riscv/libc_a-setjmp.o: libc/machine/riscv/setjmp.S
 @am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-setjmp.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-setjmp.Tpo -c -o libc/machine/riscv/libc_a-setjmp.o `test -f 'libc/machine/riscv/setjmp.S' || echo '$(srcdir)/'`libc/machine/riscv/setjmp.S
@@ -19278,6 +19419,20 @@ libc/machine/riscv/libc_a-setjmp.obj: libc/machine/riscv/setjmp.S
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/setjmp.S' object='libc/machine/riscv/libc_a-setjmp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-setjmp.obj `if test -f 'libc/machine/riscv/setjmp.S'; then $(CYGPATH_W) 'libc/machine/riscv/setjmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/setjmp.S'; fi`
+
+libc/machine/riscv/libc_a-strcmp.o: libc/machine/riscv/strcmp.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-strcmp.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo -c -o libc/machine/riscv/libc_a-strcmp.o `test -f 'libc/machine/riscv/strcmp.S' || echo '$(srcdir)/'`libc/machine/riscv/strcmp.S
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/strcmp.S' object='libc/machine/riscv/libc_a-strcmp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-strcmp.o `test -f 'libc/machine/riscv/strcmp.S' || echo '$(srcdir)/'`libc/machine/riscv/strcmp.S
+
+libc/machine/riscv/libc_a-strcmp.obj: libc/machine/riscv/strcmp.S
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/riscv/libc_a-strcmp.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo -c -o libc/machine/riscv/libc_a-strcmp.obj `if test -f 'libc/machine/riscv/strcmp.S'; then $(CYGPATH_W) 'libc/machine/riscv/strcmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcmp.S'; fi`
+@am__fastdepCCAS_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcmp.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='libc/machine/riscv/strcmp.S' object='libc/machine/riscv/libc_a-strcmp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -c -o libc/machine/riscv/libc_a-strcmp.obj `if test -f 'libc/machine/riscv/strcmp.S'; then $(CYGPATH_W) 'libc/machine/riscv/strcmp.S'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcmp.S'; fi`
 
 libc/machine/rl78/libc_a-setjmp.o: libc/machine/rl78/setjmp.S
 @am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)$(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CCASFLAGS) $(CCASFLAGS) -MT libc/machine/rl78/libc_a-setjmp.o -MD -MP -MF libc/machine/rl78/$(DEPDIR)/libc_a-setjmp.Tpo -c -o libc/machine/rl78/libc_a-setjmp.o `test -f 'libc/machine/rl78/setjmp.S' || echo '$(srcdir)/'`libc/machine/rl78/setjmp.S
@@ -35045,103 +35200,19 @@ libc/machine/powerpc/libc_a-ufix64toa.obj: libc/machine/powerpc/ufix64toa.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/powerpc/libc_a-ufix64toa.obj `if test -f 'libc/machine/powerpc/ufix64toa.c'; then $(CYGPATH_W) 'libc/machine/powerpc/ufix64toa.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/powerpc/ufix64toa.c'; fi`
 
-libc/machine/riscv/libc_a-memmove.o: libc/machine/riscv/memmove.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memmove.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo -c -o libc/machine/riscv/libc_a-memmove.o `test -f 'libc/machine/riscv/memmove.c' || echo '$(srcdir)/'`libc/machine/riscv/memmove.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memmove.c' object='libc/machine/riscv/libc_a-memmove.o' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-ffs.o: libc/machine/riscv/ffs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-ffs.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo -c -o libc/machine/riscv/libc_a-ffs.o `test -f 'libc/machine/riscv/ffs.c' || echo '$(srcdir)/'`libc/machine/riscv/ffs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/ffs.c' object='libc/machine/riscv/libc_a-ffs.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memmove.o `test -f 'libc/machine/riscv/memmove.c' || echo '$(srcdir)/'`libc/machine/riscv/memmove.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-ffs.o `test -f 'libc/machine/riscv/ffs.c' || echo '$(srcdir)/'`libc/machine/riscv/ffs.c
 
-libc/machine/riscv/libc_a-memmove.obj: libc/machine/riscv/memmove.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memmove.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo -c -o libc/machine/riscv/libc_a-memmove.obj `if test -f 'libc/machine/riscv/memmove.c'; then $(CYGPATH_W) 'libc/machine/riscv/memmove.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memmove.c' object='libc/machine/riscv/libc_a-memmove.obj' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-ffs.obj: libc/machine/riscv/ffs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-ffs.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo -c -o libc/machine/riscv/libc_a-ffs.obj `if test -f 'libc/machine/riscv/ffs.c'; then $(CYGPATH_W) 'libc/machine/riscv/ffs.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/ffs.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/ffs.c' object='libc/machine/riscv/libc_a-ffs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memmove.obj `if test -f 'libc/machine/riscv/memmove.c'; then $(CYGPATH_W) 'libc/machine/riscv/memmove.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove.c'; fi`
-
-libc/machine/riscv/libc_a-memcpy.o: libc/machine/riscv/memcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo -c -o libc/machine/riscv/libc_a-memcpy.o `test -f 'libc/machine/riscv/memcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcpy.c' object='libc/machine/riscv/libc_a-memcpy.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcpy.o `test -f 'libc/machine/riscv/memcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memcpy.c
-
-libc/machine/riscv/libc_a-memcpy.obj: libc/machine/riscv/memcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo -c -o libc/machine/riscv/libc_a-memcpy.obj `if test -f 'libc/machine/riscv/memcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcpy.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcpy.c' object='libc/machine/riscv/libc_a-memcpy.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcpy.obj `if test -f 'libc/machine/riscv/memcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcpy.c'; fi`
-
-libc/machine/riscv/libc_a-strlen.o: libc/machine/riscv/strlen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strlen.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo -c -o libc/machine/riscv/libc_a-strlen.o `test -f 'libc/machine/riscv/strlen.c' || echo '$(srcdir)/'`libc/machine/riscv/strlen.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strlen.c' object='libc/machine/riscv/libc_a-strlen.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strlen.o `test -f 'libc/machine/riscv/strlen.c' || echo '$(srcdir)/'`libc/machine/riscv/strlen.c
-
-libc/machine/riscv/libc_a-strlen.obj: libc/machine/riscv/strlen.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strlen.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo -c -o libc/machine/riscv/libc_a-strlen.obj `if test -f 'libc/machine/riscv/strlen.c'; then $(CYGPATH_W) 'libc/machine/riscv/strlen.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strlen.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strlen.c' object='libc/machine/riscv/libc_a-strlen.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strlen.obj `if test -f 'libc/machine/riscv/strlen.c'; then $(CYGPATH_W) 'libc/machine/riscv/strlen.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strlen.c'; fi`
-
-libc/machine/riscv/libc_a-strcpy.o: libc/machine/riscv/strcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo -c -o libc/machine/riscv/libc_a-strcpy.o `test -f 'libc/machine/riscv/strcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/strcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strcpy.c' object='libc/machine/riscv/libc_a-strcpy.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strcpy.o `test -f 'libc/machine/riscv/strcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/strcpy.c
-
-libc/machine/riscv/libc_a-strcpy.obj: libc/machine/riscv/strcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo -c -o libc/machine/riscv/libc_a-strcpy.obj `if test -f 'libc/machine/riscv/strcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/strcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcpy.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strcpy.c' object='libc/machine/riscv/libc_a-strcpy.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strcpy.obj `if test -f 'libc/machine/riscv/strcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/strcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcpy.c'; fi`
-
-libc/machine/riscv/libc_a-stpcpy.o: libc/machine/riscv/stpcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-stpcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo -c -o libc/machine/riscv/libc_a-stpcpy.o `test -f 'libc/machine/riscv/stpcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/stpcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/stpcpy.c' object='libc/machine/riscv/libc_a-stpcpy.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-stpcpy.o `test -f 'libc/machine/riscv/stpcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/stpcpy.c
-
-libc/machine/riscv/libc_a-stpcpy.obj: libc/machine/riscv/stpcpy.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-stpcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo -c -o libc/machine/riscv/libc_a-stpcpy.obj `if test -f 'libc/machine/riscv/stpcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/stpcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/stpcpy.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/stpcpy.c' object='libc/machine/riscv/libc_a-stpcpy.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-stpcpy.obj `if test -f 'libc/machine/riscv/stpcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/stpcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/stpcpy.c'; fi`
-
-libc/machine/riscv/libc_a-memchr.o: libc/machine/riscv/memchr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memchr.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo -c -o libc/machine/riscv/libc_a-memchr.o `test -f 'libc/machine/riscv/memchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memchr.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memchr.c' object='libc/machine/riscv/libc_a-memchr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memchr.o `test -f 'libc/machine/riscv/memchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memchr.c
-
-libc/machine/riscv/libc_a-memchr.obj: libc/machine/riscv/memchr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memchr.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo -c -o libc/machine/riscv/libc_a-memchr.obj `if test -f 'libc/machine/riscv/memchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memchr.c' object='libc/machine/riscv/libc_a-memchr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memchr.obj `if test -f 'libc/machine/riscv/memchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr.c'; fi`
-
-libc/machine/riscv/libc_a-memrchr.o: libc/machine/riscv/memrchr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memrchr.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo -c -o libc/machine/riscv/libc_a-memrchr.o `test -f 'libc/machine/riscv/memrchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memrchr.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memrchr.c' object='libc/machine/riscv/libc_a-memrchr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memrchr.o `test -f 'libc/machine/riscv/memrchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memrchr.c
-
-libc/machine/riscv/libc_a-memrchr.obj: libc/machine/riscv/memrchr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memrchr.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo -c -o libc/machine/riscv/libc_a-memrchr.obj `if test -f 'libc/machine/riscv/memrchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memrchr.c' object='libc/machine/riscv/libc_a-memrchr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memrchr.obj `if test -f 'libc/machine/riscv/memrchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-ffs.obj `if test -f 'libc/machine/riscv/ffs.c'; then $(CYGPATH_W) 'libc/machine/riscv/ffs.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/ffs.c'; fi`
 
 libc/machine/riscv/libc_a-ieeefp.o: libc/machine/riscv/ieeefp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-ieeefp.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-ieeefp.Tpo -c -o libc/machine/riscv/libc_a-ieeefp.o `test -f 'libc/machine/riscv/ieeefp.c' || echo '$(srcdir)/'`libc/machine/riscv/ieeefp.c
@@ -35157,19 +35228,159 @@ libc/machine/riscv/libc_a-ieeefp.obj: libc/machine/riscv/ieeefp.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-ieeefp.obj `if test -f 'libc/machine/riscv/ieeefp.c'; then $(CYGPATH_W) 'libc/machine/riscv/ieeefp.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/ieeefp.c'; fi`
 
-libc/machine/riscv/libc_a-ffs.o: libc/machine/riscv/ffs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-ffs.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo -c -o libc/machine/riscv/libc_a-ffs.o `test -f 'libc/machine/riscv/ffs.c' || echo '$(srcdir)/'`libc/machine/riscv/ffs.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/ffs.c' object='libc/machine/riscv/libc_a-ffs.o' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memccpy.o: libc/machine/riscv/memccpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memccpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Tpo -c -o libc/machine/riscv/libc_a-memccpy.o `test -f 'libc/machine/riscv/memccpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memccpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memccpy.c' object='libc/machine/riscv/libc_a-memccpy.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-ffs.o `test -f 'libc/machine/riscv/ffs.c' || echo '$(srcdir)/'`libc/machine/riscv/ffs.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memccpy.o `test -f 'libc/machine/riscv/memccpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memccpy.c
 
-libc/machine/riscv/libc_a-ffs.obj: libc/machine/riscv/ffs.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-ffs.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo -c -o libc/machine/riscv/libc_a-ffs.obj `if test -f 'libc/machine/riscv/ffs.c'; then $(CYGPATH_W) 'libc/machine/riscv/ffs.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/ffs.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-ffs.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/ffs.c' object='libc/machine/riscv/libc_a-ffs.obj' libtool=no @AMDEPBACKSLASH@
+libc/machine/riscv/libc_a-memccpy.obj: libc/machine/riscv/memccpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memccpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Tpo -c -o libc/machine/riscv/libc_a-memccpy.obj `if test -f 'libc/machine/riscv/memccpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memccpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memccpy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memccpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memccpy.c' object='libc/machine/riscv/libc_a-memccpy.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-ffs.obj `if test -f 'libc/machine/riscv/ffs.c'; then $(CYGPATH_W) 'libc/machine/riscv/ffs.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/ffs.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memccpy.obj `if test -f 'libc/machine/riscv/memccpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memccpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memccpy.c'; fi`
+
+libc/machine/riscv/libc_a-memchr.o: libc/machine/riscv/memchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memchr.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo -c -o libc/machine/riscv/libc_a-memchr.o `test -f 'libc/machine/riscv/memchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memchr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memchr.c' object='libc/machine/riscv/libc_a-memchr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memchr.o `test -f 'libc/machine/riscv/memchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memchr.c
+
+libc/machine/riscv/libc_a-memchr.obj: libc/machine/riscv/memchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memchr.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo -c -o libc/machine/riscv/libc_a-memchr.obj `if test -f 'libc/machine/riscv/memchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memchr.c' object='libc/machine/riscv/libc_a-memchr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memchr.obj `if test -f 'libc/machine/riscv/memchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memchr.c'; fi`
+
+libc/machine/riscv/libc_a-memcmp.o: libc/machine/riscv/memcmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcmp.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Tpo -c -o libc/machine/riscv/libc_a-memcmp.o `test -f 'libc/machine/riscv/memcmp.c' || echo '$(srcdir)/'`libc/machine/riscv/memcmp.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcmp.c' object='libc/machine/riscv/libc_a-memcmp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcmp.o `test -f 'libc/machine/riscv/memcmp.c' || echo '$(srcdir)/'`libc/machine/riscv/memcmp.c
+
+libc/machine/riscv/libc_a-memcmp.obj: libc/machine/riscv/memcmp.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcmp.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Tpo -c -o libc/machine/riscv/libc_a-memcmp.obj `if test -f 'libc/machine/riscv/memcmp.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcmp.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcmp.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcmp.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcmp.c' object='libc/machine/riscv/libc_a-memcmp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcmp.obj `if test -f 'libc/machine/riscv/memcmp.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcmp.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcmp.c'; fi`
+
+libc/machine/riscv/libc_a-memcpy.o: libc/machine/riscv/memcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo -c -o libc/machine/riscv/libc_a-memcpy.o `test -f 'libc/machine/riscv/memcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcpy.c' object='libc/machine/riscv/libc_a-memcpy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcpy.o `test -f 'libc/machine/riscv/memcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/memcpy.c
+
+libc/machine/riscv/libc_a-memcpy.obj: libc/machine/riscv/memcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo -c -o libc/machine/riscv/libc_a-memcpy.obj `if test -f 'libc/machine/riscv/memcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcpy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memcpy.c' object='libc/machine/riscv/libc_a-memcpy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memcpy.obj `if test -f 'libc/machine/riscv/memcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/memcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memcpy.c'; fi`
+
+libc/machine/riscv/libc_a-memmove.o: libc/machine/riscv/memmove.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memmove.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo -c -o libc/machine/riscv/libc_a-memmove.o `test -f 'libc/machine/riscv/memmove.c' || echo '$(srcdir)/'`libc/machine/riscv/memmove.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memmove.c' object='libc/machine/riscv/libc_a-memmove.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memmove.o `test -f 'libc/machine/riscv/memmove.c' || echo '$(srcdir)/'`libc/machine/riscv/memmove.c
+
+libc/machine/riscv/libc_a-memmove.obj: libc/machine/riscv/memmove.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memmove.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo -c -o libc/machine/riscv/libc_a-memmove.obj `if test -f 'libc/machine/riscv/memmove.c'; then $(CYGPATH_W) 'libc/machine/riscv/memmove.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memmove.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memmove.c' object='libc/machine/riscv/libc_a-memmove.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memmove.obj `if test -f 'libc/machine/riscv/memmove.c'; then $(CYGPATH_W) 'libc/machine/riscv/memmove.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memmove.c'; fi`
+
+libc/machine/riscv/libc_a-mempcpy.o: libc/machine/riscv/mempcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-mempcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Tpo -c -o libc/machine/riscv/libc_a-mempcpy.o `test -f 'libc/machine/riscv/mempcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/mempcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/mempcpy.c' object='libc/machine/riscv/libc_a-mempcpy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-mempcpy.o `test -f 'libc/machine/riscv/mempcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/mempcpy.c
+
+libc/machine/riscv/libc_a-mempcpy.obj: libc/machine/riscv/mempcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-mempcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Tpo -c -o libc/machine/riscv/libc_a-mempcpy.obj `if test -f 'libc/machine/riscv/mempcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/mempcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/mempcpy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-mempcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/mempcpy.c' object='libc/machine/riscv/libc_a-mempcpy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-mempcpy.obj `if test -f 'libc/machine/riscv/mempcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/mempcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/mempcpy.c'; fi`
+
+libc/machine/riscv/libc_a-memrchr.o: libc/machine/riscv/memrchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memrchr.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo -c -o libc/machine/riscv/libc_a-memrchr.o `test -f 'libc/machine/riscv/memrchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memrchr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memrchr.c' object='libc/machine/riscv/libc_a-memrchr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memrchr.o `test -f 'libc/machine/riscv/memrchr.c' || echo '$(srcdir)/'`libc/machine/riscv/memrchr.c
+
+libc/machine/riscv/libc_a-memrchr.obj: libc/machine/riscv/memrchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-memrchr.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo -c -o libc/machine/riscv/libc_a-memrchr.obj `if test -f 'libc/machine/riscv/memrchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-memrchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/memrchr.c' object='libc/machine/riscv/libc_a-memrchr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-memrchr.obj `if test -f 'libc/machine/riscv/memrchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/memrchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/memrchr.c'; fi`
+
+libc/machine/riscv/libc_a-rawmemchr.o: libc/machine/riscv/rawmemchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-rawmemchr.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Tpo -c -o libc/machine/riscv/libc_a-rawmemchr.o `test -f 'libc/machine/riscv/rawmemchr.c' || echo '$(srcdir)/'`libc/machine/riscv/rawmemchr.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/rawmemchr.c' object='libc/machine/riscv/libc_a-rawmemchr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-rawmemchr.o `test -f 'libc/machine/riscv/rawmemchr.c' || echo '$(srcdir)/'`libc/machine/riscv/rawmemchr.c
+
+libc/machine/riscv/libc_a-rawmemchr.obj: libc/machine/riscv/rawmemchr.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-rawmemchr.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Tpo -c -o libc/machine/riscv/libc_a-rawmemchr.obj `if test -f 'libc/machine/riscv/rawmemchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/rawmemchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/rawmemchr.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-rawmemchr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/rawmemchr.c' object='libc/machine/riscv/libc_a-rawmemchr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-rawmemchr.obj `if test -f 'libc/machine/riscv/rawmemchr.c'; then $(CYGPATH_W) 'libc/machine/riscv/rawmemchr.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/rawmemchr.c'; fi`
+
+libc/machine/riscv/libc_a-stpcpy.o: libc/machine/riscv/stpcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-stpcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo -c -o libc/machine/riscv/libc_a-stpcpy.o `test -f 'libc/machine/riscv/stpcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/stpcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/stpcpy.c' object='libc/machine/riscv/libc_a-stpcpy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-stpcpy.o `test -f 'libc/machine/riscv/stpcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/stpcpy.c
+
+libc/machine/riscv/libc_a-stpcpy.obj: libc/machine/riscv/stpcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-stpcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo -c -o libc/machine/riscv/libc_a-stpcpy.obj `if test -f 'libc/machine/riscv/stpcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/stpcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/stpcpy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-stpcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/stpcpy.c' object='libc/machine/riscv/libc_a-stpcpy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-stpcpy.obj `if test -f 'libc/machine/riscv/stpcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/stpcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/stpcpy.c'; fi`
+
+libc/machine/riscv/libc_a-strcpy.o: libc/machine/riscv/strcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strcpy.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo -c -o libc/machine/riscv/libc_a-strcpy.o `test -f 'libc/machine/riscv/strcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/strcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strcpy.c' object='libc/machine/riscv/libc_a-strcpy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strcpy.o `test -f 'libc/machine/riscv/strcpy.c' || echo '$(srcdir)/'`libc/machine/riscv/strcpy.c
+
+libc/machine/riscv/libc_a-strcpy.obj: libc/machine/riscv/strcpy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strcpy.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo -c -o libc/machine/riscv/libc_a-strcpy.obj `if test -f 'libc/machine/riscv/strcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/strcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcpy.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strcpy.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strcpy.c' object='libc/machine/riscv/libc_a-strcpy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strcpy.obj `if test -f 'libc/machine/riscv/strcpy.c'; then $(CYGPATH_W) 'libc/machine/riscv/strcpy.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strcpy.c'; fi`
+
+libc/machine/riscv/libc_a-strlen.o: libc/machine/riscv/strlen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strlen.o -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo -c -o libc/machine/riscv/libc_a-strlen.o `test -f 'libc/machine/riscv/strlen.c' || echo '$(srcdir)/'`libc/machine/riscv/strlen.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strlen.c' object='libc/machine/riscv/libc_a-strlen.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strlen.o `test -f 'libc/machine/riscv/strlen.c' || echo '$(srcdir)/'`libc/machine/riscv/strlen.c
+
+libc/machine/riscv/libc_a-strlen.obj: libc/machine/riscv/strlen.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/riscv/libc_a-strlen.obj -MD -MP -MF libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo -c -o libc/machine/riscv/libc_a-strlen.obj `if test -f 'libc/machine/riscv/strlen.c'; then $(CYGPATH_W) 'libc/machine/riscv/strlen.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strlen.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Tpo libc/machine/riscv/$(DEPDIR)/libc_a-strlen.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libc/machine/riscv/strlen.c' object='libc/machine/riscv/libc_a-strlen.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -c -o libc/machine/riscv/libc_a-strlen.obj `if test -f 'libc/machine/riscv/strlen.c'; then $(CYGPATH_W) 'libc/machine/riscv/strlen.c'; else $(CYGPATH_W) '$(srcdir)/libc/machine/riscv/strlen.c'; fi`
 
 libc/machine/sparc/libc_a-scan.o: libc/machine/sparc/scan.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libc_a_CPPFLAGS) $(CPPFLAGS) $(libc_a_CFLAGS) $(CFLAGS) -MT libc/machine/sparc/libc_a-scan.o -MD -MP -MF libc/machine/sparc/$(DEPDIR)/libc_a-scan.Tpo -c -o libc/machine/sparc/libc_a-scan.o `test -f 'libc/machine/sparc/scan.c' || echo '$(srcdir)/'`libc/machine/sparc/scan.c
