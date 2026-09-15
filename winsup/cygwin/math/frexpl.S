@@ -127,8 +127,9 @@ L24:
 	popl %esi
 	leave
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	frexp
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

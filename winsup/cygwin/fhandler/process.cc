@@ -81,7 +81,7 @@ static const virt_tab_t process_tab[] =
 
 static const int PROCESS_LINK_COUNT =
   (sizeof (process_tab) / sizeof (virt_tab_t)) - 1;
-int get_process_state (DWORD dwProcessId);
+int get_process_state (DWORD dwProcessId, DWORD *num_threads);
 static bool get_mem_values (DWORD dwProcessId, size_t &vmsize, size_t &vmrss,
 			    size_t &vmtext, size_t &vmdata, size_t &vmlib,
 			    size_t &vmshare);
@@ -1121,6 +1121,7 @@ format_process_stat (void *data, char *&destbuf)
 {
   _pinfo *p = (_pinfo *) data;
   char cmd[NAME_MAX + 1];
+  DWORD num_threads = 0;
   int state = 'R';
   unsigned long fault_count = 0UL,
 		vmsize = 0UL, vmrss = 0UL, vmmaxrss = 0UL;
@@ -1155,7 +1156,7 @@ format_process_stat (void *data, char *&destbuf)
   else if (p->process_state & PID_STOPPED)
     state = 'T';
   else
-    state = get_process_state (p->dwProcessId);
+    state = get_process_state (p->dwProcessId, &num_threads);
 
   int nice = 0, prio = 0;
 
@@ -1241,14 +1242,14 @@ format_process_stat (void *data, char *&destbuf)
 				   "%d %d %d %d "
 				   "%d %u %lu %lu %u %u "
 				   "%U %U %U %U "
-				   "%d %d %d %d "
+				   "%d %d %u %d "
 				   "%U "
 				   "%lu %ld %lu\n",
 			  p->pid, cmd, state,
 			  p->ppid, p->pgid, p->sid, tty_nr,
 			  -1, 0, fault_count, fault_count, 0, 0,
 			  utime, stime, utime, stime,
-			  prio, nice, 0, 0,
+			  prio, nice, num_threads, 0,
 			  start_time,
 			  vmsize, vmrss, vmmaxrss
 			  );
@@ -1259,6 +1260,7 @@ format_process_status (void *data, char *&destbuf)
 {
   _pinfo *p = (_pinfo *) data;
   char cmd[NAME_MAX + 1];
+  DWORD num_threads = 0;
   int state = 'R';
   const char *state_str = "unknown";
   size_t vmsize = 0, vmrss = 0, vmdata = 0, vmlib = 0, vmtext = 0, vmshare = 0;
@@ -1281,7 +1283,7 @@ format_process_status (void *data, char *&destbuf)
   else if (p->process_state & PID_STOPPED)
     state = 'T';
   else
-    state = get_process_state (p->dwProcessId);
+    state = get_process_state (p->dwProcessId, &num_threads);
   switch (state)
     {
     case 'O':
@@ -1327,6 +1329,7 @@ format_process_status (void *data, char *&destbuf)
 				   "VmStk:\t%8lu kB\n"
 				   "VmExe:\t%8lu kB\n"
 				   "VmLib:\t%8lu kB\n"
+				   "Threads:\t%u\n"
 				   "SigPnd:\t%016lx\n"
 				   "SigBlk:\t%016lx\n"
 				   "SigIgn:\t%016lx\n",
@@ -1340,6 +1343,7 @@ format_process_status (void *data, char *&destbuf)
 			  vmsize * kb_per_page, 0UL, vmrss * kb_per_page,
 			  vmdata * kb_per_page, 0UL, vmtext * kb_per_page,
 			  vmlib * kb_per_page,
+			  num_threads,
 			  pnd, blk, ign
 			  );
 }
@@ -1516,7 +1520,7 @@ format_process_mountinfo (void *data, char *&destbuf)
 }
 
 int
-get_process_state (DWORD dwProcessId)
+get_process_state (DWORD dwProcessId, DWORD *num_threads)
 {
   /* This isn't really heavy magic - just go through the processes' threads
      one by one and return a value accordingly.  Errors are silently ignored. */
@@ -1554,6 +1558,8 @@ get_process_state (DWORD dwProcessId)
 	{
 	  SYSTEM_THREADS *st;
 	  st = &sp->Threads[0];
+	  if (num_threads)
+	    *num_threads = sp->NumberOfThreads;
 	  state = 'S';
 	  for (unsigned i = 0; i < sp->NumberOfThreads; i++)
 	    {

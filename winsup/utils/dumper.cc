@@ -703,7 +703,7 @@ dumper::init_core_dump ()
 #if defined(__x86_64__)
   const char *target = "elf64-x86-64";
 #elif defined(__aarch64__)
-  const char *target = "elf64-aarch64";
+  const char *target = "elf64-littleaarch64";
 #else
 #error unimplemented for this target
 #endif
@@ -721,11 +721,21 @@ dumper::init_core_dump ()
       goto failed;
     }
 
-  if (!bfd_set_arch_mach (core_bfd, bfd_arch_i386, 0 /* = default */))
-    {
-      bfd_perror ("setting bfd architecture");
-      goto failed;
-    }
+#if defined(__x86_64__)
+  if (!bfd_set_arch_mach(core_bfd, bfd_arch_i386, 0 /* = default */))
+  {
+	  bfd_perror("setting bfd architecture");
+	  goto failed;
+  }
+#elif defined(__aarch64__)
+  if (!bfd_set_arch_mach(core_bfd, bfd_arch_aarch64, bfd_mach_aarch64))
+  {
+	  bfd_perror("setting bfd architecture");
+	  goto failed;
+  }
+#else
+#error unimplemented for this target
+#endif
 
   return 1;
 
@@ -829,14 +839,14 @@ dumper::prepare_core_dump ()
       p->section = new_section;
       int section_count = 1;
 
-      bfd_boolean filehdr = 0;
-      bfd_boolean phdrs = 0;
+      bool filehdr = false;
+      bool phdrs = false;
 
       bfd_vma at = 0;
-      bfd_boolean valid_at = 0;
+      bool valid_at = false;
 
       flagword flags = 0;
-      bfd_boolean valid_flags = 1;
+      bool valid_flags = true;
 
       if (p->type == pr_ent_memory)
 	{

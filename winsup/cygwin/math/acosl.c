@@ -4,9 +4,7 @@
  * No warranty is given; refer to the file DISCLAIMER.PD within this package.
  */
 
-#if defined(__aarch64__)
 #include <math.h>
-#endif
 
 long double acosl (long double x);
 
@@ -25,8 +23,7 @@ long double acosl (long double x)
 	"fxch	%%st(1)\n\t"
 	"fpatan"
 	: "=t" (res) : "0" (x) : "st(1)");
-#elif defined(__aarch64__)
-  // TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
   res = atanl (sqrtl(1 - x*x) / x);
 #endif
   return res;

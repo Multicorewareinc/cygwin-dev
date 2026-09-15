@@ -10,14 +10,9 @@
 */
 
 #include <sys/asm.h>
+#include "newlib.h"
 
-.text
-.globl strcmp
-.type  strcmp, @function
-strcmp:
-#if __riscv_landing_pad
-  lpad 0
-#endif
+ENTRY(strcmp)
 
 #if defined(PREFER_SIZE_OVER_SPEED) || defined(__OPTIMIZE_SIZE__)
 .Lcompare:
@@ -36,7 +31,7 @@ strcmp:
 #else
   li    t2, -1
 
-#if !(__riscv_misaligned_slow || __riscv_misaligned_fast)
+#if !_HAVE_HW_MISALIGNED_ACCESS
   or    a4, a0, a1
   and   a4, a4, SZREG-1
   bnez  a4, .Lmisaligned
@@ -239,7 +234,7 @@ strcmp:
 mask:
 .dword 0x7f7f7f7f7f7f7f7f
 #endif
-.size	strcmp, .-strcmp
+END(strcmp)
 
 #if SZREG == 8 && !defined(__riscv_cmodel_large)
 .section .srodata.cst8,"aM",@progbits,8

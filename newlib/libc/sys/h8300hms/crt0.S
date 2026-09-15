@@ -1,12 +1,18 @@
 ; H8/300, H8/300H, H8/300S and H8SX start up file.
 
 #include "setarch.h"
+#include "newlib.h"
+
+#ifdef _HAVE_INITFINI_ARRAY
+#define __init	___libc_init_array
+#define __fini	___libc_fini_array
+#endif
 
 #ifdef __H8300__
 
 	.section .text
-	.global	_start
-_start:
+	.global	__start
+__start:
 	mov.w	#_stack,sp
 	mov.w	#_edata,r0
 	mov.w	#_end,r2
@@ -37,8 +43,8 @@ _stack:	.space	2
 #if defined (__H8300H__) || defined (__H8300S__) || defined (__H8300SX__)
 
 	.section .text
-	.global	_start
-_start:
+	.global	__start
+__start:
 #ifdef __NORMAL_MODE__
 	mov.w	#_stack,sp
 	mov.w	#_edata,r0

@@ -10,6 +10,9 @@
  */
 
 /* asin = atan (x / sqrt(1 - x^2)) */
+
+#include <math.h>
+
 long double asinl (long double x);
 
 long double asinl (long double x)
@@ -25,9 +28,8 @@ long double asinl (long double x)
 	"fsqrt\n\t"				/* sqrt (1 - x^2) */
 	"fpatan"
 	: "=t" (res) : "0" (x) : "st(1)");
-#elif defined(__aarch64__)
-    // TODO
-    res = 0.0;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	res = (long double)asin((double)x);
 #endif
   return res;
 }
