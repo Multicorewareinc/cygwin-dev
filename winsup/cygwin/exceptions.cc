@@ -947,67 +947,6 @@ singlestep_handler (EXCEPTION_POINTERS *ep)
 }
 #endif
 
-#ifdef __aarch64__
-/* This function uses RtlRestoreContext to ensure that LR does not get
-   clobbered. Note that this function should not return, and the stack
-   contents created by this function are left un-popped. This should
-   not be a problem, since the context restoration also restores SP. */
-void
-_cygtls::sigdelayed_impl(PCONTEXT ctx)
-{
-  int backup_errno = saved_errno;
-
-  call_signal_handler();
-
-  lock();
-
-  if(backup_errno >= 0)
-  {
-    *errno_addr = backup_errno;
-  }
-
-  ctx->Pc = pop();
-
-  /* Atomically clear the return address. */
-  InterlockedExchange64 ((LONG64*)stackptr, 0);
-
-  incyg = 0;
-  unlock();
-
-  RtlRestoreContext(ctx, NULL);
-
-  /* If we got here, something was wrong. */
-  api_fatal ("Failed to restore context in sigdelayed_impl");
-}
-
-/* This function restores the context's clobbered registers and
-   calls the actual sigdelayed implementation. */
-extern "C" void
-sigdelayed_init(PCONTEXT ctx)
-{
-  /* Retrieving the registers stored on stack by sigdelayed. */
-  const DWORD64* sp = ((DWORD64*)ctx->Sp);
-  const DWORD64 stack_x16 = sp[0];
-  const DWORD64 stack_x17 = sp[1];
-  const DWORD64 stack_x0 = sp[2];
-  const DWORD64 stack_lr = sp[3];
-
-  ctx->X16 = stack_x16; // x16 clobbered by RtlCaptureContext
-  ctx->X17 = stack_x17;
-  ctx->X0 = stack_x0; // x0 isn't set by RtlCaptureContext
-  ctx->Lr = stack_lr; // LR is zeroed out by RtlCaptureContext
-
-  /* "sigdelayed" allocates 0x390 bytes for the context, matching the
-     struct's size. This should cause an error if the size of the struct
-     happened to change. */
-  static_assert(sizeof(CONTEXT) == 0x390);
-
-  ctx->Sp += sizeof(CONTEXT) + 32; // undo stack pushes from sigdelayed
-
-  _my_tls.sigdelayed_impl(ctx);
-}
-#endif
-
 bool
 _cygtls::interrupt_now (CONTEXT *cx, siginfo_t& si, void *handler,
 			struct sigaction& siga)
@@ -2034,10 +1973,6 @@ _cygtls::call_signal_handler ()
 		       [CTX]	 "r" (thiscontext),
 		       [FUNC]	 "r" (thisfunc),
 		       [WRAPPER] "r" (altstack_wrapper)
-<<<<<<< HEAD
-		   : "memory", "x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7",
-		     "x9", "x10", "x29", "x30");
-=======
 		   /* The clobber list serves two roles here.  x0-x7, x9, x10
 		      and x29 are hardcoded by this asm as scratch/argument
 		      registers, so they are listed to stop gcc allocating the
@@ -2055,7 +1990,6 @@ _cygtls::call_signal_handler ()
 		     "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
 		     "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
 		     "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
->>>>>>> upstream/main
 #else
 #error unimplemented for this target
 #endif
@@ -2159,6 +2093,7 @@ setcontext (const ucontext_t *ucp)
      the same approach for aarch64.  */
   register PCONTEXT base __asm__ ("x16") = ctx;
   __asm__ __volatile__ ("\n\
+	/* Restore NEON/FP registers v0..v31 (at offset 272) */	\n\
 	add	x17, x16, #272					\n\
 	ldp	q0, q1, [x17, #0]				\n\
 	ldp	q2, q3, [x17, #32]				\n\
@@ -2276,40 +2211,23 @@ __cont_link_context:			\n\
 	.seh_endproc			\n\
 	");
 #elif defined(__aarch64__)
-<<<<<<< HEAD
-=======
-/*	_MC_uclinkReg == x19.  x19 holds the address of the uc_link slot but is
-	only 8-byte aligned, so read through it and mask into SP in one step
-	rather than moving the unaligned value into SP first.  setcontext and
-	cygwin_exit are noreturn, so tail-call them with 'b': this leaves x30
-	untouched and keeps the frame leaf, matching the empty SEH prologue. */
->>>>>>> upstream/main
+/* _MC_uclinkReg == x19.  x19 holds the address of the uc_link slot but is
+   only 8-byte aligned, so read through it and mask into SP in one step
+   rather than moving the unaligned value into SP first.  setcontext and
+   cygwin_exit are noreturn, so tail-call them with 'b': this leaves x30
+   untouched and keeps the frame leaf, matching the empty SEH prologue. */
 __asm__ ("					\n\
 	.global	__cont_link_context		\n\
 	.seh_proc __cont_link_context		\n\
 __cont_link_context:				\n\
 	.seh_endprologue			\n\
-<<<<<<< HEAD
-	mov	sp, x19				\n\
-	ldr	x0, [sp]			\n\
-	mov	x4, sp				\n\
-	and	x4, x4, #0xfffffffffffffff0	\n\
-	mov	sp, x4				\n\
-	cbz	x0, 1f				\n\
-	bl	setcontext			\n\
-	mov	w0, #0xff			\n\
-1:						\n\
-	bl	cygwin_exit			\n\
-	nop					\n\
-=======
-	ldr	x0, [x19]			\n\
-	and	sp, x19, #~0xf			\n\
-	cbnz	x0, 1f				\n\
-	mov	w0, #0xff			\n\
+	ldr	x0, [x19]			// x0 = uc_link		\n\
+	and	sp, x19, #~0xf			// aligned SP = &uc_link	\n\
+	cbnz	x0, 1f				// uc_link set: resume	\n\
+	mov	w0, #0xff			// else exit (0xff)	\n\
 	b	cygwin_exit			\n\
 1:						\n\
 	b	setcontext			\n\
->>>>>>> upstream/main
 	.seh_endproc				\n"
 	);
 #else
@@ -2318,17 +2236,12 @@ __cont_link_context:				\n\
 
 /* makecontext is modelled after GLibc's makecontext.  The stack from uc_stack
    is prepared so that it starts with a pointer to the linked context uc_link,
-<<<<<<< HEAD
-   followed by the arguments to func, and finally at the bottom the "return"
-   address set to __cont_link_context.
-=======
    followed by the arguments to func.
 
    The trampoline __cont_link_context is reached differently per target: on
    x86_64 its address is written at the bottom of the stack as the "return"
    address, whereas on aarch64 it is placed in lr (see below), since the
    AArch64 ABI returns through the link register rather than the stack.
->>>>>>> upstream/main
 
    x86_64: In the ucp context, rbx is set to point to the stack address where
    the pointer to uc_link is stored.  The requirement to make this work is that
@@ -2382,11 +2295,8 @@ makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
   /* ARM64 requires 16-byte alignment at public interfaces. */
   sp = (uintptr_t *) ((uintptr_t) sp & ~0xfUL);
 
-<<<<<<< HEAD
-=======
 #else
 #error unimplemented for this target
->>>>>>> upstream/main
 #endif
 
   /* Fetch arguments and store them.
@@ -2462,11 +2372,8 @@ makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
           sp[i - 8] = va_arg (ap, uintptr_t);
           break;
         }
-<<<<<<< HEAD
-=======
 #else
 #error unimplemented for this target
->>>>>>> upstream/main
 #endif
     }
   va_end (ap);
@@ -2480,11 +2387,8 @@ makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
   /* Store pointer to uc_link at the top of our allocated area. */
   sp[stack_args] = (uintptr_t) ucp->uc_link;
 
-<<<<<<< HEAD
-=======
 #else
 #error unimplemented for this target
->>>>>>> upstream/main
 #endif
 
   /* Last but not least set the register in the context at ucp so that a
@@ -2508,10 +2412,7 @@ makecontext (ucontext_t *ucp, void (*func) (void), int argc, ...)
   ucp->uc_mcontext.lr = (uint64_t) __cont_link_context;
   ucp->uc_mcontext._MC_uclinkReg = (uint64_t) (sp + stack_args);
 
-<<<<<<< HEAD
-=======
 #else
 #error unimplemented for this target
->>>>>>> upstream/main
 #endif
 }
