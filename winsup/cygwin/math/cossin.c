@@ -83,16 +83,9 @@ void sincosl (long double __x, long double *p_sin, long double *p_cos)
     "fstp      %%st(1)\n\t"
     "fsincos\n\t"
     "1:" : "=t" (c), "=u" (s) : "0" (__x));
-<<<<<<< HEAD
-#elif defined(__aarch64__)
-  // TODO
-  c = 0.0;
-  s = 0.0;
-=======
 #elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
   s = sin((double)__x);
   c = cos((double)__x);
->>>>>>> upstream/main
 #endif
   *p_sin = s;
   *p_cos = c;

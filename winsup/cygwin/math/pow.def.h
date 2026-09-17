@@ -208,11 +208,7 @@ __FLT_ABI(pow) (__FLT_TYPE x, __FLT_TYPE y)
 	{
       #if defined(__x86_64__) || defined(__i386__)
           asm volatile ("fsqrt" : "=t" (rslt) : "0" (x));
-<<<<<<< HEAD
-      #elif defined(__aarch64__)
-=======
       #elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
->>>>>>> upstream/main
           asm volatile ("fsqrt %d0, %d1" : "=w" (rslt) : "w" (x));
       #endif
 	  return rslt;

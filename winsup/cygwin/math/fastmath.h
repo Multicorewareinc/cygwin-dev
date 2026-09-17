@@ -18,7 +18,7 @@
 
 static __inline__ double __fast_sqrt (double x)
 {
-  double res;  
+  double res;
   asm __volatile__ ("fsqrt" : "=t" (res) : "0" (x));
   return res;
 }
@@ -28,14 +28,8 @@ static __inline__ long double __fast_sqrtl (long double x)
   long double res;
 #if defined(__x86_64__)
   asm __volatile__ ("fsqrt" : "=t" (res) : "0" (x));
-<<<<<<< HEAD
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0;
-=======
 #elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
   res = sqrt((double)x);
->>>>>>> upstream/main
 #endif
   return res;
 }
