@@ -72,8 +72,9 @@ __MINGW_USYMBOL(remquol):
 1:	movl %eax, (%ecx)
 
         ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl  remquo
+        ret
 #else
 	.error "Not supported on your platform yet"
 #endif

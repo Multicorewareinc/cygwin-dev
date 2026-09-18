@@ -37,8 +37,8 @@ __MINGW_USYMBOL(remainderf):
 	jp	1b
 	fstp	%st(1)
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	/* AArch64: system libm provides remainderf() natively, no stub needed */
 #else
 	.error "Not supported on your platform yet"
 #endif

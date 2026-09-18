@@ -12,12 +12,7 @@
 #include <sys/asm.h>
 
 /* int setjmp (jmp_buf);  */
-  .globl  setjmp
-  .type   setjmp, @function
-setjmp:
-#if __riscv_landing_pad
-  lpad 0
-#endif
+ENTRY(setjmp)
 	REG_S ra,  0*SZREG(a0)
   #if __riscv_xlen == 32 && (__riscv_zilsd) && (__riscv_misaligned_fast)
 	  sd    s0,  1*SZREG(a0)
@@ -65,17 +60,24 @@ setjmp:
 	FREG_S fs11,14*SZREG+11*SZFREG(a0)
 #endif
 
+#ifdef __riscv_shadow_stack
+        /* read ssp into t0  */
+        ssrdp t0
+# ifndef __riscv_float_abi_soft
+	REG_S t0, 14*SZREG+12*SZFREG(a0)
+# elif defined (__riscv_32e)
+	REG_S t0, 4*SZREG(a0)
+# else
+	REG_S t0, 14*SZREG(a0)
+# endif
+#endif
+
 	li    a0, 0
 	ret
-	.size	setjmp, .-setjmp
+END(setjmp)
 
 /* volatile void longjmp (jmp_buf, int);  */
-  .globl  longjmp
-  .type   longjmp, @function
-longjmp:
-#if __riscv_landing_pad
-  lpad 0
-#endif
+ENTRY(longjmp)
 	REG_L ra,  0*SZREG(a0)
   #if __riscv_xlen == 32 && (__riscv_zilsd) && (__riscv_misaligned_fast)
     ld s0, 1*SZREG(a0)
@@ -121,8 +123,39 @@ longjmp:
 	FREG_L fs10,14*SZREG+10*SZFREG(a0)
 	FREG_L fs11,14*SZREG+11*SZFREG(a0)
 #endif
+#ifdef __riscv_shadow_stack
+        /* read ssp into t0  */
+        ssrdp t0
+        /* skip unwinding if ss is not enabled  */
+        beqz  t0, .Lunwind_fin
+# ifndef __riscv_float_abi_soft
+	REG_L t1, 14*SZREG+12*SZFREG(a0)
+# elif defined (__riscv_32e)
+	REG_L t0, 4*SZREG(a0)
+# else
+	REG_L t1, 14*SZREG(a0)
+# endif
+.Lunwind:
+        /* should not be taken in normal condition  */
+        bleu  t1, t0, .Lunwind_fin
+        /* The unwinding algorithm came from the zicfiss spec, increase ssp
+           by at most a page size to ensure always run into a guard page
+           before accidentally point to another legal shadow stack page  */
+        /* t0 = (t1 - t0 >= 4096) ? t0 + 4096 : t1  */
+        lui   a0, 1
+        add   t0, t0, a0
+        bleu  t0, t1, 1f
+        mv    t0, t1
+1:
+        csrw  ssp, t0
+        /* Test if the location pointed by ssp is legal  */
+        sspush x5
+        sspopchk x5
+        j .Lunwind
+.Lunwind_fin:
+#endif
 
 	seqz a0, a1
 	add  a0, a0, a1   # a0 = (a1 == 0) ? 1 : a1
 	ret
-	.size	longjmp, .-longjmp
+END(longjmp)

@@ -59,8 +59,9 @@ __MINGW_USYMBOL(tanl):
 	fptan
 	fstp	%st(0)
 	ret
-#elif defined(__aarch64__)
-	// TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	tan
+	ret
 #else
 	.error "Not supported on your platform yet"
 #endif

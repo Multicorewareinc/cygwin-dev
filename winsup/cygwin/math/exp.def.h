@@ -102,9 +102,10 @@ __expl_internal (long double x)
        "fstp	%%st(1)\n\t"    /* 1  */
        "fstp	%%st(1)\n\t"    /* 0  */
        : "=t" (res) : "0" (x), "m" (c0), "m" (c1) : "ax", "dx");
-#elif defined(__aarch64__)
-  // TODO
-  res = 0.0 * c0 * c1;
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+  (void)c0;
+  (void)c1;
+  res = exp((double)x);
 #endif
   return res;
 }

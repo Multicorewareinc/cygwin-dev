@@ -32,7 +32,7 @@ __MINGW_USYMBOL(scalbl):
 	fscale
 	fstp	%st(1)
 	ret
-#elif defined(__aarch64__)
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
     fcvtzs x1, d1
     fmov x0, d0
     ubfx x2, x0, #52, #11

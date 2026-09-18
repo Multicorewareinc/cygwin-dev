@@ -51,7 +51,8 @@ __MINGW_USYMBOL(__cosl_internal):
 	fstp	%st(1)
 	fcos
 	ret
-#else
-  // TODO
+#elif __SIZEOF_LONG_DOUBLE__ == __SIZEOF_DOUBLE__
+	bl	cos
+	ret
 #endif
 
