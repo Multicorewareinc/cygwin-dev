@@ -5,7 +5,7 @@ on:
 
 jobs:
   windows-build:
-    runs-on: [self-hosted, Windows, ARM64]
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -14,7 +14,7 @@ jobs:
           target: aarch64-pc-cygwin
           buildarch: x86_64
           pkgarch: aarch64
-          runner: cd-win-arm-11
+          runner: windows-11-arm
     name: Windows native ${{ matrix.pkgarch }}
 
     defaults:
